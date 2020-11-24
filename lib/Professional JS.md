@@ -12,6 +12,8 @@
 
 
 
+
+
 # 第一章 JS简介
 
 一个完整的 JavaScript 实现应由下列三个不同的部分组成：
@@ -24,28 +26,24 @@
 
 ## JavaScript
 
-**—ES版本—**
+ECMA-262定义了ES的语法、类型、语句、关键字、保留字、操作符、全局对象。由宿主环境提供ES的基准实现和与环境交互必需的扩展。ES发展如下：
 
-- ES1实际上是网景的 JavaScript 1.1，有轻微修改；
-- ES2做了一些编校工作；
-- ES3更新了字符串处理、错误定义和数值输出，增加了对正则表达式、新的控制语句、try/catch 异常处理的支持及国际化修改，意味着ES真正作为一门编程语言的时代到来了；
-- ES4是一次彻底的修订，几乎在ES3的基础上定义了一门新语言，包括强类型变量、新语句和数据结构、真正的类和继承，操作数据的新手段；但由于跳跃过大被搁置，最终被ES3.1(即ES5)所代替
-- ES5致力于厘清ES3存在的歧义，增加新功能：原生的解析和序列化 JSON数据的 JSON 对象、方便继承和高级属性定义的方法，以及新的增强 ES引擎解释和执行代码能力的严格模式；
-- ES6，也称ES2015或 ES Harmony，包含了ECMA-262规范有史以来最重要的一批增强特性，正式支持了类、模块、迭代器、生成器、箭头 函数、期约、反射、代理和众多新的数据类型；
-- ES7(ES2016)只包含少量语法层面的 增强，如 Array.prototype.includes 和指数操作符；
-- ES8(ES2017)增加了异步函数（async/ await）、SharedArrayBuffer 及 Atomics API，以及 Object.values()/Object.entries()/Object. getOwnPropertyDescriptors()和字符串填充方法，另外明确支持对象字面量后的逗号；
-- ES9(ES2018)的修订包括异步迭代、剩余和 扩展属性、一组新的正则表达式特性、Promise finally()，以及模板字面量修订；
-- ES10(ES2019)增加了 Array.prototype. flat()/flatMap()、String.prototype.trimStart()/trimEnd()、Object.fromEntries()方 法，以及 Symbol.prototype.description 属性，明确定义了 Function.prototype.toString() 的返回值并固定了 Array.prototype.sort()的顺序。另外，这次修订解决了与 JSON字符串兼容的 问题，并定义了 catch 子句的可选绑定。 
+- ES1：实际上是网景的 JavaScript 1.1，有轻微修改；
+- ES2：做了一些编校工作；
+- ES3：更新了字符串处理、错误定义和数值输出，增加了对正则表达式、新的控制语句、try/catch 异常处理的支持及国际化修改，意味着ES真正作为一门编程语言的时代到来了；
+- ES4：一次彻底的修订，几乎在ES3的基础上定义了一门新语言，包括强类型变量、新语句和数据结构、真正的类和继承，操作数据的新手段；但由于跳跃过大被搁置，最终被ES3.1(即ES5)所代替
+- ES5：致力于厘清ES3存在的歧义，增加新功能：原生的解析和序列化 JSON数据的 JSON 对象、方便继承和高级属性定义的方法，以及新的增强 ES引擎解释和执行代码能力的严格模式；
+- ES6：也称ES2015或 ES Harmony，包含了ECMA-262规范有史以来最重要的一批增强特性，正式支持了类、模块、迭代器、生成器、箭头 函数、期约、反射、代理和众多新的数据类型；
+- ES7(ES2016)：只包含少量语法层面的 增强，如 Array.prototype.includes 和指数操作符；
+- ES8(ES2017)：增加了异步函数（async/ await）、SharedArrayBuffer 及 Atomics API，以及 Object.values()/Object.entries()/Object. getOwnPropertyDescriptors()和字符串填充方法，另外明确支持对象字面量后的逗号；
+- ES9(ES2018)：的修订包括异步迭代、剩余和 扩展属性、一组新的正则表达式特性、Promise finally()，以及模板字面量修订；
+- ES10(ES2019)：增加了 Array.prototype. flat()/flatMap()、String.prototype.trimStart()/trimEnd()、Object.fromEntries()方法，以及 Symbol.prototype.description属性，明确定义Function.prototype.toString() 的返回值并固定了 Array.prototype.sort()的顺序。另外，这次修订解决了与 JSON字符串兼容的 问题，并定义了 catch 子句的可选绑定。 
 
 
 
 ## DOM
 
-DOM是针对 XML但经过扩展用于 HTML的应用程序编程接口。DOM把整个页面映射为一个多层节点结构，创建表示文档的树，让开发者可以随心所欲地控制网页的内容和结构。使用 DOM API， 可以轻松地删除、添加、替换、修改节点。 
-
-IE4和 Navigator 4采用不同的思路开发DHTML，做到了不刷新页面而修改样式和内容，为了保持Web跨平台的初衷，W3C制定了DOM标准。
-
-**—DOM级别—**
+IE4和 Navigator 4采用不同的思路开发DHTML，做到了不刷新页面而修改样式和内容。为了保持Web跨平台的初衷，W3C制定了DOM标准。DOM是用于在HTML中使用扩展XML的API，它把整个页面映射为分层节点树，便于开发者控制和修改。DOM发展如下：
 
 1. **DOM Level 1**，1998年10月成为 W3C的推荐标准，由两个模块组成：
 
@@ -59,10 +57,11 @@ IE4和 Navigator 4采用不同的思路开发DHTML，做到了不刷新页面而
 - 通过对象接口增加对 CSS的支持；
 - DOM1中的 DOM Core扩展为支持XML命名空间； 
 - 为支持新接口新增模块：
-  - DOM Views：定义追踪文档不同视图（如应用 CSS样式前后的文档）的接口。 
+  - DOM Views：定义追踪文档不同视图 (如应用CSS前后)的接口。 
   - DOM Events：定义事件及事件处理的接口；
   - DOM Style：定义处理元素 CSS样式的接口；
-  - DOM Traversal and Range (DOM遍历和范围)：定义遍历和操作文档树的接口。 
+  - DOM Traversal and Range ：定义遍历和操作文档树的接口。 
+
 
 3. **DOM Level 3**进一步扩展，增加以统一方法加载和保存文档的方法(DOM Load and Save模块中)，验证文档的方法(DOM Validation)，DOM Core支持了所有 XML 1.0的特性。
 
@@ -95,30 +94,30 @@ IE3和Navigator 3都可以访问和操作浏览器窗口的BOM，使用 BOM可�
 
 # 第二章 HTML和JS
 
-## `<script>`
+## ==`<script>`==
 向HTML页面插入JS的主要方法。`<script>`有以下8个属性：
 
-- **async**：可选。**表示应立即下载脚本但不能阻止其他页面动作**。只对外部脚本有效。
+- **`async`**：可选。**表示应立即下载脚本但不能阻止其他页面动作**。只对外部脚本有效。
 
   标记为async的脚本并不保证按出现的顺序执行，因此脚本之间不能有依赖关系，且不应该在加载期间修改DOM。异步脚本会保证在页面load 事件之前执行，可能会在DOMContentLoaded之前或之后。
 
--  charset：可选。表示通过 src 属性指定的代码的字符集。大多数浏览器会忽略该值， 很少使用。
+-  `charset`：可选。表示通过 src 属性指定的代码的字符集。大多数浏览器会忽略该值， 很少使用。
 
-- crossorigin：可选。配置相关请求的CORS (跨源资源共享)设置。默认不使用CORS。
+- `crossorigin`：可选。配置相关请求的CORS (跨源资源共享)设置。默认不使用CORS。
 
-- **defer**：可选。表示**脚本可以延迟到文档完全被解析和显示之后再执行**。只对外部脚本文件有效。
+- **`defer`**：可选。表示**脚本可以延迟到文档完全被解析和显示之后再执行**。只对外部脚本文件有效。
 
   理论上，第一个被推迟 (设置了defer属性)的脚本会在第二个被推迟的属性之前执行，且都会在 DOMContentLoaded 事件之前执行。但实际情况中并不一定按照此顺序。
 
-- integrity：可选。允许比对接收到的资源和指定的加密签名以验证子资源完整性 (SRI， Subresource Integrity)。如果接收到的资源的签名与该属性指定的签名不匹配，则页面报错， 脚本不执行。这个属性可以用于确保内容分发网络 (CDN，Content Delivery Network)不会提供恶意内容。 
+- `integrity`：可选。允许比对接收到的资源和指定的加密签名以验证子资源完整性 (SRI， Subresource Integrity)。如果接收到的资源的签名与该属性指定的签名不匹配，则页面报错， 脚本不执行。这个属性可以用于确保内容分发网络 (CDN，Content Delivery Network)不会提供恶意内容。 
 
--  language：已废弃。原来用于表示编写代码使用的脚本语言。大多数浏览器会忽略这个属性。
+-  `language`：已废弃。原来用于表示编写代码使用的脚本语言。大多数浏览器会忽略这个属性。
 
--  src：可选。表示包含要执行代码的外部文件。 
+-  `src`：可选。表示包含要执行代码的外部文件。 
 
   使用了src属性的`<script>`首尾标签内包含的任何其他代码将会被忽视。浏览器解析包含src的`<script>`时将会向src指定的路径发送一个GET请求，该请求不受浏览器同源策略限制但受父页面 HTTP/HTTPS协议限制。
 
-- **type**：可选。代替language ；表示代码中**脚本语言的内容类型** (MIME类型)。 支持的MIME类型包括`text/javascript`, `text/ecmascript`, `application/javascript`, 和`application/ecmascript`。该属性缺失，脚本会被视作JS。 值为module，将会被视作ES6模块，此时代码允许出现import和export。
+- **`type`**：可选。代替language ；表示代码中**脚本语言的内容类型** (MIME类型)。 支持的MIME类型包括`text/javascript`, `text/ecmascript`, `application/javascript`, 和`application/ecmascript`。该属性缺失，脚本会被视作JS。 值为module，将会被视作ES6模块，此时代码允许出现import和export。
 
   MIME并没有跨浏览器标准化，即使浏览器默认使用JS，但在某些情况下无效或无法识别的MIME也可能导致浏览器不执行相关代码。最佳做法是不指定type属性。
 
@@ -169,13 +168,9 @@ IE5.5发明了文档模式的概念，即使用doctype切换。不同模式主�
 
 # 第三章 语言基础
 
-到2017年底，大多数主流浏览器都实现了ES5的规范，本章内容主要基于ES6。
+到2017年底，多数主流浏览器已实现ES5的规范，本章内容主要基于ES6。
 
-**—严格模式—**
-
-ES5引入严格模式（strict mode）。ES3的一些些不规范写法在这种模式下会被处理，对于不安全的活动将抛出错误。要在整个脚本中启用严格模式，在脚本开头添加： `"use strict";`。也可以放在函数体开头单独指定一个函数执行严格模式。
-
-任何支持JS的引擎看到此语句都会切换到严格模式，选择这种语法形式的目的是不破坏ES3语法。
+ES5引入**严格模式 (strict mode)**。ES3的一些不规范写法在此模式下会被处理，对于不安全的活动将抛出错误。在脚本开头添加 `"use strict";`启用严格模式，也可放在函数体开头单独指定一个函数，选择这种语法的目的是不破坏ES3语法。
 
 
 
@@ -210,22 +205,22 @@ for (let i = 0; i < 5; ++i) {
 - **const**
   - 声明变量时**必须同时初始化**；
   - 声明的范围是**块作用域**；
-  - **不可修改**，但只应用到顶级原语或者对象 。赋值为对象的const变量不能再被赋值为其他值，但修改对象的键不受限制。 
-  - JS运行时编译器可以将所有const变量都替换成实际的值，避免通过查询表查找。如Google的V8引擎就执行这种优化。
+  - **不可修改**，但只应用到顶级原语或者对象 。赋值为对象的const变量不能再被赋值为其他值，但修改对象的键不受限制；
+  - JS运行时编译器可以将所有const变量都替换成实际的值，避免通过查询表查找，如Google的V8引擎就执行这种优化。
 
-**限制自己只使用 let和 const有助于提升代码质量**，因为变量有了明确的作用域，声明位置以及不变的值。最好优先使用 const 来声明变量，只在提前知道未来会有修改时再使用 let。
+**限制只使用 let和 const有助于提升代码质量**，因为变量有了明确的作用域，声明位置以及不变的值。最好优先使用 const 来声明变量，只在提前知道未来会有修改时再使用 let。
 
 
 
 ## 数据类型
 
-6种简单数据类型 (原始类型)：Undefined、Null、Boolean、Number、 String 、 Symbol。
+6种原始类型：Undefined、Null、Boolean、Number、 String 、 Symbol。
 
-1种复杂数据类型：Object。
+1种复杂类型：Object。
 
-**—typeof—**
 
-对一个值使用typeof会返回下列字符串之一：
+
+对一个值使用**typeof**会返回下列字符串之一：
 
 - "undefined"表示值未定义； 
 -  "boolean"表示值为布尔值；
@@ -235,44 +230,33 @@ for (let i = 0; i < 5; ++i) {
 - "function"表示值为函数； 
 -  "symbol"表示值为符号。 
 
- typeof 是一个操作符，不需要参数 (但可以使用参数)。 `typeof null`返回“object”是因为特殊值null被认为是一个对空对象的引用。
-
-函数在ES中被认为是对象，但函数也有自己特殊的属性，有必要通过tepeof区分。 <u>ECMA-262 规定：任何实现内部`[[Call]]`方法的对象都应该在 typeof 检测时返回"function"。</u>由于Safari和Chrome的RegExp实现了这个方法，所以typeof检测返回“function”，IE和Firefox中返回“object”。
+函数在ES中被认为是对象，但函数也有自己特殊的属性，故有必要通过tepeof区分。 <u>ECMA-262 规定：任何实现内部`[[Call]]`方法的对象都应该在 typeof 检测时返回"function"。</u>由于Safari和Chrome的RegExp实现了这个方法，所以typeof检测返回“function”，IE和Firefox中则返回“object”。
 
 
 
-**一、Undefined**
+**Undefined**
 
-只有一个值undefined。在声明变量但未赋值的时候，该变量被自动赋予undefined。字面值undefined主要用于比较，它在ES3之前是不存在的，增加这个特殊值的目的主要是为了正式明确空对象指针null和未初始化变量的区别。 
-
-未定义的变量和定义却未赋值的变量在使用typeof操作符检测时都undefined，因此**建议在声明变量的同时进行初始化**。
+只有一个值undefined。变量定义但未赋值时将被自动赋予undefined。ES3之前不存在的特殊值undefined，主要是为了正式明确空对象指针null和未初始化变量的区别。typeof检测未定义变量和定义未赋值变量都是undefined。
 
 
 
-**二、Null**
+**Null**
 
-只有一个值null。逻辑上来说，null 表示一个空对象指针，`typeof null`返回"object"。**如果变量将来用于保存对象，那么最好使用null来初始化**。
-
-undefined 派生自 null ，因此ECMA-262规定它们表面相等：
+只有一个值null。特殊值null被认为是一个对空对象的引用，`typeof null`返回"object"。**若变量将来用于保存对象，那么最好使用null来初始化**。undefined 派生自 null ，ECMA-262规定它们表面相等：
 
 `alert(null == undefined);    //true `。
 
 
 
-**三、Boolean**
+**Boolean**
 
 不同于数值，即true 不等于 1，false 不等于 0；区分大小写，True 和 False及其他大小混写形式是有效的标识符，但不是布尔值。
 
-ES中所有类型的值都有与 true 和 false等价的值，可以调用Boolean转型函数讲其他值转为布尔值。if等控制流语句会自动执行布尔转换。
-
-**Boolean()**
-
-- 省略或值0，-0，null，false，NaN，undefined，或空字符串（""），该对象具有的初始值false。
-- 其他值，包括任何对象，空数组（[]）或字符串"false"，都会创建一个初始值为的对象true。
+ES所有类型的值都有对应布尔值，使用**`Boolean()`**转换：省略或值0，-0，null，false，NaN，undefined，空串，转为false；其他值，包括任何对象，空数组、字符串"false"，转为true。控制流语句自动执行布尔转换。
 
 
 
-**四、Number**
+### ==**Number**==
 
 Number类型使用IEEE 754 64位表示整数和浮点值。
 
@@ -347,30 +331,28 @@ parseInt("f");        	  // NaN
 
 
 
-**五、String**
+### ==**String**==
 
-String数据类型表示零或多个 16位 Unicode字符序列。==ES字符串是不可变的==。改变某个变量保存的字符串值实际上是先销毁该字符串再存入新值。
-
-转义字符只算转义后的字符位数；如果字符串中包含双字节字符那么length的返回值可能并不准确。
+String数据类型表示零或多个 16位 Unicode字符序列。**ES字符串不可变**，改变某个变量保存的字符串值实际上是先销毁该字符串再存入新值。转义字符只算转义后的字符位数；若字符串中包含双字节字符那么length的返回值可能并不准确。
 
 有两种方式把一个值转为字符串：
 
 - **`toString()`**：返回当前值的等价字符串。数值，布尔值，对象，字符串都有`toString()`方法；null、undefined没有。对数值调用`toString()`，可以传入底数参数从而得到数值的其他进制。
 - **`String()`**：始终返回表示响应类型的字符串。规则如下：
-  - 值有 toString()方法，则调用该方法（不传参数）并返回结果；
+  - 值有`toString()`方法，则调用该方法 (不传参数)并返回结果；
   - 值是 null，返回"null"；
-  - 值是 undefined，返回"undefined"。 
+  - 值是 undefined，返回"undefined"。
 
-**——模板字面量——**
+**—模板字面量—**
 
-ES6新增使用模板字面量定义字符串，可以跨行定义字符串。如：
+ES6新增，使用模板字面量可以跨行定义字符串。如：
 
 ```JavaScript
 let thirdTemplateLiteral = `first line 
 second line`; 
 console.log(thirdTemplateLiteral); 
 // first line 
-// second line 
+// second line
 ```
 
 *注意：模板字面量会保持反引号内部的空格。*
@@ -423,11 +405,9 @@ console.log(String.raw`\u00A9`);  // \u00A9
 
 
 
-**六、Symbol**
+### ==**Symbol**==
 
-ES6新增的Symbol用于**确保对象属性使用唯一、不可变的标识符**，避免属性冲突。将symbol实例作为对象新属性，就可以保证其不会覆盖已有的对象属性。Object API也提供了更方便的发现符号属性的方法。
-
-符号使用 Symbol()初始化，不可与new关键字一起作为构造函数创建包装对象 (可使用object()创建出符号包装对象)。可传入字符串作为对符号的描述并能通过该字符串来调试代码，但此字符串与符号定义或标识完全无关。
+ES6新增的Symbol用于**确保对象属性使用唯一、不可变的标识符**，避免属性冲突。symbol没有字面量语法，因此将其作为键名就可以保证不会覆盖已有对象属性。`Symbol()`不可使用new作为构造函数调用。可传入字符串作为对Symbol的描述和便于调试的手段，但与Symbol定义完全无关。
 
 ```JavaScript
 let fooSymbol = Symbol('foo'); 
@@ -435,7 +415,7 @@ let otherFooSymbol = Symbol('foo');
 console.log(fooSymbol == otherFooSymbol);          // false 
 ```
 
-**`Symbol.for()`实现运行时不同部分共享和重用符号实例**。它对每个字符串键都执行幂等操作，当使用某个字符串调用时，会检查全局符号注册表，如若不存在对应的符号，则生成一个新符号(必定为字符串键)实例并添加到该注册表中，如若存在则返回该符号实例。
+若需要实现运行时不同部分**共享和重用符号实例**，那么可以用一个字符串作键，使用**`Symbol.for()`**在全局Symbol注册表中创建并重用Symbol，该方法会返回字符串键对应的Symbol。 **`Symbol.keyFor()`**查询全局注册表，接受Symbol返回对应字符串键，查询结果不是全局Symbol则返回undefined。
 
 ```JavaScript
 let localSymbol = Symbol('foo'); 
@@ -445,69 +425,62 @@ console.log(localSymbol === fooGlobal); // false
 console.log(fooGlobal === otherFooGlobal);  // true 
 ```
 
-*注意：全局注册表中定义的符号也不等同于Symbol() 定义的同名符号。*
+*注意：全局注册表中的Symbol也不等同于`Symbol()`定义的同名Symbol。*
 
- **`Symbol.keyFor()`查询全局注册表**，接受符号返回对应字符串键，查询结果不是全局符号返回undefined。
-
-凡可以使用字符串或数值作为属性的地方都可以使用符号。如下：
+凡可以使用字符串或数值作为属性的地方都可以使用Symbol，对象字面量只能在可计算属性语法中使用Symbol作为属性，如下：
 
 ```JavaScript
-let s1 = Symbol('foo'),     
-    s2 = Symbol('bar'),     
+let s1 = Symbol('foo'),
+    s2 = Symbol('bar'),
     s3 = Symbol('23');
-let o = {   [s1]: 'foo val' };    // 也可:o[s1] = 'foo val'; 
-Object.defineProperty(o, s2, {value: 'bar val'}); 
-Object.defineProperties(o, {   
-    [s3]: {value: 'baz val'},   
-    sim: {value: 'sim val'}
-}); 
+let o = { [s1]: 'foo val' };    // 也可:o[s1] = 'foo val'; 
+Object.defineProperty(o, s2, { value: 'bar val' });
+Object.defineProperties(o, {
+    [s3]: { value: 'baz val' },
+    sim: { value: 'sim val' }
+});
 console.log(o); // {sim: "sim val", Symbol(foo): "foo val", Symbol(bar): "bar val", Symbol(23): "baz val"}
 console.log(Object.getOwnPropertyNames(o));	// ["sim"]
-console.log(Object.getOwnPropertySymbols(o)); 
+console.log(Object.getOwnPropertySymbols(o));
 //   [Symbol(foo), Symbol(bar), Symbol(23)]
 ```
 
 - **`Object.getOwnPropertyNames()`**返回对象实例的常规属性数组；
 - **`Object.getOwnPropertySymbols()`**返回符号属性数组；
-- **`Object.getOwnPropertyDescriptors()`**会返回同时包含常规和符号属性描述符的对象；
+- **`Object.getOwnPropertyDescriptors()`**返回同时包含常规和Symbol属性描述符的对象；
 - **`Reflect.ownKeys()`**会返回两种属性的数组。
 
-符号属性是对内存中符号的一个引用，如果没有显示保存对这些属性的引用，那么必须遍历对象的所有符号属性才能找到对应键，如下例：
+Symbol属性是对内存中Symbol的一个引用，如果没有显示保存对这些属性的引用，那么必须遍历对象的所有符号属性才能找到对应键，如下例：
 
 ```JavaScript
-let o = {    
-    [Symbol('foo')]: 'foo val',   
-    [Symbol('bar')]: 'bar val' 
-}; 
-let barSymbol = Object.getOwnPropertySymbols(o)               .find((symbol) => symbol.toString().match(/bar/)); 
+let o = { [Symbol('bar')]: 'bar val' };
+let barSymbol = Object.getOwnPropertySymbols(o).find((symbol) => symbol.toString().match(/bar/));
 console.log(barSymbol); // Symbol(bar) 
 ```
 
-ES6也引入了一批常用**内置符号 (well-known symbol)**，用于暴露语言内部行为，开发者可以直接访问、重写或模拟这些行为。这些内置符号都以 Symbol 工厂函数字符串属性的形式存在。 这些内置符号最重要的用途之一是==重新定义它们从而改变原生结构的行为==。
+ES6也引入了一批常用**内置Symbol (well-known symbol)**，用于暴露语言内部行为，开发者可以直接访问、重写或模拟这些行为。这些内置Symbol都以 Symbol 工厂函数字符串属性的形式存在，它们重要的用途之一便是**重新定义**其本身从而改变原生结构的行为。
 
-*注意：提到ES规范时，经常会引用符号在规范中的名称，前缀为**@@**。比如， @@iterator 指的就是 Symbol.iterator。*
+*注意：提到ES规范时，经常会引用符号在规范中的名称，前缀为**`@@`**。比如，`@@iterator `指的就是`Symbol.iterator`。*
 
--  **`Symbol.asyncIterator` **表示**实现异步迭代器API的函数**。对象设置该属性即为异步可迭代对象，可用于`for await...of`循环。
-- **`Symbol.hasInstance`** 用于判断某对象是否为某构造器的实例，定义在Function的原型上。`instanceof`使用以该属性为键的函数来确定关系，因此可以**自定义该属性从而自定义`instanceof`的行为**。
+-  **`Symbol.asyncIterator` **表示实现异步迭代器API的函数。对象设置该属性即为异步可迭代对象，可用于`for await...of`循环。
+- **`Symbol.hasInstance`** 用于判断某对象是否为某构造器的实例，定义在Function的原型上。`instanceof`使用以该属性为键的函数来确定关系，因此可以自定义该属性从而自定义`instanceof`的行为。
 - ***TBC***
 
 
 
-**七、Object**
+**Object**
 
-ES中的对象是一组数据和功能的集合。通过new操作符创建 Object 类型的实例并为其添加属性及方法，如：`var o = new Object(); `(可以省略括号但不推荐)。
+ES对象是一组数据和功能的集合。Object 实例的**属性和方法**：
 
-**Object 实例的属性和方法：**
+- **`constructor`**：用于创建当前对象的函数。
+- **`hasOwnProperty(propertyName)`**：检查某属性是否存在当前对象实例上而不是原型中 (propertyName必须是字符串)。
+- **`isPrototypeOf(object)`**：判断某对象是否是另一个对象的原型。
+- **`propertyIsEnumerable(propertyName)`**：判断某属性是否能使用 for-in 枚举 (propertyName必须是字符串)。 
+- **`toLocaleString()`**：返回对象的字符串表示 (对应本地执行环境)。 
+- **`toString()`**：返回对象的字符串表示。 
+- **`valueOf()`**：返回对象的字符串、数值或布尔值表示。通常与 toString()方法的返回值相同。 
 
-- `constructor`：用于创建当前对象的函数。
--  `hasOwnProperty(propertyName)`：检查某属性是否存在当前对象实例上而不是原型中 (propertyName必须是字符串)。
-- `isPrototypeOf(object)`：判断某对象是否是另一个对象的原型。
-- `propertyIsEnumerable(propertyName)`：判断某属性是否能使用 for-in 枚举 (propertyName必须是字符串)。 
-- `toLocaleString()`：返回对象的字符串表示 (对应本地执行环境)。 
-- `toString()`：返回对象的字符串表示。 
-- `valueOf()`：返回对象的字符串、数值或布尔值表示。通常与 toString()方法的返回值相同。 
-
-Object是所有对象的基类，所以任何对象都会继承到这些属性和方法。但不一定适合JS中其他对象，譬如BOM、DOM这些由不受 ECMA-262 约束的宿主环境定义和提供的对象。
+Object是所有对象的基类，故任何对象都会继承到这些属性和方法。但不一定适合JS中其他对象，譬如BOM、DOM这些由不受 ECMA-262 约束的宿主环境定义和提供的对象。
 
 
 
@@ -677,7 +650,8 @@ ES7新增指数操作符。`Math.pow()` 自己的操作符`**`， **指数操作
   with(location){     
       var qs = search.substring(1);     
       var hostName = hostname;     
-      var url = href; } 
+      var url = href; 
+  } 
   ```
 
 
@@ -703,7 +677,7 @@ ES7新增指数操作符。`Math.pow()` 自己的操作符`**`， **指数操作
 
 
 
-## 函数
+**函数**
 
 ES的函数可以在任何时候返回任何值。不指定返回值会返回undefined。
 
@@ -715,22 +689,15 @@ ES的函数可以在任何时候返回任何值。不指定返回值会返回und
 
 - 两个命名参数不能拥有同一个名称。 
 
-  
-
-**旧笔记**
-
-**理解参数**
 
 ES不在乎传进来的参数个数是否符合函数要求。实际上ES的参数在内部是用类数组arguments表示的，函数收到的始终都只是arguments。
 
-另外，使用函数未指定需要值的参数默认值为undefined。
-
-注意：
-
 - arguments的值永远与对应命名参数的值保持一致，即修改arguments的值能动态实时修改当前参数值；
-- arguments对象的长度由传入的参数个数决定，不能操作不存在的参数位；
+- arguments的长度由传入的参数个数决定，不能操作不存在的参数位；
 - 它们的内存空间是独立的，只是值同步；
 - 严格模式下不允许利用arguments改变参数。
+
+
 
 
 
@@ -849,6 +816,8 @@ let outer = function() {
 
 
 
+
+
 # 第五章 引用类型
 
 引用类型的值 (对象)是某个引用类型的实例，ES的引用类型是把数据和方法组织到一起的结构，有时也被称作对象定义，类似与“类”但不是。JS是一门OO语言，但缺乏传统OO语言具备的类、接口等基本结构。
@@ -863,16 +832,16 @@ ES的 Date类型参考早期Java的 `java.util.Date` 。故Date类型将日期�
 
 创建日期对象使用 new 调用 Date 构造函数，不传参默认保存当前时间。要设置特定时间，必须传入其毫秒表示，ES提供了两个辅助方法：
 
-- `Date.parse()` ： 接收表示日期的字符串 (传字符串给Date构造函数后台自动调用)，返回毫秒数。无法转日期的字符串将返回NaN，所有实现都必须支持下列日期格式：
+- **`Date.parse()`** ： 接收表示日期的字符串 (传字符串给Date构造函数后台自动调用)，返回毫秒数。无法转日期的字符串将返回NaN，所有实现都必须支持下列日期格式：
   -  “月/日/年”，如"5/23/2019"； 
   - “月名 日, 年”，如"May 23, 2019"； 
   - “周几 月名 日 年 时:分:秒 时区”，如"Tue May 23 2019 00:00:00 GMT-0700"；
   - ISO 8601 扩展格式“YYYY-MM-DDTHH:mm:ss.sssZ”，如 2019-05-23T00:00:00 (只适用于 兼容 ES5 的实现 )。 
-- `Date.UTC()` ：接收年、 零起点月数 、 日 、分、秒、毫秒为参数来返回毫秒数，日默认值为1，其他默认为0；创建的是本地日期。被Date构造函数隐式调用。
+- **`Date.UTC()` **：接收年、 零起点月数 、 日 、分、秒、毫秒为参数来返回毫秒数，日默认值为1，其他默认为0；创建的是本地日期。被Date构造函数隐式调用。
 
 *注意：下述方法的最终输出均==因浏览器而异==。*
 
-Date也重写了 toLocaleString()、toString()和 valueOf() ，但返回值不同：
+Date也重写了三方法，但返回值不同：
 
 - `toLocaleString()`：返回与本地环境一致的日期时间；
 - ` toString()`：返回带时区信息的日期时间 ；
@@ -891,7 +860,7 @@ Date也重写了 toLocaleString()、toString()和 valueOf() ，但返回值不�
 
 
 
-### RegExp 
+### ==RegExp==
 
 ES通过RegExp类型来支持正则表达式。创建方式如下：
 
@@ -1067,9 +1036,9 @@ ES6新增` Number.isInteger() `辨别一个数值是否保存为整数。
 
 
 
-### **String**
+### ==**String**==
 
- valueOf()、toLocaleString() 和 toString()都返回对象的原始字符串值。 
+ `valueOf()`、`toLocaleString()`和`toString()`返回原始字符串值。 
 
 JS字符串==使用 UCS-2和 UTF-16混合编码==，每16位**码元 (code unit)**对应一个字符。 属性`length`即表示字符串包含多少16位码元。
 
@@ -1257,7 +1226,7 @@ console.log(person[propertyName]); // "Nicholas"
 
 
 
-###  Array 
+###  ==Array==
 
 ES数组的每一项可以保存任何类型的数据，并且是动态大小的。数组最多可以包含 4 294 967 295 个元素 ，尝试添加更多项会抛出错误。
 
@@ -1438,7 +1407,7 @@ alert(firstHalfDataView.buffer === buf); // true
 
 DataView 对缓冲内容没有任何预设，不可迭代，其API强制在读、写时指定 ElementType来实现JS的 Number 类型到缓冲内二进制格式的转换。ES支持8种不同的 ElementType。内存中值的字节序，默认为大端字节序。 
 
-![ElementType](D:\【V】\Code\pic\ElementType.png)类型可互换使用，DataView 写入缓冲时会尽量把值转为适当类型，后备值为0，若无法转换则抛出错误。且每个类型都有使用 byteOffset 定位读写位置的 get和 set方法。如下：
+![ElementType](..\pic\ElementType.png)类型可互换使用，DataView 写入缓冲时会尽量把值转为适当类型，后备值为0，若无法转换则抛出错误。且每个类型都有使用 byteOffset 定位读写位置的 get和 set方法。如下：
 
 ```JavaScript
 const buf = new ArrayBuffer(2);
@@ -1538,6 +1507,8 @@ wm.delete(key1); 		 // true 使用delete删除一个键值对
 ==“weak”指JS垃圾回收程序对待键的方式==，这些键不属于正式的引用，当这个键值对的引用都消失后就可以被垃圾回收程序回收。因为键值对任何时候都可能被摧毁，所以也不提供迭代的实现。
 
 WeakSet与WeakMap十分类似，这两个类型可用于回收DOM内存。
+
+
 
 
 
@@ -1663,9 +1634,11 @@ generator也支持“关闭”的概念。所有generator都有**`return()`**，
 
 
 
-# 第六章 面向对象
 
-ECMA-262把对象定义为一组无序属性的集合。
+
+# ==第七章 面向对象==
+
+ECMA-262把对象定义为一组无序属性的集合。ES6开始正式支持类和继承。ES6 的类旨在完全涵盖之前规范设计的基于原型的继承模式。但实际上，ES6 的类仅仅是封装了 ES5.1 构造函数加原型继承的语法糖而已。
 
 ## 属性类型
 
@@ -1696,7 +1669,9 @@ ECMA-262使用一些**内部特性 (attribute)**描述**属性 (property)**的�
 
 `[[Get]]`和`[[Set]]`不一定都要定义，仅指定前者意味着属性只读，仅指定后者则不可读。直接定义在对象上的属性，另两个特性默认为true。
 
-**操作属性**
+
+
+**—操作属性—**
 
 使用**`Object.defineProperty()`**更改属性的默认特性；要一次定义多个属性，使用**`Object.defineProperties()`**。如下：
 
@@ -1758,9 +1733,9 @@ console.log(Object.is(NaN, NaN)); // true
 
 
 
-## 增强的语法
+## 语法糖
 
-ES6为定义和操作对象新增了很多语法糖特性：
+ES6为**定义和操作对象**新增了很多语法糖特性：
 
 ```JavaScript
 // 1. 简写属性值
@@ -1801,11 +1776,7 @@ let person = {
 
 可计算属性与简写方法名的写法兼容，另外它本身也可以是复杂的表达式，但抛出任何错误都会中断对象创建。
 
-
-
-## 对象解构
-
-ES6新增对象解构语法， 是使用与对象匹配的结构来实现对象属性赋值 。
+ES6新增**对象解构**语法， 是使用与对象匹配的结构来实现对象属性赋值 。
 
 ```JavaScript
 let person = {
@@ -1856,87 +1827,68 @@ let { _ } = undefined;      // TypeError
 
 ## 创建对象
 
- Object 构造函数或对象字面量都可以用来创建单个对象，但使用同 一个接口创建很多对象，会产生大量的重复代码。为此，可以使用工厂模式的一种变体。
+ Object构造函数或对象字面量都可以用来创建对象，但创建具有同样接口的多个对象需要重复编写很多代码。 为此，可以使用工厂模式的一种变体。
 
 **1. 工厂模式**
 
-抽象创建具体对象的过程，ES中无法创建类，于是用函数来封装以特定接口创建对象的细节。
+抽象创建具体对象的过程，以函数来封装以特定接口创建对象的细节。
 
 ``` JavaScript
-function createPerson(name, age, job){     
-    var o = new Object();     
-    o.name = name;     
-    o.age = age;     
-    o.job = job;     
-    o.sayName = function(){         
-        alert(this.name);     
-    };         
-    return o; 
-} 
+function createPerson(name, age, job) {
+    var o = new Object();
+    o.name = name;
+    o.age = age;
+    o.job = job;
+    o.sayName = function () {
+        alert(this.name);
+    };
+    return o;
+}
 var person = createPerson("Greg", 27, "Doctor"); 
 ```
 
-工厂模式==解决了创建多个相似对象的问题==，但==没有解决对象识别的问题==（即怎样知道一个对象的类型）。
-
-
+工厂模式解决了创建多个相似对象的问题，但无法标识对象类型。
 
 **2. 构造函数模式**
 
-自定义的构造函数意味着将来==可以将其实例标识为特定的类型==；而这正是构造函数模式胜过工厂模式的地方。
-
-使用 new 操作符会经历以下 4 个步骤： 
-
-1. 创建一个新对象； 
-2. 将构造函数的作用域赋给新对象； 
-3. 执行构造函数中的代码； 
-4. 返回新对象。
+自定义的构造函数可以创建特定类型的对象。
 
 ``` JavaScript
-function Person(name, age, job){     
-    this.name = name;     
-    this.age = age;     
-    this.job = job;     
-    this.sayName = function(){         
-        alert(this.name);     
-    };     
-} 
-var person = new Person("Nicholas", 29, "Software Engineer"); 
+function Person(name, age, job) {
+    this.name = name;
+    this.sayName = function () {
+        alert(this.name);
+    };
+}
+var person = new Person("Nicholas");
+var person = new Person; // 有new就会调用构造函数，可不加括号
+Person("Greg"); //作为函数调用，未指明this值时添加入Global对象
 ```
 
-构造函数与其他函数的唯一区别，仅仅在于调用方式 (使用了new操作符，就可以作为构造函数)。借鉴了其他OO语言，JS的构造函数开头也是大写字母。
+为区分普通函数，开头字母大写。使用`new`操作符，就可以作为构造函数，使用`new`调用构造函数会经历以下步骤： 
 
-使用构造函数的主要问题，是==每个方法都要在每个实例上重新创建一遍==。理论上，把函数定义转移到构造函数外部可以解决， 但：
+1. 在内存中创建一个新对象；
+2. 将构造函数的` [[Prototype]] `赋值给新对象的` [[Prototype]] `；
+3. 构造函数内部的this被赋值为新对象；
+4. 执行构造函数中的代码，即给对象添加属性； 
+5.  若构造函数返回非空对象，则返回之，否则返回新对象 。
 
-1. 在全局作用域中定义的函数实际上只能被某个对象调用，这让全局作用域有点名不副实。
-2. 如果对象需要定义很多方法，那么就要定义很多个全局函数，毫无封装性可言。
-
-这些问题可以通过使用原型模式来解决。 
-
-
+构造函数定义的方法会在每个实例上都创建一遍，虽然可以通过在构造函数外部定义函数来解决但并不是最优解。使用原型模式可以解决此问题。 
 
 **3. 原型模式**
 
-每个函数都有一个 prototype（原型）属性，该指针指向一个包含可以==由特定类型的所有实例共享的属性和方法==的对象，即通过构造函数创建的对象实例的原型对象。因此可以将这些信息直接添加到原型对象中，如下：
+创建新函数时会按特定规则为其创建指向原型对象的`prototype` 属性，默认情况下原型对象自动获得指回关联函数的`constructor`属性 (其他继承自Object) ；创建新实例时其内部属性指针 **`[[prototype]]` **自动赋值为原型对象， Firefox、Safari 和 Chrome 有`__proto__`来访问。由此可知，联系存在于实例和原型对象之间而并非实例和构造函数间。
 
 ``` JavaScript
-function Person(){
-} 
-
+function Person() {} 
 Person.prototype.name = "Nicholas"; 
 Person.prototype.age = 29; 
 Person.prototype.job = "Software Engineer"; 
 Person.prototype.sayName = function(){     
     alert(this.name);                              
 }; 
-
 var person1 = new Person(); 
 person1.sayName();   //"Nicholas" 
-
-var person2 = new Person(); 
-person2.sayName();   //"Nicholas" 
-
-alert(person1.sayName == person2.sayName);  //true 
-
 // 使用对象字面量编写更简单的原型语法
 function Person(){ } 
  
@@ -1951,28 +1903,25 @@ Person.prototype = {
     sayName : function () {         
         alert(this.name);     
     } 
-}; 
+};
 ```
 
-只要创建新函数就会根据特定的规则为该函数创建 prototype 属性，此属性指向函数原型对象。默认情况下所有原型对象自动获得constructor 属性 (其他属性将从Object继承) 。调用构造函数创建的新实例内部会包含一个指向原型对象的内部属性指针，ES5定义其为`[[prototype]]`，在脚本中没有标准访问方式，部分浏览器有`__proto__`来实现。由此可以知道，连接存在于实例和原型对象之间而并非实例和构造函数间。
+-  **` isPrototypeOf() ` **：参数`[[prototype]]`指向调用对象时返回true；
+-  **`Object.getPrototypeOf()` **：返回参数`[[prototype]]`的值；
+- ` Object.setPrototypeOf()`：赋para1的`[[prototype]]`为para2；
+- **` Object.create() `**：创建以参数为原型对象的对象。最好用`create() `替代会造成性能下降`setPrototypeOf()`。
 
- `getPrototypeOf()`：ES5定义其来返回`[[prototype]]`。
+访问某对象属性时，会执行一次从对象实例本身开始沿原型链回溯的搜索，直至找到该属性。原型链靠前的属性将会遮蔽靠后的同名属性。要确定某属性存在于原型还是实例使用**`hasOwnProperty()`**，属性存在于调用者自身上时将返回 true。使用**`Object.getOwnPropertyDescriptor()`**可取得调用者自有属性的描述符。
 
-多个对象实例共享原型所保存的属性和方法的基本原理：读取某对象的某属性时，执行一次从对象实例本身开始到原型链回溯的搜索，直至找到为止。原型链靠前的属性将会屏蔽靠后的同名属性。
+`in`操作符可在`for-in`循环中使用，返回可通过对象访问且可被枚举的属性；也可单独使用，在可通过对象访问指定属性时返回true。
 
- `hasOwnProperty()`：给定属性存在于对象实例中时返回 true。
+-  **`Object.keys()`**：返回对象所有可枚举实例属性的键名字符串数组；
+- **`Object.getOwnPropertyNames()`**：同上，但不论可枚举性；
+- ` Object.getOwnPropertySymbols() `：同上，仅针对Symbol。
 
-`getOwnPropertyDescriptor()`：返回对象自有属性描述符。
+*注意：即使将原型属性的 `[[Enumerable]]`设置为 false该属性仍会被枚举，因为默认情况下开发者定义的属性都是可枚举的。*
 
-for-in 循环返回的所有能够通过对象访问的、可枚举的 (enumerated)属性，包括存在于实例中和原型中的属性。将 [[Enumerable]]标记为 false 的属性也会在 for-in 循环中返回，因为根据规定，所有开发人员定义的属性都是可枚举的 (IE8及更早版本例外)。 
-
- `keys()`：取得对象上所有可枚举的实例属性。
-
-`getOwnPropertyNames()`：取得所有实例属性，无论是否可枚举。
-
- 可以修改原生对象的原型，但不建议在产品化的程序中这么做。
-
-原型模式省略了为构造函数传递初始化参数这一环节，结果所有实例在 默认情况下都将取得相同的属性值，甚至会==指向同一个引用类型的值==。
+`for-in`和`Object.keys()`的枚举顺序取决于JS引擎，可能因浏览器而异。` Object.getOwnPropertyNames/Symbols() `和` Object.assign()  `是确定的，先以升序枚举数值键，再以定义或插入顺序枚举字符串和符号键。
 
 
 
