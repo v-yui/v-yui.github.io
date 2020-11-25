@@ -9,6 +9,7 @@
 7. p176——定义正式集合操作——未看；
 8. p188——自定义/提前终止迭代器——未理解透彻；
 9. p200——yield*生成随机双向图例——未看；
+10. p246——寄生式继承是否会导致函数难以重用存疑；
 
 
 
@@ -1518,7 +1519,7 @@ WeakSet与WeakMap十分类似，这两个类型可用于回收DOM内存。
 
 ## 迭代器
 
- **迭代器模式**把某些结构称为**iterable** (可迭代对象)，因为它们实现了正式的 iterable接口，并且可通过**iterator** (迭代器)“消费 (consume)”。==iterable 包含的元素都是**有限个**，且具有**无歧义的遍历顺序**==，不一定是集合对象，也可以是具有类数组行为的其他数据结构。==iterator是按需创建的**一次性**对象==，使用相关迭代API迭代关联的iterable。两者间概念分离，iterator无需知道iterable的结构，只需知道如何取得连续的值。
+ **迭代器模式**把某些结构称为**iterable** (可迭代对象)，因为它们实现了正式的 iterable接口，并且可通过**iterator** (迭代器)“消费 (consume)”。==iterable 包含的元素都是**有限个**，且具有**无歧义的遍历顺序**==，不一定是集合对象，也可以是具有类数组行为的其他数据结构。==iterator是按需创建的**一次性**对象==，使用相关迭代API迭代关联的iterable。两者概念分离，iterator无需知道iterable的结构，只需知道如何取得连续的值。
 
  实现 iterable接口 ([**可迭代协议**](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Iteration_protocols#%E5%8F%AF%E8%BF%AD%E4%BB%A3%E5%8D%8F%E8%AE%AE))要求同时具备两种能力：**支持迭代的自我识别能力和创建实现 iterator 接口的对象的能力**。 在ES中，则必须有一个使用` Symbol.iterator `作键的属性作为默认iterator，这个iterator必须引用一个返回新迭代器的工厂函数。==很多内置类型都实现了iterable接口：String、Array、Map、Set、arguments对象、 NodeList 等 DOM 集合类型==。
 
@@ -1530,9 +1531,9 @@ WeakSet与WeakMap十分类似，这两个类型可用于回收DOM内存。
 - Array.from()；
 - 创建集合；
 - 创建映射；
-- Promise.all()接收由期约组成的可迭代对象；
-- Promise.race()接收由期约组成的可迭代对象；
-- yield*操作符，在生成器中使用 。
+- `Promise.all()`接收由期约组成的可迭代对象；
+- `Promise.race()`接收由期约组成的可迭代对象；
+- `yield*`操作符，在生成器中使用 。
 
 iterator API使用**` next()`**遍历 iterable，每次调用返回一个**` iteratorResult`**对象，包含两个属性，表示是否还可以再次调用的done和包含下一个值的value。使用例：
 
@@ -1698,7 +1699,7 @@ Object.defineProperties(book, {
 }); // 2个参数：修改对象，描述对象
 ```
 
- 使用**`Object.getOwnPropertyDescriptor()`**可取得指定属性的属性描述符。 ES8新增de**`Object.getOwnPropertyDescriptors()`**在对象每个属性上调用`Object.getOwnPropertyDescriptor()`并在新对象中返回。
+ 使用**`Object.getOwnPropertyDescriptor()`**可取得指定属性的属性描述符。 ES8新增的Object.getOwnPropertyDescriptors()`**在对象每个属性上调用`Object.getOwnPropertyDescriptor()`并在新对象中返回。
 
 ES6提供**` Object.assign() `**用于**合并对象**，接收目标对象和多个源对象为参数，将源对象中可枚举属性(`Object.propertyIsEnumerable()`返回 true )和自有属性(`Object.hasOwnProperty`返回 true )**浅复制**到目标对象并返回。若源对象属性重名则保留最后一个值，赋值时出错则操作中止并退出，`[[Get]]`和`[[Set]]`无法再对象间转移。如下：
 
@@ -1829,6 +1830,8 @@ let { _ } = undefined;      // TypeError
 
  Object构造函数或对象字面量都可以用来创建对象，但创建具有同样接口的多个对象需要重复编写很多代码。 为此，可以使用工厂模式的一种变体。
 
+
+
 **1. 工厂模式**
 
 抽象创建具体对象的过程，以函数来封装以特定接口创建对象的细节。
@@ -1848,6 +1851,8 @@ var person = createPerson("Greg", 27, "Doctor");
 ```
 
 工厂模式解决了创建多个相似对象的问题，但无法标识对象类型。
+
+
 
 **2. 构造函数模式**
 
@@ -1875,35 +1880,22 @@ Person("Greg"); //作为函数调用，未指明this值时添加入Global对象
 
 构造函数定义的方法会在每个实例上都创建一遍，虽然可以通过在构造函数外部定义函数来解决但并不是最优解。使用原型模式可以解决此问题。 
 
+
+
 **3. 原型模式**
 
-创建新函数时会按特定规则为其创建指向原型对象的`prototype` 属性，默认情况下原型对象自动获得指回关联函数的`constructor`属性 (其他继承自Object) ；创建新实例时其内部属性指针 **`[[prototype]]` **自动赋值为原型对象， Firefox、Safari 和 Chrome 有`__proto__`来访问。由此可知，联系存在于实例和原型对象之间而并非实例和构造函数间。
+创建新函数时会按特定规则为其创建指向原型对象的`prototype` 属性，默认情况下原型对象自动获得指回关联函数的`constructor`属性 (其他继承自Object) ；创建新实例时其内部属性指针 **`[[prototype]]` **自动赋值为原型对象， Firefox、Safari 和 Chrome 有`__proto__`来访问。由此可知，**联系存在于实例和原型对象之间**而并非实例和构造函数间。
 
 ``` JavaScript
-function Person() {} 
-Person.prototype.name = "Nicholas"; 
-Person.prototype.age = 29; 
-Person.prototype.job = "Software Engineer"; 
-Person.prototype.sayName = function(){     
-    alert(this.name);                              
-}; 
-var person1 = new Person(); 
-person1.sayName();   //"Nicholas" 
-// 使用对象字面量编写更简单的原型语法
-function Person(){ } 
- 
-Person.prototype = {  
-// 对象字面量形式的语法完全重写了构造函数默认的 prototype 对象
-// 如果 constructor属性真的很重要，可以将它特意设回适当的值
-// 此方式重设 constructor 则其[[Enumerable]]特性将为true
-    constructor : Person, 
-    name : "Nicholas",     
-    age : 29,     
-    job: "Software Engineer",     
-    sayName : function () {         
-        alert(this.name);     
-    } 
+function Person() { }
+Person.prototype.name = "Nicholas";
+Person.prototype.age = 29;
+Person.prototype.job = "Software Engineer";
+Person.prototype.sayName = function () {
+    alert(this.name);
 };
+var person1 = new Person();
+person1.sayName();   //"Nicholas" 
 ```
 
 -  **` isPrototypeOf() ` **：参数`[[prototype]]`指向调用对象时返回true；
@@ -1911,42 +1903,44 @@ Person.prototype = {
 - ` Object.setPrototypeOf()`：赋para1的`[[prototype]]`为para2；
 - **` Object.create() `**：创建以参数为原型对象的对象。最好用`create() `替代会造成性能下降`setPrototypeOf()`。
 
-访问某对象属性时，会执行一次从对象实例本身开始沿原型链回溯的搜索，直至找到该属性。原型链靠前的属性将会遮蔽靠后的同名属性。要确定某属性存在于原型还是实例使用**`hasOwnProperty()`**，属性存在于调用者自身上时将返回 true。使用**`Object.getOwnPropertyDescriptor()`**可取得调用者自有属性的描述符。
+==用对象字面量编写原型会创建新的prototype对象，其constructor属性将指向Object构造函数==，可特意设回，但注意其`[[Enumerable]]`特性将默认为true。另外，在重写前创建的实例，其`[[prototype]]`仍指向旧原型。
 
-`in`操作符可在`for-in`循环中使用，返回可通过对象访问且可被枚举的属性；也可单独使用，在可通过对象访问指定属性时返回true。
+访问某对象属性时，会执行一次从对象实例本身开始沿**原型链回溯**的搜索，直至找到该属性，原型链靠前的属性将会遮蔽靠后的同名属性。原型链搜索的过程是动态的，==对原型所做的修改会反映在实例上==。要确定某属性存在于原型上还是实例上使用**`hasOwnProperty()`**，当属性存在于调用者自身上时它将返回 true；使用**`Object.getOwnPropertyDescriptor()`**可取得调用者自有属性的描述符。
+
+ES8新增**迭代对象**方法**`Object.values()`**和**`Object.entries()`**，执行对象的浅复制，分别返回对象值和键值对的数组，非字符串属性会被转换为字符串输出。`in`操作符可在`for-in`循环中使用，返回可通过对象访问且可被枚举的属性；也可单独使用，在可通过对象访问指定属性时返回true。
 
 -  **`Object.keys()`**：返回对象所有可枚举实例属性的键名字符串数组；
 - **`Object.getOwnPropertyNames()`**：同上，但不论可枚举性；
 - ` Object.getOwnPropertySymbols() `：同上，仅针对Symbol。
 
+`for-in`和`Object.keys()`的**枚举顺序**取决于JS引擎，可能因浏览器而异。` Object.getOwnPropertyNames/Symbols() `和` Object.assign()  `先以升序枚举数值键，再以定义或插入顺序枚举字符串和符号键。
+
 *注意：即使将原型属性的 `[[Enumerable]]`设置为 false该属性仍会被枚举，因为默认情况下开发者定义的属性都是可枚举的。*
 
-`for-in`和`Object.keys()`的枚举顺序取决于JS引擎，可能因浏览器而异。` Object.getOwnPropertyNames/Symbols() `和` Object.assign()  `是确定的，先以升序枚举数值键，再以定义或插入顺序枚举字符串和符号键。
+原生类型的原型同样可以被修改，但更建议创建继承原生类型的自定义类。另外，原型模式弱化了向构造函数传参的能力，而其内容被所有实例共享意味引用值也将被所有实例访问修改，所以一般也不单独使用原型模式。
 
 
 
-**4. 组合使用构造函数模式和原型模式 ** 
+**4. 组合构造函数模式和原型模式**
 
-创建自定义类型**最常见的方式**。==构造函数模式定义实例属性，原型模式定义方法和共享的属性。==这样，每个实例都会有自己的一份实例属性的副本， 但同时又共享着对方法的引用，大限度地节省了内存，还支持向构造函数传递参数。
+创建自定义类型**最常见的方式**。扬长避短，构造函数模式定义实例属性，原型模式定义方法和共享属性。
 
 ```JavaScript
-function Person(name, age, job){     
-    this.name = name;     
-    this.age = age;     
-    this.job = job;     
-    this.friends = ["Shelby", "Court"]; } 
- 
-Person.prototype = {     
-    constructor : Person,     
-    sayName : function(){         
-        alert(this.name);     
-    } 
-} 
- 
-var person1 = new Person("Nicholas", 29, "Software Engineer"); 
-var person2 = new Person("Greg", 27, "Doctor"); 
- 
-person1.friends.push("Van"); 
+function Person(name, age, job) {
+    this.name = name;
+    this.age = age;
+    this.job = job;
+    this.friends = ["Shelby", "Court"];
+}
+Person.prototype = {
+    constructor: Person,
+    sayName: function () {
+        alert(this.name);
+    }
+}
+var person1 = new Person("Nicholas", 29, "Software Engineer");
+var person2 = new Person("Greg", 27, "Doctor");
+person1.friends.push("Van");
 alert(person1.friends);    //"Shelby,Count,Van" 
 alert(person2.friends);    //"Shelby,Count" 
 alert(person1.friends === person2.friends);    //false 
@@ -1957,11 +1951,11 @@ alert(person1.sayName === person2.sayName);    //true
 
 ## 继承
 
-许多 OO语言都支持接口继承和实现继承。接口继承只继承方法签名，实现继承则继承实际的方法。JS没有函数签名，所以依靠原型链来实现实现继承。
+许多OO语言都支持接口继承和实现继承，前者只继承方法签名，后者继承实际的方法。ES没有函数签名，主要通过原型链来支持实现继承。
 
 **1. 原型链**
 
-每个构造函数都有一个原型对象，原型对象都包含一个指向构造函数的指针，而实例都包含一个指向原型的内部指针；如果原型对象等于另一个类型的实例，那么原型对象将包含一个指向另一个原型的指针，层层递进构成原型链。**原型链实现基本模式**如下：
+若某原型对象是另一类型的实例，那么将层层递进构成原型链。如下：
 
 ```JavaScript
 function SuperType() {
@@ -1970,94 +1964,70 @@ function SuperType() {
 SuperType.prototype.getSuperValue = function () {
     return this.property;
 };
-
-function SubType() { 
-    this.subproperty = false; 
+function SubType() {
+    this.subproperty = false;
 }
+SubType.prototype = new SuperType(); // 继承SuperType
+SubType.prototype.getSubValue = function () {
+    return this.subproperty;
+}; // 子类要覆盖超类方法，或新增方法，都必须在原型继承赋值之后
+var instance = new SubType();
+alert(instance.getSuperValue()); //true 
+console.log(Object.prototype.isPrototypeOf(instance)); // true 
+```
 
-//继承了 SuperType 
-SubType.prototype = new SuperType(); 
+要**确定原型和实例关系**可以使用`instanceof`，若某实例原型链上出现过相应构造函数则返回true，或使用**`isPrototypeOf()`**，使用如上例最后。
 
-SubType.prototype.getSubValue = function () { 
-    return this.subproperty; 
+ 原型链继承仍存在原型中包含引用值的问题，并且无法在不影响其他实例的情况下向超类构造函数传参， 故原型链基本不会单独使用。
+
+
+
+**2. 盗用构造函数** (constructor stealing，也称对象伪装、经典继承)
+
+在子类构造函数内部调用超类构造函数，以解决上述原型链的问题，如下：
+
+```JavaScript
+function SuperType(name) {
+    this.name = name;
+}
+function SubType() {
+    SuperType.call(this, "Nicholas"); //继承SuperType ，传递参数 
+    this.age = 29;
+}
+let instance = new SubType();
+console.log(instance.name); // "Nicholas";
+```
+
+盗用构造函数同样也无法避免构造函数模式存在的函数复用问题，并且子类不能访问超类原型上定义的方法，那么所有类型都只能使用构造函数模式，故此方式也很少单独使用。
+
+
+
+**3. 组合继承** (也称伪经典继承)
+
+综合原型链和借用构造函数，使用原型链继承原型属性和方法，盗用构造函数继承实例属性，如下：
+
+```JavaScript
+function SuperType(name) {
+    this.name = name;
+}
+SuperType.prototype.sayName = function () {
+    console.log(this.name);
 };
-
-var instance = new SubType(); alert(instance.getSuperValue());      //true 
-```
-
-**确定原型和实例间关系：**
-
-1. 使用instanceof检测构造函数的 prototype 属性是否出现在某个实例对象的原型链上；
-2. 使用 isPrototypeOf()方法 测试一个对象是否存在于另一个对象的原型链上。
-
-**原型链的问题**：无法在不影响所有对象实例的情况下==给超类型的构造函数传递参数==，并且同样也包含原型中的==引用类型带来的问题==，所以实践中很少会单独使用原型链。
-
-
-
-**2. 借用构造函数** (constructor stealing)
-
-在子类型构造函数的内部调用超类型构造函数，以此解决上述原型链的问题，如下：
-
-```JavaScript
-// 解决引用类型副作用
-function SubType(){       
-	//继承了 SuperType     
-	SuperType.call(this); 
+function SubType(name, age) {
+    SuperType.call(this, name); // 第二次调用超类构造函数
+    this.age = age;
 }
-// 向超类型构造函数传递参数
-function SubType(){       
-    //继承了 SuperType，同时还传递了参数     
-    SuperType.call(this, "Nicholas");          
-    //实例属性     
-    this.age = 29; 
-}
+SubType.prototype = new SuperType(); // 第一次调用超类构造函数
+SubType.prototype.constructor = SubType;
+SubType.prototype.sayAge = function () {
+    alert(this.age);
+};
+var instance1 = new SubType("Nicholas", 29);
+instance1.sayName();          //"Nicholas";
+instance1.sayAge();           //29
 ```
 
-借用构造函数同样也无法避免构造函数模式存在的问题——函数复用，并且超类原型中定义的方法对子类型是不见的，那么所有类型都只能使用构造函数模式，所以实践中也很少单独使用借用构造函数技术。
-
-
-
-**3. 组合继承** (伪经典继承)
-
-组合原型链和借用构造函数。使用原型链实现对原型属性和方法的继承，实现函数复用；通过借用构造函数来实现对实例属性的继承，保证每个函数都有自己的属性。
-
-```JavaScript
-function SuperType(name){     
-    this.name = name;     
-    this.colors = ["red", "blue", "green"]; 
-} 
- 
-SuperType.prototype.sayName = function(){     
-    alert(this.name); 
-                                         
-}; 
- 
-function SubType(name, age){   
-    // 借用构造函数——继承属性     
-    SuperType.call(this, name);   //第二次调用 SuperType() 
-    this.age = age; 
-} 
-// 原型链——继承方法 
-SubType.prototype = new SuperType(); //第一次调用SuperType() 
-SubType.prototype.constructor = SubType; 
-SubType.prototype.sayAge = function(){     
-    alert(this.age); 
-}; 
- 
-var instance1 = new SubType("Nicholas", 29); 
-instance1.colors.push("black"); 
-alert(instance1.colors);      //"red,blue,green,black" 
-instance1.sayName();          //"Nicholas"; 
-instance1.sayAge();           //29 
- 
-var instance2 = new SubType("Greg", 27); 
-alert(instance2.colors);      //"red,blue,green" 
-instance2.sayName();          //"Greg"; 
-instance2.sayAge();           //27 
- 
-```
-
-组合继承最大的问题就是无论什么时候都==会调用两次超类型构造函数==，导致最后在实例和SubType 原型中出现两组同样的属性。这个问题可以使用寄生组合式继承解决。
+存在效率问题，譬如超类构造函数会被调用两次，子类原型和实例上会各有一份继承的属性，只是实例属性遮蔽了原型属性。
 
 
 
@@ -2066,40 +2036,37 @@ instance2.sayAge();           //27
 借助原型基于已有的对象创建新对象，如下：
 
 ```JavaScript
-function object(o){     
+function  object(o){     
     function F(){}
     F.prototype = o;     
     return new F(); 
-} 
+}
+let yetAnotherPerson =  object(person);
 ```
 
-在 object()内部创建一个临时构造函数F()，传入的对象将作为F()的原型，最后返回这个临时类型的一个新实例。本质上来说object()对传入的对象执行了一次浅复制。
-
-ES5新增`Object.create()`规范化原型式继承。另外，以非构造函数形式调用Object时，其行为等同于 new Object()。 Object.create()接收两个参数，原型对象和额外属性(与.defineProperties()参数二相同)。
+本质上对传入的对象执行了一次浅复制，适用于只需在对象间共享信息的场合，已被ES5的`Object.create()`规范化。
 
 
 
-**5. 寄生式继承**
+**5. 寄生式继承** (parasitic inheritance)
 
-寄生式（parasitic）继承的思路与寄生构造函数和工厂模式类似，创建一个仅用于封装继承过程的函数，该函数在内部以某种方式增强对象，最后像真地是它做了所有工作一样返回对象。如下：
+完全复制已有对象再增强，只关注对象内容而不关注类型，如下：
 
 ```JavaScript
-function createAnother(original){     
-    var clone = object(original);  //通过调用函数创建新对象  
-    clone.sayHi = function(){     //以某种方式来增强这个对象
-        alert("hi");     
-    };     
-    return clone;         //返回这个对象 
+function createAnother(original) {
+    var clone = object(original);  // 任何返回新对象的函数都可
+    clone.sayHi = function () {   // 增强新对象
+        alert("hi");
+    };
+    return clone;
 } 
 ```
-
-主要考虑对象而不是自定义类型和构造函数的情况下，寄生式继承也是一种有用的模式。object()函数不是必需的；任何能够返回新对象的函数都适用于此模式。 
 
 
 
 **6. 寄生组合式继承**
 
-解决组合继承时重复调用SuperType构造函数而导致的问题。寄生组合式继承的基本模式如下：
+通过盗用构造函数继承属性，使用混合式原型链继承方法，实现如下：
 
 ```JavaScript
 function inheritPrototype(subType, superType) {
@@ -2107,29 +2074,23 @@ function inheritPrototype(subType, superType) {
     prototype.constructor = subType;             //增强对象 
     subType.prototype = prototype;               //指定对象 
 }
-
 function SuperType(name) {
     this.name = name;
     this.colors = ["red", "blue", "green"];
 }
-
 SuperType.prototype.sayName = function () {
-    alert(this.name);
+    console.log(this.name);
 };
-
 function SubType(name, age) {
     SuperType.call(this, name);
     this.age = age;
 }
-
 inheritPrototype(SubType, SuperType);
-
-SubType.prototype.sayAge = function () {
-    alert(this.age);
-}; 
 ```
 
-仅调用了一次 SuperType 构造函数，避免了在SubType. prototype上创建多余的属性，且同时保持原型链不变。故普遍认为寄生组合式继承是引用类型==理想的继承范式==。
+
+
+## 类
 
 
 
