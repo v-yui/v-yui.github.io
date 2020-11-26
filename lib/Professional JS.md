@@ -1,4 +1,10 @@
-### **注意点**
+**其他**
+
+1. p251使用new调用类构造函数的过程2是否有问题？
+2. p258` [[Construct]] `是？
+3. p260“ super 始终会定义为[[HomeObject]]的原型 ”如何理解？
+
+### 注意点
 
 1. p48页——Symbol 5-16之后——未看；
 2. 第三章/函数笔记——需修改；
@@ -9,7 +15,6 @@
 7. p176——定义正式集合操作——未看；
 8. p188——自定义/提前终止迭代器——未理解透彻；
 9. p200——yield*生成随机双向图例——未看；
-10. p246——寄生式继承是否会导致函数难以重用存疑；
 
 
 
@@ -1519,7 +1524,7 @@ WeakSet与WeakMap十分类似，这两个类型可用于回收DOM内存。
 
 ## 迭代器
 
- **迭代器模式**把某些结构称为**iterable** (可迭代对象)，因为它们实现了正式的 iterable接口，并且可通过**iterator** (迭代器)“消费 (consume)”。==iterable 包含的元素都是**有限个**，且具有**无歧义的遍历顺序**==，不一定是集合对象，也可以是具有类数组行为的其他数据结构。==iterator是按需创建的**一次性**对象==，使用相关迭代API迭代关联的iterable。两者概念分离，iterator无需知道iterable的结构，只需知道如何取得连续的值。
+ **迭代器模式**把某些结构称为**iterable** (可迭代对象)，因为它们实现了正式的 iterable接口，并且可通过**iterator** (迭代器)“消费 (consume)”。==iterable包含的元素都是**有限个**，且具有**无歧义的遍历顺序**==，不一定是集合对象，也可以是具有类数组行为的其他数据结构。==iterator是按需创建的**一次性**对象==，使用相关迭代API迭代关联的iterable。两者概念分离，iterator无需知道iterable的结构，只需知道如何取得连续的值。
 
  实现 iterable接口 ([**可迭代协议**](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Iteration_protocols#%E5%8F%AF%E8%BF%AD%E4%BB%A3%E5%8D%8F%E8%AE%AE))要求同时具备两种能力：**支持迭代的自我识别能力和创建实现 iterator 接口的对象的能力**。 在ES中，则必须有一个使用` Symbol.iterator `作键的属性作为默认iterator，这个iterator必须引用一个返回新迭代器的工厂函数。==很多内置类型都实现了iterable接口：String、Array、Map、Set、arguments对象、 NodeList 等 DOM 集合类型==。
 
@@ -1866,8 +1871,8 @@ function Person(name, age, job) {
     };
 }
 var person = new Person("Nicholas");
-var person = new Person; // 有new就会调用构造函数，可不加括号
-Person("Greg"); //作为函数调用，未指明this值时添加入Global对象
+var person = new Person; // 有new就会调用，不传参可不加括号
+Person("Greg"); // 作为函数调用，未指明this值时添加入Global对象
 ```
 
 为区分普通函数，开头字母大写。使用`new`操作符，就可以作为构造函数，使用`new`调用构造函数会经历以下步骤： 
@@ -1976,7 +1981,7 @@ alert(instance.getSuperValue()); //true
 console.log(Object.prototype.isPrototypeOf(instance)); // true 
 ```
 
-要**确定原型和实例关系**可以使用`instanceof`，若某实例原型链上出现过相应构造函数则返回true，或使用**`isPrototypeOf()`**，使用如上例最后。
+要**确定原型和实例关系**可以使用`instanceof`，若某实例原型链上出现过相应构造函数则返回true，或使用**`isPrototypeOf()`**，只要原型链中包含这个原型则返回true，使用如上例最后。
 
  原型链继承仍存在原型中包含引用值的问题，并且无法在不影响其他实例的情况下向超类构造函数传参， 故原型链基本不会单独使用。
 
@@ -1991,7 +1996,7 @@ function SuperType(name) {
     this.name = name;
 }
 function SubType() {
-    SuperType.call(this, "Nicholas"); //继承SuperType ，传递参数 
+    SuperType.call(this, "Nicholas"); // 继承超类实例属性
     this.age = 29;
 }
 let instance = new SubType();
@@ -2033,18 +2038,18 @@ instance1.sayAge();           //29
 
 **4. 原型式继承**
 
-借助原型基于已有的对象创建新对象，如下：
+不单独创建构造函数，借助原型实现信息共享，如下：
 
 ```JavaScript
-function  object(o){     
+function object(o){     
     function F(){}
-    F.prototype = o;     
-    return new F(); 
+    F.prototype = o;
+    return new F();
 }
 let yetAnotherPerson =  object(person);
 ```
 
-本质上对传入的对象执行了一次浅复制，适用于只需在对象间共享信息的场合，已被ES5的`Object.create()`规范化。
+本质上对传入的对象执行一次浅复制，已被ES5`Object.create()`规范化。
 
 
 
@@ -2055,7 +2060,7 @@ let yetAnotherPerson =  object(person);
 ```JavaScript
 function createAnother(original) {
     var clone = object(original);  // 任何返回新对象的函数都可
-    clone.sayHi = function () {   // 增强新对象
+    clone.sayHi = function () {    // 函数无法复用
         alert("hi");
     };
     return clone;
@@ -2066,13 +2071,13 @@ function createAnother(original) {
 
 **6. 寄生组合式继承**
 
-通过盗用构造函数继承属性，使用混合式原型链继承方法，实现如下：
+使用寄生式继承修补组合继承调用了两次超类构造函数的问题，如下：
 
 ```JavaScript
 function inheritPrototype(subType, superType) {
-    var prototype = object(superType.prototype); //创建对象 
-    prototype.constructor = subType;             //增强对象 
-    subType.prototype = prototype;               //指定对象 
+    var prototype = object(superType.prototype); // 超类原型继承
+    prototype.constructor = subType;             // 指回构造函数 
+    subType.prototype = prototype;               // 构造原型链
 }
 function SuperType(name) {
     this.name = name;
@@ -2082,7 +2087,7 @@ SuperType.prototype.sayName = function () {
     console.log(this.name);
 };
 function SubType(name, age) {
-    SuperType.call(this, name);
+    SuperType.call(this, name);   // 超类实例属性继承
     this.age = age;
 }
 inheritPrototype(SubType, SuperType);
@@ -2091,6 +2096,79 @@ inheritPrototype(SubType, SuperType);
 
 
 ## 类
+
+ES6引入的**`class`**关键字具有正式定义类的能力，但实际上它背后使用的仍然是原型和构造函数的概念，是新的语法糖结构。
+
+与定义函数类似，但类定义**没有函数提升**，并且受**块作用域**限制，可包含构造函数、实例方法、getter/setter、静态类方法，默认在**严格模式**下执行。类表达式的名称可选，赋值给变量后可通过`name`属性取得类表达式名称字符串，但不可以在类表达式作用域外部访问此标识符。如下：
+
+```JavaScript
+class Person {} // 类声明 为区别于其实例，首字母大写
+const Animal = class {}; // 类表达式
+let Person = class PersonName {} // 类表达式名称可选
+console.log(Person.name); // PersonName
+console.log(PersonName); // ReferenceError
+let p2 = new p1.constructor();  // 使用类构造函数的引用创建新实例
+```
+
+ES中的类实质上就是特殊的函数，`typeof`检测为function，且拥有原型。 使用`new`创建新实例时，JS解释器会调用类中的`constructor`函数，默认情况下该函数返回this对象作为新实例，若返回其他对象，那么这个实例将不会与类关联。类构造函数和构造函数不同，必须使用`new`调用。类可以作为参数引用，也可以像立即执行函数一样立即实例化。
+
+**实例成员**通过类构造函数定义；类块中不允许直接定义原始值或对象，定义的方法即为**原型方法**，这些方法等同于对象属性，可用字符串、Symbol、可计算值作键，getter/setter的定义也同普通对象一样。**静态方法**存在于类本身，每个类上只能有一个，其this值引用类自身，其他所有约定同原型成员一样。静态方法非常适合作为实例工厂，如下例：
+
+```JavaScript
+class Person {
+    constructor(age) {
+        this.age = age; // 实例成员
+    }
+    sayAge() { // 原型方法
+        console.log(this.age_);
+    }
+    static create() { // 静态方法
+        return new Person(Math.floor(Math.random() * 100));
+    }
+}
+console.log(Person.create()); // Person { age_: ... }
+```
+
+类也支持定义generator，可添加默认的iterator将类实例变为iterable。
+
+
+
+**——类继承——**
+
+类继承使用的新语法背后仍是原型链，使用**`extends`**就可以继承任何拥有`[[Construct]]`和原型的对象，就是说可以继承类和普通的构造函数 (保持向后兼容)。`let Bar = class extends Foo {}`也是有效语法。
+
+ 派生类可通过**`super`**引用其原型，但只能在派生类的构造函数和静态方法内部使用，二者分别能调用超类的构造函数和静态方法。如下：
+
+```JavaScript
+class Vehicle {
+    constructor() {
+        console.log('hasEngine');
+    }
+    static identify() {
+        console.log('vehicle');
+    }
+}
+class Bus extends Vehicle {
+    constructor() {
+        // 调用super()前不可引用 this
+        super(); // 相当于 super.constructor()
+        console.log(this instanceof Vehicle); // true
+    }
+    static busIdentify() {
+        super.identify();
+    }
+}
+var b = new Bus(); // hasEngine
+Bus.busIdentify(); // vehicle
+```
+
+ ES6 给类构造函数和静态方法添加了内部特性`[[HomeObject]]`，它指向定义该方法的对象只能在JS引擎内部访问。super 始终为其原型。 
+
+
+
+
+
+
 
 
 
