@@ -15,12 +15,13 @@
 7. p176——定义正式集合操作——未看；
 8. p188——自定义/提前终止迭代器——未理解透彻；
 9. p200——yield*生成随机双向图例——未看；
+10. p264——类混入例子——未理解；
 
 
 
 
 
-# 第一章 JS简介
+# 一 JS简介
 
 一个完整的 JavaScript 实现应由下列三个不同的部分组成：
 
@@ -98,7 +99,7 @@ IE3和Navigator 3都可以访问和操作浏览器窗口的BOM，使用 BOM可�
 
 
 
-# 第二章 HTML和JS
+# 二 HTML和JS
 
 ## ==`<script>`==
 向HTML页面插入JS的主要方法。`<script>`有以下8个属性：
@@ -172,7 +173,7 @@ IE5.5发明了文档模式的概念，即使用doctype切换。不同模式主�
 
 
 
-# 第三章 语言基础
+# 三 语言基础
 
 到2017年底，多数主流浏览器已实现ES5的规范，本章内容主要基于ES6。
 
@@ -707,7 +708,7 @@ ES不在乎传进来的参数个数是否符合函数要求。实际上ES的参�
 
 
 
-# 第四章 变量、作用域、内存
+# 四 变量、作用域、内存
 
 ## 原始/引用类型
 
@@ -824,7 +825,7 @@ let outer = function() {
 
 
 
-# 第五章 引用类型
+# 五 引用类型
 
 引用类型的值 (对象)是某个引用类型的实例，ES的引用类型是把数据和方法组织到一起的结构，有时也被称作对象定义，类似与“类”但不是。JS是一门OO语言，但缺乏传统OO语言具备的类、接口等基本结构。
 
@@ -1518,7 +1519,7 @@ WeakSet与WeakMap十分类似，这两个类型可用于回收DOM内存。
 
 
 
-# 第六章 迭代/生成
+# 六 迭代/生成器
 
 在软件开发领域，“迭代” 的意思是**按照顺序反复多次执行一段程序**，通常会有明确的终止条件。ES6新增两个能够更清晰、高效、方便地实现迭代高级特性：迭代器和生成器。
 
@@ -1642,7 +1643,7 @@ generator也支持“关闭”的概念。所有generator都有**`return()`**，
 
 
 
-# ==第七章 面向对象==
+# ==七 面向对象==
 
 ECMA-262把对象定义为一组无序属性的集合。ES6开始正式支持类和继承。ES6 的类旨在完全涵盖之前规范设计的基于原型的继承模式。但实际上，ES6 的类仅仅是封装了 ES5.1 构造函数加原型继承的语法糖而已。
 
@@ -1704,7 +1705,7 @@ Object.defineProperties(book, {
 }); // 2个参数：修改对象，描述对象
 ```
 
- 使用**`Object.getOwnPropertyDescriptor()`**可取得指定属性的属性描述符。 ES8新增的Object.getOwnPropertyDescriptors()`**在对象每个属性上调用`Object.getOwnPropertyDescriptor()`并在新对象中返回。
+ 使用**`Object.getOwnPropertyDescriptor()`**可取得指定属性的属性描述符。 ES8新增的**`Object.getOwnPropertyDescriptors()`**在对象每个属性上调用`Object.getOwnPropertyDescriptor()`并在新对象中返回。
 
 ES6提供**` Object.assign() `**用于**合并对象**，接收目标对象和多个源对象为参数，将源对象中可枚举属性(`Object.propertyIsEnumerable()`返回 true )和自有属性(`Object.hasOwnProperty`返回 true )**浅复制**到目标对象并返回。若源对象属性重名则保留最后一个值，赋值时出错则操作中止并退出，`[[Get]]`和`[[Set]]`无法再对象间转移。如下：
 
@@ -1981,7 +1982,7 @@ alert(instance.getSuperValue()); //true
 console.log(Object.prototype.isPrototypeOf(instance)); // true 
 ```
 
-要**确定原型和实例关系**可以使用`instanceof`，若某实例原型链上出现过相应构造函数则返回true，或使用**`isPrototypeOf()`**，只要原型链中包含这个原型则返回true，使用如上例最后。
+要**确定原型和实例关系**可以使用`instanceof`，若某实例原型链上出现过相应构造函数则返回true，或使用**`isPrototypeOf()`**，只要参数原型链中包含调用者原型则返回true，使用如上例最后。
 
  原型链继承仍存在原型中包含引用值的问题，并且无法在不影响其他实例的情况下向超类构造函数传参， 故原型链基本不会单独使用。
 
@@ -2131,13 +2132,11 @@ console.log(Person.create()); // Person { age_: ... }
 
 类也支持定义generator，可添加默认的iterator将类实例变为iterable。
 
-
-
 **——类继承——**
 
 类继承使用的新语法背后仍是原型链，使用**`extends`**就可以继承任何拥有`[[Construct]]`和原型的对象，就是说可以继承类和普通的构造函数 (保持向后兼容)。`let Bar = class extends Foo {}`也是有效语法。
 
- 派生类可通过**`super`**引用其原型，但只能在派生类的构造函数和静态方法内部使用，二者分别能调用超类的构造函数和静态方法。如下：
+ 派生类可通过**`super`**引用其原型，但只能在派生类的构造函数和静态方法内部使用，且只能用来调用超类构造函数和静态方法，不能单独引用。如下：
 
 ```JavaScript
 class Vehicle {
@@ -2149,9 +2148,10 @@ class Vehicle {
     }
 }
 class Bus extends Vehicle {
-    constructor() {
+    // 若没有构造函数，实例化时会传入所有参数给`super()`
+    constructor() { // 要么调用super()，要么返回一个对象
+        super(); // 会调用超类构造函数，可传参，返回的实例赋给this
         // 调用super()前不可引用 this
-        super(); // 相当于 super.constructor()
         console.log(this instanceof Vehicle); // true
     }
     static busIdentify() {
@@ -2162,7 +2162,43 @@ var b = new Bus(); // hasEngine
 Bus.busIdentify(); // vehicle
 ```
 
- ES6 给类构造函数和静态方法添加了内部特性`[[HomeObject]]`，它指向定义该方法的对象只能在JS引擎内部访问。super 始终为其原型。 
+ ES6 给类构造函数和静态方法添加了内部特性`[[HomeObject]]`，它指向定义该方法的对象，只能在JS引擎内部访问。super 始终会定义为其原型。 
+
+通过检测` new.target  `可实现能被继承但不能实例化自身的**抽象基类**。
+
+```JavaScript
+class Vehicle {
+    constructor() {
+        if (new.target === Vehicle) {
+            throw new Error('Vehicle cannot be directly instantiated'); // 检测new.target阻止实例化
+        }
+        if (!this.foo) {
+            throw new Error('Inheriting class must define foo()'); // 检查this检查限定派生类必须包含相应方法
+        }
+        console.log('success!');
+    }
+}
+```
+
+继承内置引用类型后默认情况下返回派生类型实例，修改**` Symbol.species `**访问器以改变返回的实例类型，如下：
+
+```JavaScript
+class SuperArray extends Array {
+    static get [Symbol.species]() {
+        return Array;
+    }
+}
+let a1 = new SuperArray(1, 2, 3, 4, 5);
+let a2 = a1.filter(x => !!(x % 2))
+console.log(a1 instanceof SuperArray); // true
+console.log(a2 instanceof SuperArray); // false
+```
+
+
+
+
+
+# 八 代理与反射
 
 
 
@@ -2170,9 +2206,7 @@ Bus.busIdentify(); // vehicle
 
 
 
-
-
-# 第七章 函数表达式
+# 九 函数表达式
 
 “函数表达式”，集中介绍了 JavaScript中为强大的一个特性——函数表达式。相关的内容涉及闭包、this 对象的角色、模块模式和创建私有对象成员等。
 
@@ -2392,7 +2426,7 @@ var singleton = function(){
 
 
 
-# 第八章 BOM
+# 十二 BOM
 
 “BOM”，介绍 BOM（Browser Object Model，浏览器对象模型），即负责处理与浏览器自 身有关的交互操作的对象集合。这一章全面介绍了每一个 BOM 对象，包括 window、document、location、navigator 和 screen。 
 
