@@ -2200,6 +2200,14 @@ console.log(a2 instanceof SuperArray); // false
 
 # 八 代理与反射
 
+**`Proxy.revocable()`** 方法可以用来创建一个可撤销的代理对象。 
+
+
+
+
+
+
+
 
 
 
