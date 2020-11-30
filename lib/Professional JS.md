@@ -457,7 +457,7 @@ console.log(Object.getOwnPropertySymbols(o));
 - **`Object.getOwnPropertyDescriptors()`**返回同时包含常规和Symbol属性描述符的对象；
 - **`Reflect.ownKeys()`**会返回两种属性的数组。
 
-Symbol属性是对内存中Symbol的一个引用，如果没有显示保存对这些属性的引用，那么必须遍历对象的所有符号属性才能找到对应键，如下例：
+Symbol属性是对内存中Symbol的一个引用，如果没有显式保存对这些属性的引用，那么必须遍历对象的所有符号属性才能找到对应键，如下例：
 
 ```JavaScript
 let o = { [Symbol('bar')]: 'bar val' };
@@ -721,7 +721,7 @@ ES变量是松散类型的，可包含：
 - **引用值 (reference value)**：保存在内存中的对象。JS不允许直接访问内存位置，在操作对象时实际操作的是对该对象的引用。故保存引用值的变量是按引用 (by reference)访问。
   - **引用值复制时实际上是复制指向堆内存中对象的指针**。
 
-ES的**函数参数都是按值传递**，原始/引用值会像复制到另一个变量一般复制到函数arguments的槽位中。如下例：
+ES的**函数参数都是按值传递**，若对象作为参数传递，那么传递的值就是该对象的引用。如下例：
 
 ```javascript
 function setName(obj) {
@@ -1136,7 +1136,7 @@ console.log(message.includes("qux")); // false
 
 ### **Global**
 
-Global是ES中最特别的对象，因为代码不会显示访问它。实际上并不存在全局变量或函数，在**全局作用域中定义的内容都会成为Global的属性**。
+Global是ES中最特别的对象，因为代码不会显式访问它。实际上并不存在全局变量或函数，在**全局作用域中定义的内容都会成为Global的属性**。
 
 Global有很多属性，比如 undefined、NaN 和 Infinity 这些特殊值，及所有原生引用类型的构造函数。此外，Global也有一些**其他方法**如：
 
@@ -2169,7 +2169,7 @@ Bus.busIdentify(); // vehicle
 ```JavaScript
 class Vehicle {
     constructor() {
-        if (new.target === Vehicle) {
+        if (显式 === Vehicle) {
             throw new Error('Vehicle cannot be directly instantiated'); // 检测new.target阻止实例化
         }
         if (!this.foo) {
@@ -2200,15 +2200,39 @@ console.log(a2 instanceof SuperArray); // false
 
 # 八 代理与反射
 
-**`Proxy.revocable()`** 方法可以用来创建一个可撤销的代理对象。 
+ES6新增代理和反射，可拦截基本操作并嵌入额外行为。此前的ES并不存在类似特性，因此许多转译程序都无法解释代理行为，故代理和反射只能在100%支持的平台上使用。
 
+代理是目标对象的抽象，默认情况下对代理对象的操作都会传播到目标对象，**`Proxy`** 构造函数接收目标对象和处理程序对象来创建代理对象。使用**`Proxy.revocable()`**可创建能撤销与目标对象关联的代理对象。使用代理的主要目的是定义**捕获器 (trap)**，类似OS的同步中断。每个trap对应一种基本操作，代理上的操作传播到目标对象前trap会先被调用。处理程序对象中可捕获的方法都有对应的**`Reflect`**API。如下：
 
+```JavaScript
+const target = { foo: 'bar' };
+const handler = {
+    get(trapTarget, property, receiver) { // trap以方法名为键
+        let decoration = '';
+        if (property === 'foo') {
+            decoration = '!!!';
+        }
+        return Reflect.get(...arguments) + decoration;
+    }
+};
+const proxy = new Proxy(target, handler); // 2个参数都不可或缺
+// const { proxy, revoke } = Proxy.revocable(target, handler); 
+// 创建可撤销的代理对象,代理对象和撤销函数同时生成
+// revoke(); // 撤销代理的操作是不可逆的
+console.log(proxy.foo);  // bar!!!
+console.log(target.foo); // bar
+console.log(target === proxy); // false 严格相等可区分
+```
 
+ *注意：`Proxy.prototype`是undefined，因此不能使用instanceof检测。*
 
+代理也可拦截Reflect API，即可在某目标对象上构建多层拦截网。捕获处理程序必须遵循因方法而异的“**捕获器不变式 ( trap invariant )**”，防止trap出现反常行为。代理可捕获13种不同的基本操作，任一操作都只有一个捕获处理程序被调用，不会重复捕获。 具体使用请查看[MDN文档](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Proxy)或红宝书4 p275。使用代理可以编写各种模式。
 
+另外，某些情况下代理也不能很好的与ES机制协同，如：
 
+- 目标对象使用对象本身 (this值)作键时，代理将无法取得对应属性值；
 
-
+- 某些内置类型依赖代理无法控制的机制，如Date类型方法的执行依赖this值上无法通过`get()`和`set()`访问的内部槽位` [[NumberDate]] `。
 
 
 
@@ -2216,7 +2240,48 @@ console.log(a2 instanceof SuperArray); // false
 
 # 九 函数表达式
 
-“函数表达式”，集中介绍了 JavaScript中为强大的一个特性——函数表达式。相关的内容涉及闭包、this 对象的角色、模块模式和创建私有对象成员等。
+定义函数：
+
+```JavaScript
+// 函数声明
+function sum(num1, num2) {
+    return num1 + num2;
+}
+// 函数表达式
+let sum = function (num1, num2) {
+    return num1 + num2;
+};
+// 箭头函数
+let sum = (num1, num2) => {
+    return num1 + num2;
+};
+// 使用Function构造函数
+let sum = new Function("num1", "num2", "return num1 + num2");
+// 会作为ES代码和作为参数字符串分别被解释一次，不推荐使用
+```
+
+ES6新增**箭头函数**，只有一个参数时可省略括号，若省略大括号则隐式返回这一行代码的值，`  (a, b) => return a * b `是无效写法。箭头函数==不能使用arguments、super和`new.target`，不能用作构造函数，没有prototype==。
+
+函数名就是指向函数的指针。ES没有函数签名，所以**没有重载**，后定义的会直接覆盖先定义的。从ES6开始所有，函数都会暴露只读的保存函数标识符的**`name`**属性，`getter/setter`或使用`bind()`实例化的标识符会前缀“get/ set/ bound”，使用Function创建的函数将被标识为“anonymous”。
+
+ES不在乎传入的参数个数和类型，在内部参数是一个称作**`arguments`**的类数组对象，它可以和命名参数一起使用且始终同步，在内存中并不指向一个地址，只是保持同步而已。其长度根据传参时参数个数确定，若只传入一个参数，那么为参数2赋值是无效的。另外，ES6支持显式定义**默认参数**，不过arguments只同步传入的参数，如下：
+
+```JavaScript
+function makeKing(name = 'Henry', age) {
+    name = 'Louis';
+    arguments[1] = 18;
+    return `King ${arguments[0]} is ${age}`;
+}
+console.log(makeKing()); // 'King undefined is undefined'
+```
+
+
+
+
+
+
+
+
 
 **函数声明和函数表达式**
 
