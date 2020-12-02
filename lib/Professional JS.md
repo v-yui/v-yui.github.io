@@ -2,8 +2,9 @@
 
 1. p251使用new调用类构造函数的过程2是否有问题？
 2. p258` [[Construct]] `是？
-3. p260“ super 始终会定义为[[HomeObject]]的原型 ”如何理解？
+3. ~~p260“ super 始终会定义为[[HomeObject]]的原型 ”如何理解？~~(见集锦 1)
 4. 红宝书3 p181页闭包与变量例子不懂。
+5. ~~p315 IIFE 例中的闭包作用是什么？~~
 
 ### 注意点
 
@@ -18,6 +19,7 @@
 9. p200——yield*生成随机双向图例——未看；
 10. p264——类混入例子——未理解；
 11. p307——尾调用相关——未看完；
+12. p318——私有变量模块莫斯——未理解；
 
 
 
@@ -2262,7 +2264,7 @@ let sum = new Function("num1", "num2", "return num1 + num2");
 // 会作为ES代码和作为参数字符串分别被解释一次，不推荐使用
 ```
 
-函数名就是指向函数的指针。ES没有函数签名，所以**没有重载**，后定义的会直接覆盖先定义的。从ES6开始所有，函数都会暴露只读的保存函数标识符的**`name`**属性，`getter/setter`或使用`bind()`实例化的标识符会前缀“get/ set/ bound”，使用Function创建的函数将被标识为“anonymous”。
+函数名就是指向函数的指针。ES没有函数签名，所以**没有重载**，后定义的会直接覆盖先定义的。从ES6开始，所有函数都会暴露只读的保存函数标识符的**`name`**属性，`getter/setter`或使用`bind()`实例化的标识符会前缀“get/ set/ bound”，使用Function创建的函数将被标识为“anonymous”。
 
 代码执行时，JS引擎会把**函数声明提升 (function declaration hoisting)**到源码树顶部，而函数表达式在代码执行到对应行时才在上下文中生成函数定义。
 
@@ -2295,9 +2297,28 @@ ES5还添加了指向调用当前函数的函数的非标准属性**`calller`**�
 
 *注意：严格模式下不指定上下文则this值不为window而是undefined。*
 
-this值改变的小例子：
+
+
+## 闭包
+
+闭包指==有权访问另一函数作用域中变量的函数==，通常在嵌套函数中实现。内部函数会把外部函数的活动对象添加到自己的[作用域链](#上下文与作用域)中，并可以访问外部函数能访问的一切，但反过来则不可。注意外部函数的活动对象会一直保留到内部函数销毁，过度使用闭包会导致内存过度占用。
+
+内部函数不能直接访问外部函数的arguments和this，但可以先将它们保存在其他变量中再让内部函数获取。如下：
 
 ```JavaScript
+window.identity = 'The Window';
+let object = {
+    identity: 'My Object',
+    getIdentityFunc() {
+        let that = this; // 保存外部this值
+        return function () {
+            return that.identity;
+        };
+    }
+};
+console.log(object.getIdentityFunc()()); // 'My Object'
+
+// 某些特殊情况下，this值也可能超出预料
 window.identity = 'The Window';
 let object = {
     identity: 'My Object',
@@ -2308,167 +2329,55 @@ let object = {
 object.getIdentity(); // 'My Object'
 (object.getIdentity)(); // 'My Object'
 (object.getIdentity = object.getIdentity)(); // 'The Window'
+// 赋值再调用赋值的结果，赋值表达式的值是函数本身，this不与任何对象绑定
 ```
 
-最后一行执行了一次赋值再调用赋值后的结果，赋值表达式的值是函数本身，this不再与任何对象绑定。
 
 
+**——IIFE——**
 
-## 闭包
-
-闭包指==有权访问另一函数作用域中变量的函数==，通常在嵌套函数中实现。内部函数会把外部函数的活动对象添加到自己的[作用域链](#上下文与作用域)中，并可以访问外部函数能访问的一切，但反过来则不可。注意外部函数的活动对象会一直保留到内部函数销毁，过度使用闭包会导致内存过度占用。
-
-内部函数不能直接访问外部函数的arguments和this，但可以先将它们保存在其他变量中再让内部函数获取。
-
-
-
-
-
-this 对象在运行时基于函数执行环境绑定，在闭包中使用this也可能导致问题。如下：
+**立即调用的函数表达式 ( IIFE，Immediately Invoked Function Expression )**将函数声明包含在圆括号中，被解释为函数表达式，其后的第二对圆括号会立即调用前面的函数表达式。let出现之前经常使用 IIFE模拟块级作用域，如下例使用 IIFE锁定参数值：
 
 ```JavaScript
-var name = "The Window"; 
-
-var object = {     
-    name : "My Object", 
-    getNameFunc : function(){         
-        return function(){             
-            return this.name;         
-        };     
-    } 
-}; 
-alert(object.getNameFunc()());  //"The Window"（非严格模式下）
-
-var object = {     // 修改后
-    name : "My Object", 
-    getNameFunc : function(){ 
-        var that = this;   // 把this保存在闭包能访问的变量中
-        return function(){             
-            return that.name;         
-        };     
-    } 
-}; 
-alert(object.getNameFunc()());  //"My Object" 
-```
-
-每个函数在被调用时都会自动取得两个特殊变量：this 和 arguments。内部函数在搜索这两个变量时，只会搜索到其活动对象为止，因此永远不可能直接访问外部函数中的这两个变量。因此把this保存在一个闭包能够访问的变量里就可以了，arguments也同样。
-
-
-
-**模拟块级作用域**
-
-在JAVA等语言中，for循环中定义的变量i在循环一结束就会被销毁，但JS没有块级作用域的概念。另外，var可以重复声明，JS会忽略重复的声明，但会执行后续的变量初始化。
-
-将函数声明包含在一对圆括号中，表示它实际上是一个函数表达式。其后的圆括号会立即调用这个函数。例如：
-
-```JavaScript
-function outputNumbers(count){     
-    (function () { // 匿名函数立即执行，创建私有作用域
-        for (var i=0; i < count; i++){    
-            alert(i);  
-        }     
-    })();  
-    alert(i);   //报错
-} 
-```
-
-通过这种方式可以创建私有作用域，限制向全局作用域添加过多的变量和函数，避免命名冲突。
-
-
-
-## 私有变量
-
-JS所有对象属性都是公有的，没有私有成员的概念。但任何在函数中定义的变量都可看作私有变量，私有变量包括函数的参数，局部变量，函数内部定义的其他函数。
-
-有权范围跟私有变量/函数的公有方法称作特权方法 (privileged method)。有两种在对象上创建特权方法的方法。
-
-**1. 构造函数中定义**
-
-```JavaScript
-// 1. 在构造函数中定义特权方法
-function MyObject(){ 
-    // 私有变量和私有函数     
-    var privateVariable = 10; 
-    function privateFunction(){         
-        return false;     
-    }
-    // 特权方法(privileged method)
-    // 特权方法作为闭包可以通过作用域访问私有变量。
-    this.publicMethod = function (){         
-        privateVariable++;         
-        return privateFunction();     
-    }; 
+let divs = document.querySelectorAll('div');
+for (var i = 0; i < divs.length; ++i) {
+    divs[i].addEventListener('click', (function (frozenCounter) {
+        return function () {
+            console.log(frozenCounter);
+        };
+    })(i));
 }
+// ES6中如果使用let，则for循环将为每个循环创建独立的变量
+for (let i = 0; i < divs.length; ++i) {
+    divs[i].addEventListener('click', function () {
+        console.log(i);
+    });
+}
+let i; // 但把变量声明拿到for外部无效
+for (i = 0; i < divs.length; ++i) {}
 ```
 
-利用私有和特权成员可以隐藏不应被直接修改的数据，但构造函数模式的函数复用问题依然存在，可以使用==静态私有变量==来解决。
 
-在私有作用域中定义私有变量或函数也可以创建特权方法。但这样定义的变量将会成为被所有实例共享的属性，如下：
 
-```JavaScript
-(function(){          
-    //私有变量和私有函数
-    var name = ""; 
-    //构造函数     
-    // 初始化未声明的变量会创建全局变量(严格模式不允许赋值未声明变量)
-    MyObject = function(value){ 
-        name = value;
-    }; 
-    //公有/特权方法
-    MyObject.prototype.getName = function(){
-        return name
-    }
-    MyObject.prototype.setName = function (value){     
-         name = value;     
-    }; 
-})(); 
-var person1 = new Person("Nicholas"); alert(person1.getName());  //"Nicholas" 
-var person2 = new Person("Michael"); alert(person1.getName()); //"Michael" 
-```
+**——私有变量——**
 
-多查找作用域链中的一个层次一定程度上也会影响查找速度，这也是使用闭包和私有变量的不足。
+JS没有私有成员的概念，所有对象属性都是公有的。但任何在函数中定义的变量都可看作私有变量，通过闭包可以访问到外部函数的私有变量，基于此可创建出能访问私有变量的公有方法，也称**特权方法 (privileged method)**。 特权方法可以使用构造函数或原型模式在自定义类型中实现，也可使用模块模式或模块增强模式在单例对象上实现，见红宝书4 p316。
 
-**2. 模块模式**
 
-前面的模式是用于为自定义类型创建私有变量和特权方法的。而道格拉斯所说的模块模式（module pattern）则是为单例创建私有变量和特权方法。所谓单例（singleton），指的就是只有一个实例的对象。其语法形式如下：
 
-```JavaScript
-var singleton = function(){          
-    //私有变量和私有函数     
-    var privateVariable = 10;          
-    function privateFunction(){         
-        return false;
-    } 
-    //特权/公有方法和属性     
-    return { 
-        publicProperty: true, 
-        publicMethod : function(){             
-            privateVariable++;             
-            return privateFunction();         
-        } 
-    }; 
-}(); 
 
-// 增强的模块模式
-// 适合单例必须是某种类型的实例且添加属性以增强的情况
-var singleton = function(){ 
-    //私有变量和私有函数     
-    var privateVariable = 10; 
-    function privateFunction(){         
-        return false;     
-    } 
-    //创建对象     
-    var object = new CustomType(); 
-    //添加特权/公有属性和方法     
-    object.publicProperty = true; 
-    object.publicMethod = function(){         
-        privateVariable++;         
-        return privateFunction();     
-    }; 
-    //返回这个对象    
-    return object; 
-}(); 
-```
+
+# 十一 promise与异步函数
+
+异步行为是ES的基础，早期JS只能定义回调函数表明异步操作完成，串联多个异步操作必定深度嵌套回调函数，陷入回调地狱。ES6增加对Promises/A+ 规范的完善支持以组织异步逻辑，即 **`promise`**引用类型，接下来几个版本又增加**`async`**和**`await`**来定义异步函数。
+
+promise是对尚不存在的结果的替身，创建新promise时需传入执行器函数`executor`。 **`pending`**是期约的最初始状态。在pending下，promise可以`settled`为代表成功的**`fulfilled`**状态，或代表失败的**`rejected`**状态，此过程不可逆且settled后不再改变，不能保证promise一定脱离pending。
+
+为避免根据读取到的状态以同步方式处理promise，其状态私有，不能直接通过JS检测，也不能被外部JS代码修改。
+
+
+
+
 
 
 
