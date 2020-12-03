@@ -5,6 +5,9 @@
 3. ~~p260“ super 始终会定义为[[HomeObject]]的原型 ”如何理解？~~(见集锦 1)
 4. 红宝书3 p181页闭包与变量例子不懂。
 5. ~~p315 IIFE 例中的闭包作用是什么？~~
+6. 控制台异步打印为什么会显示执行异步打印次数的数字？
+
+
 
 ### 注意点
 
@@ -2371,19 +2374,63 @@ JS没有私有成员的概念，所有对象属性都是公有的。但任何在
 
 异步行为是ES的基础，早期JS只能定义回调函数表明异步操作完成，串联多个异步操作必定深度嵌套回调函数，陷入回调地狱。ES6增加对Promises/A+ 规范的完善支持以组织异步逻辑，即 **`promise`**引用类型，接下来几个版本又增加**`async`**和**`await`**来定义异步函数。
 
-promise是对尚不存在的结果的替身，创建新promise时需传入执行器函数`executor`。 **`pending`**是期约的最初始状态。在pending下，promise可以`settled`为代表成功的**`fulfilled`**状态，或代表失败的**`rejected`**状态，此过程不可逆且settled后不再改变，不能保证promise一定脱离pending。
+## promise
 
-为避免根据读取到的状态以同步方式处理promise，其状态私有，不能直接通过JS检测，也不能被外部JS代码修改。
+创建新promise时需传入负责初始化promise异步行为和控制状态最终转换的执行器函数`executor`。**`pending`**是promise的初始状态，此时可以`settled`为代表成功的**`fulfilled`**状态，或代表失败的**`rejected`**状态，此结果不可逆且不再改变。不能保证promise一定脱离pending。
+
+为避免根据读取到的状态以同步方式处理promise，其==状态私有==，不能直接通过JS检测，也不能被外部JS代码修改，只在其执行器中完成内部操作。promise切换为fulfilled或rejected，该状态下执行的异步代码将会收到一个私有的内部**value**或**reason**，默认为undefined。
+
+执行器接收两个函数作参：**`resolve()`**在异步任务顺利完成并返回value时调用 ，**`reject()`**在异步任务失败且返回reson时调用，前者将状态切为fulfilled，后者切为rejected并抛出错误。直接调用` Promise.resolve() `将实例化fulfilled的promise，其value对应参数一；类似的，` Promise.reject() `实例化rejected的promise并抛出异步错误 (只能通过onrejected处理程序捕获)，其reson对应参数一，也会传给之后的onrejected处理程序。如下：
+
+```JavaScript
+let p1 = new Promise((resolve, reject) => resolve());
+let p2 = Promise.resolve();  // 与上面语句结果相同
+setTimeout(console.log, 0, p2 === Promise.resolve(p2)); // true
+// 传入promise相当于一次空包装，会保留原promise状态
+let p3 = new Promise(() => { });
+setTimeout(console.log, 0, Promise.resolve(p3));// ···<pending> 
+setTimeout(console.log, 0, Promise.resolve(4, 5, 6));
+// Promise <resolved>: 4   会忽略多余参数
+setTimeout(console.log, 0, Promise.resolve(new Error('foo')));
+// Promise <resolved>: Error: foo  会包装Error对象
+
+// 给Promise.reject传入promise，会成为reson
+setTimeout(console.log, 0, Promise.reject(Promise.resolve()));
+// Promise <rejected>: Promise <resolved>
+```
+
+promise是同步对象，也是异步执行模式的媒介，抛出的错误只能只能被异步模式捕获。promise实例的方法是连接外部同步代码与内部异步代码的桥梁。
+
+<!--ES的异步结构中，所有对象都拥有被认为实现了Thenable接口的`then()`方法。(待补充)promise类型也实现了Thenable接口。-->
+
+**`then()`**接收可选的、分别在fulfilled和rejected状态执行的**`onResolved`**和**`onRejected`**处理程序 (传入非函数静默忽略)，它返回由`Promise.resolve()`包装后的处理程序返回值 。如下：
+
+```JavaScript
+let p = Promise.resolve('foo');
+let p1 = p.then(); // 未提供onResolved则包装上一个promise的value
+setTimeout(console.log, 0, p1); // Promise <resolved>: foo
+let p2 = p.then(() => { }); // 无显式返回值则包装默认值undefined
+setTimeout(console.log, 0, p2); // ···<resolved>: undefined
+// 注意:抛出异常会返回rejected的promise
+let p3 = p.then(() => { throw 'baz'; });
+setTimeout(console.log, 0, p3); // Promise <rejected> baz
+
+// onRejected的任务是捕获异步错误，返回值也被Promise.resolve()包装
+let q = Promise.reject('foo');
+let q1 = q.then(null, () => {}); // ···<resolved>: undefined
+```
+
+**`catch()`**是` then(null, onRejected) `的语法糖，同样接收onRejected处理程序。**`finally()`**用于给promise添加在fulfilled和rejected状态都会执行的**`onFinally`**处理程序 ，规避前两种处理程序出现冗余代码，返回一个新的
 
 
 
 
+
+## 异步函数
 
 
 
 # 十二 BOM
-
-“BOM”，介绍 BOM（Browser Object Model，浏览器对象模型），即负责处理与浏览器自 身有关的交互操作的对象集合。这一章全面介绍了每一个 BOM 对象，包括 window、document、location、navigator 和 screen。 
 
 ## window对象
 
