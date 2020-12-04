@@ -6,13 +6,13 @@
 4. 红宝书3 p181页闭包与变量例子不懂。
 5. ~~p315 IIFE 例中的闭包作用是什么？~~
 6. 控制台异步打印为什么会显示执行异步打印次数的数字？
+7. p334 `finally()`返回pending promise例及[MDN描述例](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise/finally)没看懂。
 
 
 
 ### 注意点
 
 1. p48页——Symbol 5-16之后——未看；
-2. 第三章/函数笔记——需修改；
 3. p99——静态分配与对象池——未理解；
 4. p139——Array.from 集合/迭代器相关例——未看；
 5. p161——合并复制修改定型数组——未看；
@@ -23,6 +23,7 @@
 10. p264——类混入例子——未理解；
 11. p307——尾调用相关——未看完；
 12. p318——私有变量模块莫斯——未理解；
+12. p345——期约扩展——未看；
 
 
 
@@ -691,28 +692,6 @@ ES7新增指数操作符。`Math.pow()` 自己的操作符`**`， **指数操作
 
 
 
-**函数**
-
-ES的函数可以在任何时候返回任何值。不指定返回值会返回undefined。
-
-严格模式对函数的限制：
-
--  函数不能以 eval 或 arguments 作为名称； 
-
-- 函数的参数不能叫 eval 或 arguments； 
-
-- 两个命名参数不能拥有同一个名称。 
-
-
-ES不在乎传进来的参数个数是否符合函数要求。实际上ES的参数在内部是用类数组arguments表示的，函数收到的始终都只是arguments。
-
-- arguments的值永远与对应命名参数的值保持一致，即修改arguments的值能动态实时修改当前参数值；
-- arguments的长度由传入的参数个数决定，不能操作不存在的参数位；
-- 它们的内存空间是独立的，只是值同步；
-- 严格模式下不允许利用arguments改变参数。
-
-
-
 
 
 # 四 变量、作用域、内存
@@ -863,7 +842,7 @@ Date也重写了三方法，但返回值不同：
 
 - `toDateString()`：以特定于实现的格式显示周几、月、日年； 
 -  `toTimeString()`：以特定于实现的格式显示时、分、秒和时区； 
-- `toLocaleDateString()`——以特定于实现和地区的格式显示星期几、月、日和年； 
+- `toLocaleDateString()`：以特定于实现和地区的格式显示星期几、月、日和年； 
 - `toLocaleTimeString()`：以特定于实现和地区的格式显示时分秒； 
 - `toUTCString()`：以特定于实现的格式显示完整的 UTC日期。 
 
@@ -1530,11 +1509,9 @@ WeakSet与WeakMap十分类似，这两个类型可用于回收DOM内存。
 
 ## 迭代器
 
- **迭代器模式**把某些结构称为**iterable** (可迭代对象)，因为它们实现了正式的 iterable接口，并且可通过**iterator** (迭代器)“消费 (consume)”。==iterable包含的元素都是**有限个**，且具有**无歧义的遍历顺序**==，不一定是集合对象，也可以是具有类数组行为的其他数据结构。==iterator是按需创建的**一次性**对象==，使用相关迭代API迭代关联的iterable。两者概念分离，iterator无需知道iterable的结构，只需知道如何取得连续的值。
+ **迭代器模式**把某些结构称为**迭代器 (可迭代对象)**，因为它们实现了[**可迭代协议**](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Iteration_protocols#%E5%8F%AF%E8%BF%AD%E4%BB%A3%E5%8D%8F%E8%AE%AE)，并且可通过**iterator (迭代器)**“消费 (consume)”。==可迭代对象包含的元素都是**有限个**，且具有**无歧义的遍历顺序**==，不一定是集合对象，也可以是具有类数组行为的其他数据结构。==迭代器是按需创建的**一次性**对象==，使用相关迭代API迭代关联的可迭代对象。两者概念分离，迭代器无需知道可迭代对象的结构，只需知道如何取得连续的值。
 
- 实现 iterable接口 ([**可迭代协议**](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Iteration_protocols#%E5%8F%AF%E8%BF%AD%E4%BB%A3%E5%8D%8F%E8%AE%AE))要求同时具备两种能力：**支持迭代的自我识别能力和创建实现 iterator 接口的对象的能力**。 在ES中，则必须有一个使用` Symbol.iterator `作键的属性作为默认iterator，这个iterator必须引用一个返回新迭代器的工厂函数。==很多内置类型都实现了iterable接口：String、Array、Map、Set、arguments对象、 NodeList 等 DOM 集合类型==。
-
-接收iterable的原生语言特性结构会在后台自动调用`@@iterator`来生成iterator，这些结构包括：
+ 实现可迭代协议要求同时具备两种能力：**支持迭代的自我识别和创建实现迭代器接口的对象**。 在ES中，则必须有使用` Symbol.iterator `作键的属性作为默认迭代器，这个迭代器必须引用一个返回新迭代器的工厂函数。==很多内置类型都实现了可迭代接口：String、Array、Map、Set、arguments对象、 NodeList 等 DOM 集合类型==。接收可迭代对象的原生语言特性结构会在后台自动调用`@@iterator`来生成迭代器，这些结构包括：
 
 -  for-of 循环；
 - 数组解构；
@@ -1546,7 +1523,7 @@ WeakSet与WeakMap十分类似，这两个类型可用于回收DOM内存。
 - `Promise.race()`接收由期约组成的可迭代对象；
 - `yield*`操作符，在生成器中使用 。
 
-iterator API使用**` next()`**遍历 iterable，每次调用返回一个**` iteratorResult`**对象，包含两个属性，表示是否还可以再次调用的done和包含下一个值的value。使用例：
+迭代器API使用**` next()`**遍历可迭代对象，每次调用返回**` iteratorResult`**对象，包含两个属性，是否还能调用的done和包含下一个值的value。如下：
 
 ```JavaScript
 let arr = ['foo', 'bar'];
@@ -1561,27 +1538,27 @@ console.log(iter1.next());  // { done: true, value: undefined }
 console.log(iter1.next());  // { done: true, value: undefined }
 ```
 
-- iterator不知道 iterable的大小，`done: true`状态后就返回同样的值；
-- iterator不与某个时期的 iterable快照绑定，只是使用游标来记录遍历过程，若 iterable在迭代期间被修改，则 iterator也会产生对应变化；
-- 每个iterator都表示对 iterable的一次性有序遍历，彼此独立；
-- iterator维护着指向 iterable的引用，会阻止垃圾回收程序回收。
+- 迭代器不知道可迭代对象的大小，`done: true`后就返回同样的值；
+- 迭代器不与某个时期的可迭代对象快照绑定，只是使用游标来记录遍历过程，若可迭代对象在迭代期间被修改，则迭代器也产生对应变化；
+- 每个迭代器都表示对可迭代对象的一次性有序遍历，彼此独立；
+- 迭代器维护着指向可迭代对象的引用，会阻止垃圾回收程序回收。
 
-任何实现 iterator接口的对象都可以作为iterator使用，它可以指通用的迭代，也可以指接口，指正式的迭代类型，因此也可以编写自定义的 iterator。另外，==每个 iterator也实现了 iterable接口==，所以同样可以被迭代。
+任何实现迭代器接口的对象都可以作为迭代器使用，另外，==每个迭代器也实现了可迭代对象接口==，所以同样可以被迭代。
 
-执行迭代的结构不想要遍历所有对象时可以“关闭”iterator，可能的情况有：
+执行迭代的结构不想要遍历所有对象时可以“关闭”迭代器，可能的情况有：
 
 -  for-of 循环通过 break、continue、return 或 throw 提前退出； 
 -  解构操作并未消费所有值。
 
-可选的**`return()`**用于指定在iterator提前关闭时执行的逻辑，它必须返回一个 有效的`IteratorResult`对象。但并非所有iterator都是可关闭的，要知道某个iterator是否可关闭，可以测试它实例的return属性是否为函数对象。
+可选的**`return()`**用于指定在迭代器提前关闭时执行的逻辑，它必须返回一个有效的`IteratorResult`对象。但并非所有迭代器都是可关闭的，要知道某个迭代器是否可关闭，可以测试它实例的return属性是否为函数对象。
 
 
 
 ## 生成器
 
-**generator** (生成器)能**在函数块内暂停和恢复代码执行**。函数名称前加**`*`** (不受两侧空格影响)表示它是generator，能定义函数的地方 (箭头函数除外)就能定义generator。调用generator函数则产生一个处于suspended (暂停)状态的generator对象，这些对象间**彼此独立**，都实现了iterable接口，它们默认的iterator自引用。
+**generator** (生成器)能**在函数块内暂停和恢复代码执行**。函数名称前加**`*`** (无关两侧空格)表示它是生成器，调用生成器函数则产生一个处于**suspended (暂停)**状态的生成器对象，这些对象间**彼此独立**，都实现了可迭代接口，它们默认的迭代器自引用。
 
-关键字 **`yield`**使generator函数执行暂停，调用generator的`next()` 则继续执行且返回`iteratorResult`对象 。yield后的表达式值将返回给generator调用者，可看作生成器版的 “return”。它只能在generator函数的**直接内部** (嵌套的非generator函数中也不可)使用，否则将抛出错误。
+关键字 **`yield`**使生成器函数执行暂停，调用生成器的`next()` 则继续执行且返回`iteratorResult`对象 。yield后的表达式值将返回给生成器调用者，可看作生成器版的 “return”。它只能在生成器函数的**直接内部** (嵌套的非生成器函数中也不可)使用，否则将抛出错误。
 
 ```JavaScript
 function* generatorFn() {
@@ -1599,7 +1576,7 @@ console.log(generatorObject.next());  // 执行该语句5次
 // {value: "boo", done: true} 
 // {value: undefined, done: true}
 
-// 1. 把Generator当成iterable使用
+// 1. 把Generator当成可迭代对象使用
 function* range(start, end) {
     while (end > start) {
         yield start++;
@@ -1619,16 +1596,15 @@ console.log(generatorObject.next('bar'));
 // {value: "bar", done: true}
 ```
 
-**` yield*`** 表达式迭代操作数，并产生它返回的每个值 ，可以委托给另一个generator或iterable。它本身的值是done为true时返回的值。
+**` yield*`** 表达式迭代操作数，并产生它返回的每个值 ，可以委托给另一个生成器或可迭代对象。它本身的值是done为true时返回的值。
 
 ```JavaScript
 function* g3() {
     yield* [1, 2];
     yield* "34";
     yield* arguments;
-} // yield* 也可以 yield 其它任意iterable
-var iterator = g3(5, 6);   // 委托给其他iterable
-
+} // yield* 也可以 yield 其它任意可迭代对象
+var iterator = g3(5, 6);   // 委托给其他ite可迭代对象
 function* g4() {
     yield* [1, 2, 3];
     return "foo";
@@ -1642,7 +1618,7 @@ var iterator = g5();
 console.log(result);          // "foo"
 ```
 
-generator也支持“关闭”的概念。所有generator都有**`return()`**，一旦通过它进入关闭状态就无法恢复了，传入`return()`的值就是generator对象终止时的值。而**`throw()`**会在暂停时将提供的错误注入到generator对象中，如果错误未被处理，生成器就会关闭。
+generator也支持“关闭”的概念。所有generator都有**`return()`**，一旦通过它进入关闭状态就无法恢复了，传入`return()`的值就是生成器对象终止时的值。而**`throw()`**会在暂停时将提供的错误注入到生成器对象中，如果错误未被处理，生成器就会关闭。
 
 
 
@@ -2135,7 +2111,7 @@ class Person {
 console.log(Person.create()); // Person { age_: ... }
 ```
 
-类也支持定义generator，可添加默认的iterator将类实例变为iterable。
+类也支持定义生成器，可添加默认的迭代器将类实例变为可迭代对象。
 
 **——类继承——**
 
@@ -2372,61 +2348,110 @@ JS没有私有成员的概念，所有对象属性都是公有的。但任何在
 
 # 十一 promise与异步函数
 
-异步行为是ES的基础，早期JS只能定义回调函数表明异步操作完成，串联多个异步操作必定深度嵌套回调函数，陷入回调地狱。ES6增加对Promises/A+ 规范的完善支持以组织异步逻辑，即 **`promise`**引用类型，接下来几个版本又增加**`async`**和**`await`**来定义异步函数。
+异步行为是ES的基础，早期JS只能定义回调函数表明异步操作完成，串联多个异步操作必定深度嵌套回调函数，陷入回调地狱。ES6增加对Promises/A+ 规范的完善支持以组织异步逻辑，即 **`Promise`**引用类型，接下来几个版本又增加**`async`**和**`await`**来定义异步函数。
 
 ## promise
 
-创建新promise时需传入负责初始化promise异步行为和控制状态最终转换的执行器函数`executor`。**`pending`**是promise的初始状态，此时可以`settled`为代表成功的**`fulfilled`**状态，或代表失败的**`rejected`**状态，此结果不可逆且不再改变。不能保证promise一定脱离pending。
+创建新promise时需传入负责初始化promise异步行为和控制状态最终转换的执行器函数`executor`。**`pending`**是promise的初始状态，此时可以**settled**为代表成功的**`fulfilled`**状态，或代表失败的**`rejected`**状态，此结果不可逆且不再改变。不能保证promise一定脱离pending。
 
 为避免根据读取到的状态以同步方式处理promise，其==状态私有==，不能直接通过JS检测，也不能被外部JS代码修改，只在其执行器中完成内部操作。promise切换为fulfilled或rejected，该状态下执行的异步代码将会收到一个私有的内部**value**或**reason**，默认为undefined。
 
-执行器接收两个函数作参：**`resolve()`**在异步任务顺利完成并返回value时调用 ，**`reject()`**在异步任务失败且返回reson时调用，前者将状态切为fulfilled，后者切为rejected并抛出错误。直接调用` Promise.resolve() `将实例化fulfilled的promise，其value对应参数一；类似的，` Promise.reject() `实例化rejected的promise并抛出异步错误 (只能通过onrejected处理程序捕获)，其reson对应参数一，也会传给之后的onrejected处理程序。如下：
+执行器接收两个函数作参：**`resolve()`**在异步任务顺利完成并返回value时调用 ，**`reject()`**在异步任务失败且返回reason时调用，前者将状态切为fulfilled，后者切为rejected并抛出错误。直接调用` Promise.resolve() `将实例化fulfilled的promise，其value对应参数一；类a似的，` Promise.reject() `实例化rejected的promise并抛出异步错误，其reason对应参数一，也会传给之后的onrejected处理程序。如下：
 
 ```JavaScript
 let p1 = new Promise((resolve, reject) => resolve());
 let p2 = Promise.resolve();  // 与上面语句结果相同
-setTimeout(console.log, 0, p2 === Promise.resolve(p2)); // true
 // 传入promise相当于一次空包装，会保留原promise状态
+setTimeout(console.log, 0, p2 === Promise.resolve(p2)); // true
 let p3 = new Promise(() => { });
 setTimeout(console.log, 0, Promise.resolve(p3));// ···<pending> 
 setTimeout(console.log, 0, Promise.resolve(4, 5, 6));
-// Promise <resolved>: 4   会忽略多余参数
+// Promise <fulfilled>: 4   会忽略多余参数
 setTimeout(console.log, 0, Promise.resolve(new Error('foo')));
-// Promise <resolved>: Error: foo  会包装Error对象
+// Promise <fulfilled>: Error: foo  会包装Error对象
 
-// 给Promise.reject传入promise，会成为reson
+// 给Promise.reject传入promise，会成为reason
 setTimeout(console.log, 0, Promise.reject(Promise.resolve()));
-// Promise <rejected>: Promise <resolved>
+// Promise <rejected>: Promise <fulfilled>
 ```
 
 promise是同步对象，也是异步执行模式的媒介，抛出的错误只能只能被异步模式捕获。promise实例的方法是连接外部同步代码与内部异步代码的桥梁。
 
-<!--ES的异步结构中，所有对象都拥有被认为实现了Thenable接口的`then()`方法。(待补充)promise类型也实现了Thenable接口。-->
+<!--ES的异步结构中，所有对象都拥有被认为实现了Thenable接口的`then()`方法。(待补充)-->
 
-**`then()`**接收可选的、分别在fulfilled和rejected状态执行的**`onResolved`**和**`onRejected`**处理程序 (传入非函数静默忽略)，它返回由`Promise.resolve()`包装后的处理程序返回值 。如下：
+promise类型也实现了Thenable接口。**`then()`**接收可选的、分别在fulfilled和rejected状态执行的**`onResolved`**和**`onRejected`**处理程序 (传入非函数静默忽略)，它返回由`Promise.resolve()`包装后的处理程序返回值 。如下：
 
 ```JavaScript
 let p = Promise.resolve('foo');
-let p1 = p.then(); // 未提供onResolved则包装上一个promise的value
-setTimeout(console.log, 0, p1); // Promise <resolved>: foo
-let p2 = p.then(() => { }); // 无显式返回值则包装默认值undefined
-setTimeout(console.log, 0, p2); // ···<resolved>: undefined
+// 未提供onResolved则包装上一个promise的value
+let p1 = p.then(); // Promise <fulfilled>: foo
+// 无显式返回值则包装默认值undefined
+let p2 = p.then(() => { });  //···<fulfilled>: undefined
 // 注意:抛出异常会返回rejected的promise
-let p3 = p.then(() => { throw 'baz'; });
-setTimeout(console.log, 0, p3); // Promise <rejected> baz
+let p3 = p.then(() => { throw 'baz'; }); //···<rejected> baz
 
 // onRejected的任务是捕获异步错误，返回值也被Promise.resolve()包装
 let q = Promise.reject('foo');
-let q1 = q.then(null, () => {}); // ···<resolved>: undefined
+let q4 = q.then(null, () => { }); //···<fulfilled>: undefined
+let q5 = q.catch(() => { }); //Promise <fulfilled>: undefined
+let q6 = q.finally(); // Promise <rejected>: "foo"
+setTimeout(console.log, 0, p === p6); // false
 ```
 
-**`catch()`**是` then(null, onRejected) `的语法糖，同样接收onRejected处理程序。**`finally()`**用于给promise添加在fulfilled和rejected状态都会执行的**`onFinally`**处理程序 ，规避前两种处理程序出现冗余代码，返回一个新的
+**`catch()`**实际是` then(null, onRejected) `的语法糖，也接收onRejected处理程序。**`finally()`**用于给promise添加在fulfilled和rejected状态都会执行的**`onFinally`**处理程序 ，可规避前两种处理程序出现冗余代码，表现为父promise的传递，但返回的是新promise。如上。
 
+promise settled到某状态时，对应处理程序会接收到value或reason，然后被推进消息队列按顺序执行，但其后的==同步代码一定会先于处理程序执行==，这个特性由JS运行时保证，称为**非重入 ( non-reentrancy )**。如下：
 
+```JavaScript
+let p1 = Promise.resolve('p1 fulfilled');
+p1.then((value) => console.log(value));
+console.log('p1.then() returns');
+// p1.then() returns
+// p1 fulfilled
+
+new Promise((resolve, reject) => {
+    console.log('begin asynchronous execution');
+    reject(Error('bar'));
+}).catch((e) => { // onRejected返回fulfilled的promise
+    console.log('caught error', e);
+}).then(() => {
+    console.log('continue asynchronous execution');
+});
+// begin asynchronous execution
+// caught error Error: bar
+// continue asynchronous execution 
+```
+
+rejected promise 类似于`throw()`，在promise的执行函数和处理程序中抛出错误会导致promise以错误对象为reason被rejected。在promise中抛出错误时，实际上是从消息队列中异步抛出，不会阻止运行时继续执行同步指令。**异步错误只能通过onrejected处理程序捕获**。如上：
+
+前面的实例方法均返回新promise，将其连接可构成promise连锁，能够简洁地串行异步任务，解决回调地狱的问题。Promise类也提供将多个promise组合成一个的静态方法：**`Promise.all()`**接收包含一组promise的可迭代对象，根据包含情况返回新promise；**`Promise.race()`**则返回最先fulfilled或rejected的promise的镜像。如下：
+
+```JavaScript
+let p1 = Promise.all(); //  TypeError
+let p2 = Promise.all([]); // 等价于 Promise.resolve()
+// 可迭代对象中的元素会通过Promise.resolve()转换，会保留所有value
+let p3 = Promise.all([Promise.resolve(3), 4]);
+p3.then((value) => setTimeout(console.log, 0, value)); // [3,4]
+// 包含的promise都fulfilled后才fulfilled
+// 包含一个pending/rejected的promise最终就会pending/rejected
+// 第一个rejected的reason作为最终reason，其他promise会静默处理
+
+let p4 = Promise.race(); //  TypeError
+let p5 = Promise.race([3, 4]); // Promise {<fulfilled>: 3}
+let p6 = Promise.race([]); // 等价于new Promise(() => {})
+let p3 = Promise.race([Promise.reject(5), Promise.resolve(6)]);
+// Promise {<rejected>: 5} 最先settled的为最终，其他静默处理
+```
+
+为防止promise连锁/合成过于复杂化，ES的promise并没有某些第三方promise库中的取消和追踪特性，但也有办法实现。
 
 
 
 ## 异步函数
+
+
+
+
 
 
 
