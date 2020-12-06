@@ -6,7 +6,7 @@
 4. 红宝书3 p181页闭包与变量例子不懂。
 5. ~~p315 IIFE 例中的闭包作用是什么？~~
 6. 控制台异步打印为什么会显示执行异步打印次数的数字？
-7. p334 `finally()`返回pending promise例及[MDN描述例](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise/finally)没看懂。
+7. promise方法各种使用场景和情况、异步函数的具体实现需要再理解。
 
 
 
@@ -24,6 +24,7 @@
 11. p307——尾调用相关——未看完；
 12. p318——私有变量模块莫斯——未理解；
 12. p345——期约扩展——未看；
+13. p359——栈追踪与内存管理——未理解；
 
 
 
@@ -31,7 +32,7 @@
 
 # 一 JS简介
 
-一个完整的 JavaScript 实现应由下列三个不同的部分组成：
+一个完整的 JavaScript实现应由下列三个不同的部分组成：
 
 - ECMAScript，由 ECMA-262定义，提供核心语言功能； 
 - 文档对象模型（DOM），提供访问和操作网页内容的方法和接口； 
@@ -2422,7 +2423,7 @@ new Promise((resolve, reject) => {
 // continue asynchronous execution 
 ```
 
-rejected promise 类似于`throw()`，在promise的执行函数和处理程序中抛出错误会导致promise以错误对象为reason被rejected。在promise中抛出错误时，实际上是从消息队列中异步抛出，不会阻止运行时继续执行同步指令。**异步错误只能通过onrejected处理程序捕获**。如上：
+**rejected promise 类似于`throw()`**，在promise的执行函数和处理程序中抛出错误会导致promise以错误对象为reason被rejected。在promise中抛出错误时，实际上是从消息队列中异步抛出，不会阻止运行时继续执行同步指令。**异步错误只能通过onrejected处理程序捕获**。如上：
 
 前面的实例方法均返回新promise，将其连接可构成promise连锁，能够简洁地串行异步任务，解决回调地狱的问题。Promise类也提供将多个promise组合成一个的静态方法：**`Promise.all()`**接收包含一组promise的可迭代对象，根据包含情况返回新promise；**`Promise.race()`**则返回最先fulfilled或rejected的promise的镜像。如下：
 
@@ -2448,6 +2449,22 @@ let p3 = Promise.race([Promise.reject(5), Promise.resolve(6)]);
 
 
 ## 异步函数
+
+ ES8新增的`async/await`是promise在函数中的应用。**`async`**使函数具有异步特征，期待一个实现thenable接口的对象，返回值被`Promise.resolve()`包装(抛出错误或拒绝promise除外)；**`async`**可以暂停异步函数的执行，让出JS运行时线程 (类似于yield)，期待一个实现thenable接口的对象并为其“解包”，再异步恢复函数执行。
+
+```JavaScript
+
+async function baz() { // 返回实现了 thenable 接口的非promise对象
+ const thenable = {
+ then(callback) { callback('baz'); }
+ };
+ console.log(await thenable);
+}
+baz(); // baz
+
+```
+
+
 
 
 
