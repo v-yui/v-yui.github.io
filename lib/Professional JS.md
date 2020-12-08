@@ -5,8 +5,9 @@
 3. ~~p260“ super 始终会定义为[[HomeObject]]的原型 ”如何理解？~~(见集锦 1)
 4. 红宝书3 p181页闭包与变量例子不懂。
 5. ~~p315 IIFE 例中的闭包作用是什么？~~
-6. 控制台异步打印为什么会显示执行异步打印次数的数字？
+6. ~~控制台异步打印为什么会显示执行异步打印次数的数字？~~
 7. promise方法各种使用场景和情况、异步函数的具体实现需要再理解。
+8. `window.open`特性字符串各种值未笔记。
 
 
 
@@ -176,7 +177,7 @@ IE5.5发明了文档模式的概念，即使用doctype切换。不同模式主�
 
 -	准标准模式 (almost standards mode）：此模式下的浏览器支持很多标准的特性，但是没 有标准规定得那么严格；主要区别在于对待图片元素周围的空白。
 
-准标准模式与标准模式非常接近，很少需要区分，当提到“标准模式”时，指的就是除混杂模式以外的模式。
+现在，这些模式都已被标准化，准标准模式已和标准模式相同，标准模式成为默认表现。`BackCompat`表示怪异模式，` CSS1Compat `为非怪异模式。
 
 
 
@@ -2471,67 +2472,37 @@ console.log(2);
 
 async函数被调用后，执行到await语句暂停执行，向消息队列中添加为await求值的任务，async函数退出；顶级线程执行完毕，JS运行时从消息队列取出任务，恢复执行async函数执行，为await赋值，继续执行await语句之后的内容。实际开发中，对于并行的异步操作通常更关注结果而不依赖执行顺序。
 
-*注意：某些时刻使用promise要比async函数消耗更大。*
+*注意：某些时刻比如抛出错误时使用promise要比async函数消耗更大。*
 
 
 
 # 十二 BOM
 
+ES把BOM (Browser Object Model)是用JS开发Web应用程序的核心。BOM提供了网页无关的浏览器功能对象，H5规范中涵盖了BOM的主要内容。
+
 ## window对象
 
-BOM的核心对象是 window，它表示浏览器的一个实例。在浏览器中，window既是JS访问浏览器窗口的一个接口，又是ES规定的Global对象。
+window对象表示浏览器实例，是BOM核心，在浏览器中作为浏览器窗口的JS接口和ES的Global对象。因为window的属性在全局作用域有效，所以很多浏览器API及相关构造函数都暴露为其属性。
 
-全局作用域中声明的变量函数都会变成window对象的属性和方法，但与直接在window对象上定义属性不同，全局变量不可使用delete删除，因为其[[Configurable]]特性为false。
+**top**对象指向最外层窗口，即浏览器窗口本身；**parent**对象指向当前窗口的父窗口；**self**对象始终指向window。
 
-尝试访问未声明的变量会抛出错误，可以查询window对象来确认。
+- `screenLeft/Top`：窗口相对屏幕左侧和顶部的CSS像素值；
 
+- **`moveTo/By()`**：接收绝对/相对坐标，移动窗口到新位置 (有限制)；
+- `devicePixelRatio `：存储物理像素对逻辑像素的缩放系数，与DPI (dots per inch)对应。CSS像素是Web统一像素单位，约为**1/96英寸**，此时人眼应在`(1/96英寸)/tan0.0213°` (70cm+)处。
 
+- `outerWidth/Height`：浏览器窗口自身大小；
+- `innerWidth/Height`：页面内部大小 (包含滚动条)；
+- `document.documentElement.clientWidth/Heigh`：保存页面视口大小，`document.body.clientWidth/Height `同样，需考虑DTD；
+- `resizeTo/By()`：接收绝对/相对宽高值调整窗口大小 (有限制)；
+- `scrollX/Y`和`pageX/Yoffset`：页面水平/垂直滚动的值；
+- `scroll()`、`scrollTo/BY()`：接收绝对(前两个)/相对坐标滚动页面，也可接收 [ScrollToOptions](https://developer.mozilla.org/zh-CN/docs/Web/API/ScrollToOptions)字典 (指定元素滚动位置及是否应该平滑)；
 
-**窗口关系及框架**
+` window.open() `接收4个参数 (URL、目标窗口、特性字符串、是否替代当前页) 用指定的名称将指定资源加载到浏览器上下文 ，返回新建窗口的引用。可使用` window.close() `关闭，关闭后其引用仍存在但只能检测`closed`属性。若目标窗口不存在则打开新窗口并命名，此时用于配置新窗口包含特性的para3有效。`opener`属性包含指向打开它的窗口，可设置为null使其运行在独立进程。由于过去被广告滥用所以有着诸多限制。
 
-页面中包含的每个框架(frame)都拥有自己的window对象，保存在frames集合中，可通过数值索引或框架名称访问相应的window对象，其自身window对象的name属性包含了框架的名称。
+JS在浏览器中单线程执行，但允许使用定时器执行代码，为调度不同代码执行，JS维护一个任务队列，使加入其中的任务按序执行。`setTimeout()`在一定时间后添加任务到队列；而`setInterval()`每隔一段时间就添加新任务到队列，不建议在生产环境使用。均返回一个表示该超时排期的数值ID，可使用`clearTimeout()`取消等待中的排期任务。
 
-- top对象始终指向最外层的框架，最好使用top来引用框架；
-- parent对象始终指向当前框架的直接上层框架；
-- self对象始终指向window。
+*注意：所有超时代码都会在全局作用域中的一个匿名函数中运行。*
 
-这三个对象都是window对象的属性。
+`alert()`接收字符串并弹窗显式，只有确认按钮；`confirm()`有确认和取消按钮，返回true表示确认；`prompt()`显示输入文本框和确认取消按钮，点击确认则返回文本框中的值。这些对话框都是同步的模拟对话框，样式由宿主环境决定，不包含HTML和CSS。另外，JS还有` find() `和` print() `，浏览器菜单的“查找”和“打印”被点击时将异步显示，也可通过window直接调用。
 
-使用框架时浏览器中会存在多个 Global 对象。每个框架中的全局变量自动成为框架中 window 对象的属性。由于每个 window 对象都包含原生 类型的构造函数，因此每个框架都有一套自己的构造函数，这些构造函数一一对应， 但并不相等。这个问题会影响到对跨框架传递的对象使用 instanceof 操作符。 
-
-**窗口位置**
-
-screenLeft / screenX  返回浏览器窗口到屏幕左边缘的 CSS 像素距离数值。screenTop/screenY 返回浏览器顶部距离系统桌面顶部的垂直距离。 
-
-使用下列代码跨浏览器取得窗口左/上位置：
-
-```JavaScript
-var leftPos = (typeof window.screenLeft == "number") ?     
-    window.screenLeft : window.screenX; 
-var topPos = (typeof window.screenTop == "number") ?       
-    window.screenTop : window.screenY; 
-```
-
-但各浏览器对该属性的规定并不同，所以无法在跨浏览器的条件下取得窗口左边和上边的精确坐标值。使用moveTo()和moveBy()有可能将窗口 (最外层的window)精确移动到某一个新位置。
-
-**窗口大小**
-
-- outerWidth /outerHeight 返回浏览器窗口本身的尺寸；
-
-- innerWidth /innerHeight 表示该容器中页面视图区的大小。
-
-  `document.documentElement.clientWidth/clientHeigh`和`document.body.clientWidth/clientHeight `保存了页面视口信息。**某些浏览器中与文档模式有关。*
-
-调整浏览器窗口的两个方法(实际应用中也会被制限)：
-
-- resizeTo()接收浏览器窗口的新宽度和新高度；
-- resizeBy()接收新窗口与原窗口的宽 度和高度之差。
-
-**打开窗口**
-
-使用`window.open()`可以导航到特定的URL或打开新的浏览器窗口。
-
-1. 要加载的URL；
-2. 窗口目标；
-3. 特性字符串；
-4. 一个表示新页面是否取代浏览器历史记录中当前加载页面的布尔值。
