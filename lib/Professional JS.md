@@ -2347,7 +2347,7 @@ JS没有私有成员的概念，所有对象属性都是公有的。但任何在
 
 
 
-# 十一 promise与异步函数
+# 十一 异步
 
 异步行为是ES的基础，早期JS只能定义回调函数表明异步操作完成，串联多个异步操作必定深度嵌套回调函数，陷入回调地狱。ES6增加对Promises/A+ 规范的完善支持以组织异步逻辑，即 **`Promise`**引用类型，接下来几个版本又增加**`async`**和**`await`**来定义异步函数。
 
@@ -2450,25 +2450,28 @@ let p3 = Promise.race([Promise.reject(5), Promise.resolve(6)]);
 
 ## 异步函数
 
- ES8新增的`async/await`是promise在函数中的应用。**`async`**使函数具有异步特征，期待一个实现thenable接口的对象，返回值被`Promise.resolve()`包装(抛出错误或拒绝promise除外)；**`async`**可以暂停异步函数的执行，让出JS运行时线程 (类似于yield)，期待一个实现thenable接口的对象并为其“解包”，再异步恢复函数执行。
+ ES8新增的`async/await`是promise在函数中的应用。**`async`**使函数具有异步特征，期待一个实现thenable接口的对象，返回值被`Promise.resolve()`包装(抛出错误或拒绝promise除外)；**`async`**可以暂停异步函数的执行，让出JS运行时线程 (类似于yield)，期待一个实现thenable接口的对象并为其“解包”，再异步恢复函数执行，只能出现在async函数直接内部中。如下：
 
 ```JavaScript
-
-async function baz() { // 返回实现了 thenable 接口的非promise对象
- const thenable = {
- then(callback) { callback('baz'); }
- };
- console.log(await thenable);
+async function foo() {
+    console.log(1);
+    console.log(await 3);
+    const thenable = { // 实现了thenable接口的非promise对象
+        then(callback) { callback('4'); }
+    };
+    console.log(await thenable);
+    console.log(await Promise.resolve(5));
+    // 对rejected promise使用await会unwarp(释放)错误值
+    await Promise.reject(6); // 相当于throw()
+    console.log(7); // 不会执行
 }
-baz(); // baz
-
+foo().catch(console.log); // 捕获单独的rejected promise
+console.log(2);
 ```
 
+async函数被调用后，执行到await语句暂停执行，向消息队列中添加为await求值的任务，async函数退出；顶级线程执行完毕，JS运行时从消息队列取出任务，恢复执行async函数执行，为await赋值，继续执行await语句之后的内容。实际开发中，对于并行的异步操作通常更关注结果而不依赖执行顺序。
 
-
-
-
-
+*注意：某些时刻使用promise要比async函数消耗更大。*
 
 
 
