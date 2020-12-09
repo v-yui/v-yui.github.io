@@ -8,6 +8,7 @@
 6. ~~控制台异步打印为什么会显示执行异步打印次数的数字？~~
 7. promise方法各种使用场景和情况、异步函数的具体实现需要再理解。
 8. `window.open`特性字符串各种值未笔记。
+9. p380 历史状态管理未理解。
 
 
 
@@ -1400,7 +1401,9 @@ alert(firstHalfDataView.buffer === buf); // true
 
 DataView 对缓冲内容没有任何预设，不可迭代，其API强制在读、写时指定 ElementType来实现JS的 Number 类型到缓冲内二进制格式的转换。ES支持8种不同的 ElementType。内存中值的字节序，默认为大端字节序。 
 
-![ElementType](..\pic\ElementType.png)类型可互换使用，DataView 写入缓冲时会尽量把值转为适当类型，后备值为0，若无法转换则抛出错误。且每个类型都有使用 byteOffset 定位读写位置的 get和 set方法。如下：
+![ElementType](..\img\ElementType.png)
+
+类型可互换使用，DataView 写入缓冲时会尽量把值转为适当类型，后备值为0，若无法转换则抛出错误。且每个类型都有使用 byteOffset 定位读写位置的 get和 set方法。如下：
 
 ```JavaScript
 const buf = new ArrayBuffer(2);
@@ -2348,7 +2351,7 @@ JS没有私有成员的概念，所有对象属性都是公有的。但任何在
 
 
 
-# 十一 异步
+# 十 异步
 
 异步行为是ES的基础，早期JS只能定义回调函数表明异步操作完成，串联多个异步操作必定深度嵌套回调函数，陷入回调地狱。ES6增加对Promises/A+ 规范的完善支持以组织异步逻辑，即 **`Promise`**引用类型，接下来几个版本又增加**`async`**和**`await`**来定义异步函数。
 
@@ -2379,9 +2382,7 @@ setTimeout(console.log, 0, Promise.reject(Promise.resolve()));
 
 promise是同步对象，也是异步执行模式的媒介，抛出的错误只能只能被异步模式捕获。promise实例的方法是连接外部同步代码与内部异步代码的桥梁。
 
-<!--ES的异步结构中，所有对象都拥有被认为实现了Thenable接口的`then()`方法。(待补充)-->
-
-promise类型也实现了Thenable接口。**`then()`**接收可选的、分别在fulfilled和rejected状态执行的**`onResolved`**和**`onRejected`**处理程序 (传入非函数静默忽略)，它返回由`Promise.resolve()`包装后的处理程序返回值 。如下：
+ES暴露的异步结构中，任何对象都有被认为实现了Thenable接口的`then`方法。promise的**`then()`**接收可选的、分别在fulfilled和rejected状态执行的**`onResolved`**和**`onRejected`**处理程序 (传入非函数静默忽略)，它返回由`Promise.resolve()`包装后的处理程序返回值 。如下：
 
 ```JavaScript
 let p = Promise.resolve('foo');
@@ -2476,13 +2477,13 @@ async函数被调用后，执行到await语句暂停执行，向消息队列中�
 
 
 
-# 十二 BOM
+# 十一 BOM
 
-ES把BOM (Browser Object Model)是用JS开发Web应用程序的核心。BOM提供了网页无关的浏览器功能对象，H5规范中涵盖了BOM的主要内容。
+ES把BOM (Browser Object Model)是用JS开发Web应用程序的核心。BOM提供了网页无关的浏览器功能**对象**，H5规范中涵盖了BOM的主要内容。
 
-## window对象
+## window
 
-window对象表示浏览器实例，是BOM核心，在浏览器中作为浏览器窗口的JS接口和ES的Global对象。因为window的属性在全局作用域有效，所以很多浏览器API及相关构造函数都暴露为其属性。
+window对象表示浏览器实例，是BOM核心，在浏览器中作为浏览器窗口的JS接口和ES的Global对象。因为window属性在全局作用域有效，故许多浏览器API及相关构造函数都暴露为其属性。
 
 **top**对象指向最外层窗口，即浏览器窗口本身；**parent**对象指向当前窗口的父窗口；**self**对象始终指向window。
 
@@ -2505,4 +2506,135 @@ JS在浏览器中单线程执行，但允许使用定时器执行代码，为调
 *注意：所有超时代码都会在全局作用域中的一个匿名函数中运行。*
 
 `alert()`接收字符串并弹窗显式，只有确认按钮；`confirm()`有确认和取消按钮，返回true表示确认；`prompt()`显示输入文本框和确认取消按钮，点击确认则返回文本框中的值。这些对话框都是同步的模拟对话框，样式由宿主环境决定，不包含HTML和CSS。另外，JS还有` find() `和` print() `，浏览器菜单的“查找”和“打印”被点击时将异步显示，也可通过window直接调用。
+
+
+
+## location
+
+location提供了当前窗口中加载文档的信息及导航功能，同时作为window和document的属性。location会把URL解析为离散片段保存在属性中，加载URL`http://foouser:barpassword@www.wrox.com:80/WileyCDA/?q= javascript#contents`时location对象的内容如下：
+
+![ElementType](..\img\LocationURL.png)
+
+[URLSearchParams](https://developer.mozilla.org/zh-CN/docs/Web/API/URLSearchParams)提供了一组标准API用于检查修改search字符串，一般也支持将其实例用作可迭代对象。如下：
+
+```JavaScript
+let sear = new URLSearchParams("?q=javascript&num=10");
+alert(sear.toString()); // " q=javascript&num=10"
+sear.has("num");        // true
+sear.get("num");        // 10 
+sear.set("page", "3");  // " q=javascript&num=10&page=3"
+sear.delete("q");       // " num=10&page=3"
+for (let param of searchParams) {
+    console.log(param); // ["num", "10"] ["page", "3"]
+}
+
+location.assign("http://www.wrox.com");
+window.location = "http://www.wrox.com";
+location.href = "http://www.wrox.com"; // 最常见
+```
+
+修改location或其属性都会重加载页面，hash值除外，它会增加一页历史记录。`replace()`接收URL并重加载但不增加记录，`reload()`也可重加载，若不传参则可能会从缓存中重加载，传入true将强制从服务器加载。
+
+
+
+## 其他三个
+
+**navigator**由 Netscape2引入，已成为客户端标识浏览器的标准，通常用于确认浏览器类型，只要启用JS，navigator就一定存在。其属性见[MDN文档](https://developer.mozilla.org/zh-CN/docs/Web/API/Navigator)。
+
+`plugins`是包含浏览器安装插件信息的数组，其每一项都包含如下属性：
+
+- name：插件名称；
+- description：插件介绍；
+- filename：插件的文件名；
+- length：由当前插件处理的MIME类型数量；
+- MimeType：
+  -  description：描述MIME 类型；
+  -  enabledPlugin：指向插件对象的指针；
+  - suffixes：该 MIME 类型对应扩展名的逗号分隔的字符串；
+  - type：完整的 MIME 类型字符串。 
+
+plugins还有`refresh()`来刷新自身以反映新插件，传入true会重加载页面。
+
+*注意：IE10以下不支持 Netscape式的插件 。*
+
+**history**提供操作浏览器历史记录的接口，不会直接暴露URL。`go()`接受一个数值+/-n，在历史记录中向前/后导航n步；也可接收字符串，导航到历史中包含该字符串的第一个位置。`length`属性表示历史记录中的条目数量。现代Web应用程序开发中最难的环节之一就是历史记录管理。H5也为history增添了方便的状态管理特性，如`pushState()`。
+
+**screen**中保存客户端显示器信息。
+
+
+
+
+
+# 十二 客户端检测
+
+通过检测浏览器特性来确认用户使用的浏览器，如下：
+
+```JavaScript
+class BrowserDetector {
+    constructor() {
+        // 测试条件编译
+        // IE6~10 支持
+        this.isIE_Gte6Lte10 = /*@cc_on!@*/false;
+        // 测试 documentMode
+        // IE7~11 支持
+        this.isIE_Gte7Lte11 = !!document.documentMode;
+        // 测试 StyleMedia 构造函数
+        // Edge 20 及以上版本支持
+        this.isEdge_Gte20 = !!window.StyleMedia;
+        // 测试 Firefox 专有扩展安装 API
+        // 所有版本的 Firefox 都支持
+        this.isFirefox_Gte1 = typeof InstallTrigger !== 'undefined';
+        // 测试 chrome 对象及其 webstore 属性
+        // Opera 的某些版本有 window.chrome，但没有 window.chrome.webstore
+        // 所有版本的 Chrome 都支持
+        this.isChrome_Gte1 = !!window.chrome && !!window.chrome.webstore;
+        // Safari 早期会给构造函数标签符追加"Constructor"，如：
+        // window.Element.toString(); // [object ElementConstructor]
+        // Safari 3~9.1 支持
+        this.isSafari_Gte3Lte9_1 = /constructor/i.test(window.Element);
+        // 推送通知 API 暴露在 window 对象上
+        // 使用默认参数值以避免对 undefined 调用 toString()
+        // Safari 7.1 及以上版本支持
+        this.isSafari_Gte7_1 =
+            (({ pushNotification = {} } = {}) =>
+                pushNotification.toString() == '[object SafariRemoteNotification]'
+            )(window.safari);
+        // 测试 addons 属性
+        // Opera 20 及以上版本支持
+        this.isOpera_Gte20 = !!window.opr && !!window.opr.addons;
+    }
+    isIE() { return this.isIE_Gte6Lte10 || this.isIE_Gte7Lte11; }
+    isEdge() { return this.isEdge_Gte20 && !this.isIE(); }
+    isFirefox() { return this.isFirefox_Gte1; }
+    isChrome() { return this.isChrome_Gte1; }
+    isSafari() { return this.isSafari_Gte3Lte9_1 || this.isSafari_Gte7_1; }
+    isOpera() { return this.isOpera_Gte20; }
+} 
+```
+
+还可通过浏览器的**用户代理字符串**确定浏览器,它包含在每个 HTTP 请求的头部，在JS中通过只读属性`navigator.userAgent`访问。虽然浏览器发展时都通过在用户代理字符串中包含误导信息来欺骗服务器，但仍可以用来准确识别浏览器，不过有些浏览器提供的私有方法` __defineGetter__ `可以纂改用户代理字符串。也可使用第三方用户代理解析程序。
+
+navigator和scree提供了**软件**环境信息。如下：
+
+- `navigator.oscpu`：对应用户代理字符串中OS/系统架构信息；
+- `navigator.vendor`：浏览器开发商信息，实时标准；
+- `navigator.platform`：浏览器所在OS信息，实时标准；
+- ` screen.color/pixelDepth`：显示器每像素颜色位深；
+- `screen.orientation`：返回当前屏幕方向；
+
+navigator也暴露出一些可以提供**浏览器和OS**状态信息的API。如下：
+
+- Geolocation API 可以让浏览器脚本感知当前设备的地理位置，只在安全执行环境 (通过 HTTPS 获取的脚本)中可用。返回一个包含经纬度、海拔、设备移动速度等信息的 Coordinates对象。
+- 当设备连接到网络时，浏览器会记录并触发online事件，断开时则会触发offline事件，可通过`navigator.onLine`确定。NetworkInformation API 为连接属性变化事件处理程序定义了事件对象，包含带宽、连接速度和质量、网络连接技术等信息。
+- 浏览器可访问设备电池及充电信息，`navigator.getBattery()`会返回一个promise，resolved为 BatteryManager对象，包含是否接入电源、何时充满/耗尽、当前电量百分比等信息，还提供了4个事件属性。
+
+浏览器检测**硬件**能力有限，但navigator仍提供了一些基本信息：
+
+- `navigator.hardwareConcurrency`：浏览器支持的逻辑处理核心数量，但不一定，实际表示可并行执行的最大工作线程数量；
+- `navigator.deviceMemory`：设备大致系统内存大小，单位为GB；
+- `navigator.maxTouchPoints`：触摸屏支持的最大关联触点数量。
+
+
+
+# 十三 DOM
 
