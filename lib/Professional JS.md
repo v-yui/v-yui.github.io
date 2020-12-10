@@ -61,7 +61,7 @@ ECMA-262定义了ES的语法、类型、语句、关键字、保留字、操作�
 
 ## DOM
 
-IE4和 Navigator 4采用不同的思路开发DHTML，做到了不刷新页面而修改样式和内容。为了保持Web跨平台的初衷，W3C制定了DOM标准。DOM是用于在HTML中使用扩展XML的API，它把整个页面映射为分层节点树，便于开发者控制和修改。DOM发展如下：
+IE4和 Netscape4采用不同的思路开发DHTML，做到了不刷新页面而修改样式和内容。为了保持Web跨平台的初衷，W3C制定了DOM标准。DOM是用于在HTML中使用扩展XML的API，它把整个页面映射为分层节点树，便于开发者控制和修改。DOM发展如下：
 
 1. **DOM Level 1**，1998年10月成为 W3C的推荐标准，由两个模块组成：
 
@@ -96,7 +96,7 @@ IE4和 Navigator 4采用不同的思路开发DHTML，做到了不刷新页面而
 
 ## BOM
 
-IE3和Navigator 3都可以访问和操作浏览器窗口的BOM，使用 BOM可以控制浏览器显示的页面 以外的部分。H5把很多BOM功能写入了正式规范。一般来说，BOM只处理浏览器窗口和框架，但习惯上也把所有针对浏览器的JS扩展算作BOM的一部分，如：
+IE3和 Netscape3都可以访问和操作浏览器窗口的BOM，使用 BOM可以控制浏览器显示的页面 以外的部分。H5把很多BOM功能写入了正式规范。一般来说，BOM只处理浏览器窗口和框架，但习惯上也把所有针对浏览器的JS扩展算作BOM的一部分，如：
 
 1. 弹出新浏览器窗口的功能； 
 2. 移动、缩放和关闭浏览器窗口的功能；
@@ -2489,7 +2489,7 @@ window对象表示浏览器实例，是BOM核心，在浏览器中作为浏览�
 
 - `screenLeft/Top`：窗口相对屏幕左侧和顶部的CSS像素值；
 
-- **`moveTo/By()`**：接收绝对/相对坐标，移动窗口到新位置 (有限制)；
+- `moveTo/By()`：接收绝对/相对坐标，移动窗口到新位置 (有限制)；
 - `devicePixelRatio `：存储物理像素对逻辑像素的缩放系数，与DPI (dots per inch)对应。CSS像素是Web统一像素单位，约为**1/96英寸**，此时人眼应在`(1/96英寸)/tan0.0213°` (70cm+)处。
 
 - `outerWidth/Height`：浏览器窗口自身大小；
@@ -2636,5 +2636,75 @@ navigator也暴露出一些可以提供**浏览器和OS**状态信息的API。�
 
 
 
-# 十三 DOM
 
+
+# **十三** DOM
+
+DOM (Document Object Mode)是HTML和XML文档的编程接口，脱胎于早期的DHTML，现在是真正跨平台、语言无关的表示和操作网页的方式。
+
+*注意：IE8以下中的DOM通过COM实现，跟原生JS对象行为不一致。*
+
+## 节点层级
+
+ 任何HTML或XML都可用DOM表示为由节点构成的层级结构。document是文档根节点，有唯一子节点**documentElement**，在HTML中为`<html>`，在XML中可为任何元素，其他元素都包含其中。
+
+
+
+### Node
+
+DOM1描述了DOM节点类型都必须实现的Node接口，在JS中被实现为Node类型，被所有节点继承。有12种nodeType，在Node类型上以**数值常量**表示：
+
+-  Node.ELEMENT_NODE（1）
+- Node.ATTRIBUTE_NODE（2）
+- Node.TEXT_NODE（3）
+- Node.CDATA_SECTION_NODE（4）
+- Node.ENTITY_REFERENCE_NODE（5）
+- Node.ENTITY_NODE（6）
+- Node.PROCESSING_INSTRUCTION_NODE（7）
+- Node.COMMENT_NODE（8）
+- Node.DOCUMENT_NODE（9）
+- Node.DOCUMENT_TYPE_NODE（10）
+- Node.DOCUMENT_FRAGMENT_NODE（11）
+- Node.NOTATION_NODE（12）
+
+节点之间都有类似于家族的关系。**节点属性和方法**如下：
+
+- **`nodeType`**：节点类型，不过浏览器并不支持所有节点类型；
+- **`nodeName`**：节点名称；
+- **`nodeValue`**：当前节点值，没有则为null；
+- **`childNodes`**：包含子节点集合的NodeList实例，即时更新；
+- **`parentNode`**：节点在DOM树中的父元素；
+- **`previousSibling`**：节点前一个兄弟节点，没有则为null；
+- **`nextSibling`**：同上，后一个兄弟节点；
+- **`firstChild`**：childNodes中第一个节点，没有则为null；
+- **`lastChild`**：同上，最后一个节点；
+- **`ownerDocument`**：当前节点顶层document对象；
+- **`hasChildNodes()`**：有子节点则返回true；
+- **`appendChild()`**：在childNodes==末尾==添加新节点并返回；
+- **`insertBefore()`**：插入para1节点到参照节点para2前并返回，若para2为null那么等同于`appendChild()`；
+- **`replaceChild()`**：替换para2节点为para1节点 (被移除或替换的节点从技术上来说仍被文档拥有，但已经没有它的位置)；
+- **`removeChild()`**：移除并返回节点；
+- **`cloneNode()`**：传入true会返回节点及其子DOM树，否则只返回属于文档但没有父节点的节点本身，称作孤儿节点 (orphan)；
+- **`normalize`**：“规范化”节点及其子节点，即删除空文本节点，合并相邻的文本节点。
+
+
+
+### Document
+
+Document类型是表示文档节点的类型，可表示HTML页面或XML文档，一般通过 HTMLDocument (继承了Document)的实例取得表示整个HTML页面的文档对象`document`，`document`也作为window的属性。
+
+DOM规定Document节点的的子节点可为DocumentType (能访问`<!doctype>`的`doctype`属性)、Element、Comment (注释节点，根据浏览器实现可能表现不一致)、ProcessingInstruction；提供指向`<html>`的**`documentElement`**属性和指向`<body>`的**`body`**属性，后者使用最多。
+
+document作为HTMLDocument的实例，拥有一些标准Document对象没有的属性。**`title`**包含`<title>`的内容，修改其会反应在标题栏上但`<title>`不变。**`URL`**包含当前页面完整URL，**`domain`**包含页面域名，可修改但必须是URL包含的值，且一旦设置为二级域名不能设回，当页面中包含来自不同子域的`<frame>`时设置domain可解决跨源通信的安全限制问题。**`referrer`**包含链接到当前页面的页面的URL。 
+
+
+
+
+
+
+
+
+
+
+
+## DOM扩展
