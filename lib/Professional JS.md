@@ -2652,20 +2652,20 @@ DOM (Document Object Mode)是HTML和XML文档的编程接口，脱胎于早期�
 
 ### Node
 
-DOM1描述了DOM节点类型都必须实现的Node接口，在JS中被实现为Node类型，被所有节点继承。有12种nodeType，在Node类型上以**数值常量**表示：
+DOM1描述了DOM节点类型都必须实现的Node接口，在JS中被实现为**Node**类型，被所有节点继承。有12种nodeType，在Node类型上以**数值常量**表示：
 
--  Node.ELEMENT_NODE（1）
-- Node.ATTRIBUTE_NODE（2）
-- Node.TEXT_NODE（3）
-- Node.CDATA_SECTION_NODE（4）
-- Node.ENTITY_REFERENCE_NODE（5）
-- Node.ENTITY_NODE（6）
-- Node.PROCESSING_INSTRUCTION_NODE（7）
-- Node.COMMENT_NODE（8）
-- Node.DOCUMENT_NODE（9）
-- Node.DOCUMENT_TYPE_NODE（10）
-- Node.DOCUMENT_FRAGMENT_NODE（11）
-- Node.NOTATION_NODE（12）
+-  `Node.ELEMENT_NODE`（1）
+- `Node.ATTRIBUTE_NODE`（2）
+- `Node.TEXT_NODE`（3）
+- `Node.CDATA_SECTION_NODE`（4）
+- `Node.ENTITY_REFERENCE_NODE`（5）
+- `Node.ENTITY_NODE`（6）
+- `Node.PROCESSING_INSTRUCTION_NODE`（7）
+- `Node.COMMENT_NODE`（8）
+- `Node.DOCUMENT_NODE`（9）
+- `Node.DOCUMENT_TYPE_NODE`（10）
+- `Node.DOCUMENT_FRAGMENT_NODE`（11）
+- `Node.NOTATION_NODE`（12）
 
 节点之间都有类似于家族的关系。**节点属性和方法**如下：
 
@@ -2691,15 +2691,74 @@ DOM1描述了DOM节点类型都必须实现的Node接口，在JS中被实现为N
 
 ### Document
 
-Document类型是表示文档节点的类型，可表示HTML页面或XML文档，一般通过 HTMLDocument (继承了Document)的实例取得表示整个HTML页面的文档对象`document`，`document`也作为window的属性。
-
-DOM规定Document节点的的子节点可为DocumentType (能访问`<!doctype>`的`doctype`属性)、Element、Comment (注释节点，根据浏览器实现可能表现不一致)、ProcessingInstruction；提供指向`<html>`的**`documentElement`**属性和指向`<body>`的**`body`**属性，后者使用最多。
+**Document**类型是表示文档节点的类型，可表示HTML页面或XML文档，一般通过 HTMLDocument (继承了Document) 的实例取得表示整个HTML页面的文档对象document。document 也作为window的属性，提供指向`<html>`的**`documentElement`**属性和指向`<body>`的**`body`**属性，后者使用最多。
 
 document作为HTMLDocument的实例，拥有一些标准Document对象没有的属性。**`title`**包含`<title>`的内容，修改其会反应在标题栏上但`<title>`不变。**`URL`**包含当前页面完整URL，**`domain`**包含页面域名，可修改但必须是URL包含的值，且一旦设置为二级域名不能设回，当页面中包含来自不同子域的`<frame>`时设置domain可解决跨源通信的安全限制问题。**`referrer`**包含链接到当前页面的页面的URL。 
 
+获取元素的引用：**` getElementById() `**接收元素ID，返回第一个匹配元素或null；**` getElementByTagName() `**接收元素标签名，返回包含匹配元素的NodeList，在HTML中则返回 HTMLCollection对象，后者的` namedItem() `可通过name属性取得某一项；**` getElementByName() `**返回具有给定name的所有元素，也返回 HTMLCollection，通常用于radio类型的input。
+
+```JavaScript
+<img src="myimage.gif" name="myImage"  id="myImg"> 
+let img = document.getElementById("myImg"); // 大小写必须完全匹配
+let images = document.getElementsByTagName("img");
+// 不强制匹配大小写，但在XML中必须完全匹配
+let myImage1 = images.namedItem("myImage");
+let myImage2 = images["myImage"]; // 后台自动调用namedItem()
+let allEle = document.getElementsByTagName("*"); // 匹配所有元素
+```
+
+HTMLDocument对象上的特殊集合 (类似于快捷方式)：
+
+- ` document.anchors `：文档中所有带 name 属性的`<a>`元素；
+- `document.forms`：文档中所有`<form>`元素；
+- `document.images `：文档中所有`<img>`元素；
+- `document.links `：文档中所有带 href 属性的`<a>`元素；
+
+document向网页输出流写入内容：**`write()`**简单的写入文本，`writeln()`会追加“\n”，若在页面加载完后调用会重写整个页面，`open()`和`close()`用于打开和关闭网页输出流。 严格的 XHTML不支持文档写入，对于内容类型为`application/xml+xhtml`的页面，这些方法不起作用。 
 
 
 
+### Element
+
+**Element**表示XML或HTML元素，是除Document外最常用类型。**`tagName`**和`nodeName`都可获取元素标签名，在HTML中tagName始终以全大写表示，而XML和XHTML中则与源代码中一致。所有HTML都通过HTMLElement (继承Element)类型表示，均拥有以下属性：`id`、`title`、`lang` (元素内容的语言代码)、`dir` (语言书写方向，ltr/rtl表从左/右到右/左)、`className`(即相当于class)。**`createElement()`**接收标签名创建新元素。
+
+自定义属性不会成为DOM对象的属性，可通过**`getAttribute()`**取得，但与通过属性访问不同，会返回源代码字符串；**`setAttribute()`**设置的属性名会规范为小写；**`removeAttribute()`**删除属性。
+
+Element的**`attributes`**属性包含一个NamedNodeMap实例，拥有如下方法：
+
+- `getNamedItem(name)`： 返回nodeName等于name的节点； 
+- `removeNamedItem(name)`：删除nodeName等于name的节点； 
+- `setNamedItem(node)`：以nodeName为索引添加node节点，
+- `item(pos)`：返回索引位置 pos 处的节点。 
+
+
+
+### Text
+
+Text节点由Text类型表示，包含纯文本或转义后的HTML字符。`nodeValue`和**`data`**可访问其包含的值，二者互通且实时更新。操作文本方法如下：
+
+- `appendData(text)`：向节点末尾添加文本text；
+- `deleteData(offset,count)`：从offset处开始删除count个字符；
+- `insertData(offset,text)`：在位置offset插入text；
+- `replaceData(star,con,text)`：用text替换star到star+con的文本；
+- `splitText(offset)`：从offset处拆分为两个文本节点，返回后一个；
+- `substringData(offset,count)`：提取offset到offset+count的文本。 
+
+起始标签间有内容就会产生Text节点，甚至是空格。**`createTextNode()`**接收文本参数创建新文本节点。插入的文本均会被应用HTML或XML编码。
+
+
+
+### 其他类型
+
+**Comment**类型与Text继承同一基类CharacterData，拥有除`splitText()`外Text节点所有字符串操作方法。可被访问，但`</html>`后的注释不被承认。
+
+**CDATASection**类型表示XML中特有的CDATA区块，继承Text类型，拥有其所有字符串操作方法。 
+
+**DocumentType**类型的节点包含文档的doctype信息，支持的浏览器将其保存在`document.doctype`中。`name`属性包含文档类型名称。
+
+**DocumentFragment**类型从Node继承了所有执行DOM操作的方法。文档片段类似于节点仓库，当它被添加到文档中时，其所有子节点会被添加到相应位置但不包括本身，使用文档片段可==避免多次渲染==。
+
+**Attr**类型在HTML中不支持子节点，在XML中可以是Text或EntityReference。技术上讲，Attr是存在于attributes中的节点，但不被认为是文档树的一部分。属性`name`同nodeName，`value`同nodeValue，布尔值`specified`表示是否手动指定值。`document.createAttribute()`创建新Attr节点。
 
 
 
