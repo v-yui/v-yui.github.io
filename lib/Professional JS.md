@@ -2744,7 +2744,7 @@ Text节点由Text类型表示，包含纯文本或转义后的HTML字符。`node
 - `splitText(offset)`：从offset处拆分为两个文本节点，返回后一个；
 - `substringData(offset,count)`：提取offset到offset+count的文本。 
 
-起始标签间有内容就会产生Text节点，甚至是空格。**`createTextNode()`**接收文本参数创建新文本节点。插入的文本均会被应用HTML或XML编码。
+起始标签间有内容就会产生Text节点，甚至是空格。**`createTextNode()`**接收文本参数创建新文本节点。插入的文本均会被序列化。
 
 
 
@@ -2762,8 +2762,53 @@ Text节点由Text类型表示，包含纯文本或转义后的HTML字符。`node
 
 
 
+**DOM编程**
 
+外部文件加载CSS是==异步==的，安全起见，通过innerHTML创建的`<script>`元素==永不执行==。NodeList对象实时更新，每次访问时都会执行一次查询。
+
+旧版IE对`<script>`和`<style>`有限制，不允许常规DOM访问其子节点，可通过text属性(safari3不支持)添加js，通过`styleSheet.cssText`添加，但对一个元素设置属性超过一次或将cssText设为空串可能导致浏览器崩溃。
+
+HTML DOM为方便创建表格添加了一些属性和方法，见[MDN文档](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLTableElement)。
+
+
+
+##  MutationObserver 
+
+ DOM2的MutationEvent定义了一组会在DOM变化时触发的事件，由于浏览器事件的实现机制，出现了严重的性能问题，在DOM3中被会在DOM被修改时==异步==执行回调的**MutationObserver (观察者)**替代。向其构造函数传入一个回调函数来创建新MutationObserver实例，使用**`observe()`**接收节点和控制观察内容的[**MutationObserverInit**](https://developer.mozilla.org/zh-CN/docs/Web/API/MutationObserverInit)对象，将观察者与节点关联。
+
+每次观察范围内的DOM变化时，就会产生记录相应变化的[MutationRecord]((https://developer.mozilla.org/zh-CN/docs/Web/API/MutationRecord))并按序添加到观察者的记录队列，也会传给回调，但仅当队列中微任务长度为0时才将回调作为微任务添加到到任务队列上。每个MutationRecord实例至少包含对DOM节点的一个引用，记录队列和回调处理的默认行为便是耗尽这个队列，令其回收。回调会处理MutationRecord数组的每一个实例，执行完毕即清空记录队列。回调的参数二是当前观察者。
+
+观察者与目标节点间的引用关系非对称，前者拥有后者的弱引用，不妨碍回收；后者却拥有对前者的强引用，若目标节点被回收，则其观察者也会被回收。**`disconnect()`**使观察者停止观察并清除当前所有MutationRecord，使用**`takeRecords()`**可清空记录队列，取出并返回所有MutationRecord。
+
+ ```JavaScript
+let observer = new MutationObserver(
+    () => console.log('<body> attributes changed')
+); // 必须传入一个回调函数
+// MutationObserverInit的属性至少有一个要为true,否则抛出错误
+observer.observe(document.body, { attributes: true });
+document.body.setAttribute('foo', 'bar');// 会触发
+document.body.setAttribute('fooo', 'baar');
+console.log(observer.takeRecords());
+console.log(observer.takeRecords());
+setTimeout(() => {
+    // 异步调用disconnect(),在已入列内容执行完毕后再切断联系
+    observer.disconnect();
+    document.body.setAttribute('bar', 'baz'); // 不会触发
+}, 0);
+setTimeout(() => {
+    // 重新建立节点与观察者的连接
+    observer.observe(document.body, { attributes: true });
+    document.body.setAttribute('baz', 'qux');// 会触发
+}, 0);
+// [MutationRecord, MutationRecord]
+// []
+// <body> attributes changed
+// <body> attributes changed
+ ```
+
+*注：MutationObserverInit和MutationRecord各属性请查看MDN文档。*
 
 
 
 ## DOM扩展
+
