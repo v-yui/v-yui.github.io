@@ -2642,7 +2642,9 @@ navigator也暴露出一些可以提供**浏览器和OS**状态信息的API。�
 
 DOM (Document Object Mode)是HTML和XML文档的编程接口，脱胎于早期的DHTML，现在是真正跨平台、语言无关的表示和操作网页的方式。
 
-*注意：IE8以下中的DOM通过COM实现，跟原生JS对象行为不一致。*
+章节头统一说明：文档中被移除的元素若有关联事件处理程序或其他JS对象，那么其绑定关系会滞留在内存中。一次性插入HTML时会使用HTML解析器来解析，该解析器在浏览器中是底层代码，故效率高于JS，但解析器的构建和解构也有代价，最好限制这些代码的使用次数。
+
+*注意：IE8以下中的DOM通过COM实现，跟原生JS对象行为不一致。
 
 ## 节点层级
 
@@ -2811,4 +2813,79 @@ setTimeout(() => {
 
 
 ## DOM扩展
+
+08年W3C开始将各浏览器专有的DOM扩展编制为正式规范，诞生了两个标准：Selectors API与HTML5，另外还有较小的Element Traversal规范。
+
+
+
+**—Selectors API—**
+
+支持通过CSS选择符匹配DOM元素的的JS库都会实现基本的CSS解析器，使用已有DOM方法搜索文档并匹配节点，而浏览器原生支持的Selectors API，解析和遍历DOM树可通过底层编译语言实现，性能也有数量级的提升。
+
+Selectors API Lv1核心方法是**`querySelector()`**和**`querySelectorALL()`**。接收CSS选择符参数，前者返回匹配的第一个后代元素，后者返回包含所有匹配节点的NodeList==静态==实例，若选择符有语法错误或有不支持的选择符会抛出错误。Document和Element类型的实例上都会暴露这两个方法。
+
+Selectors API Lv2规范在Element类型上新增了更多方法，如已被所有主流浏览器支持的**`matches()`**，它接收CSS选择符返回是否匹配的布尔值，还有并没被实现的`find()`和`findAll()`。
+
+
+
+### **HTML5**
+
+过去的HTML规范从未描述过JS接口，自H4以来class属性的频繁使用，使得JS与CSS交互增多，于是H5规范定义了一些方便使用CSS类的JS API。
+
+暴露在document和所有HTML元素上的**`getElementsByClassName()`**接收一或多个类名(顺序无关)的字符串参数，返回子树中包含匹配元素的NodeList，IE9以上所有现代浏览器都支持。
+
+身为字符串的className每次操作后都要重新设置才生效，H5给所有元素增加**`classList`**属性，它是新集合类型**DOMTokenList**的实例，有如下方法：
+
+- `add(value)`：若类名列表中没有value则添入；
+- `contains(value)`：value若存在则返回true；
+- `remove(value)`：从类名列表删除value；
+- `toggle(value)`：若value存在则删除，不存在则添入。
+
+H5增加辅助焦点管理功能，**`document.activeElement`**始终包含当前拥有焦点的DOM元素，页面完全加载完前为null，页面刚加载完默认为body；**`document.hasFocus()`**在文档拥有焦点时返回true。
+
+H5扩展了HTMLDocument类型。**`document.readyState`**为loading表示文档正在加载，为complete表示文档加载完成。**`document.compatMode`**的值为 “CSS1Compat”表示浏览器处于标准模式，为“BackCompat”则处于混杂模式。还增加了**`document.head`**指向文档的`<head>`。
+
+H5允许自定义元素属性，但要前缀`data-`以便告知浏览器，可通过元素的**`datasat`**属性以data-后的字符串作键访问 (注意data-my-name、data-My-Name要通过“myName”访问 )，该属性是DOMStringMap的实例。
+
+H5标准化了向文档一次性插入大量HTML的能力。**`innerHTML`**在写入时会根据字符串值替代调用元素的子树，其本身会取得子树序列化后的字符串，具体因浏览器而异；**`outerHTML`**类似，但替换/返回时会包含调用节点本身。**`insertAdjacentHTML()`**和**`insertAdjacentText()`**接收[位置标记](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/insertAdjacentHTML)和HTML/文本来插入。使用innerHTML等时要注意防止XSS攻击。
+
+**`scrollIntoView()`**滚动窗口到可见调用元素的区域，参数见[MDN文档](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/scrollIntoView)。
+
+
+
+**—Element Traversal—**
+
+除IE9前的IE，其他浏览器都会把元素间空格当成空白节点，Element Traversal API为DOM元素添加了5个属性来弥补差异：
+
+- `childElementCount`：返回子元素数量 (不包含文本节点和注释)；
+- `firstElementChild`：指向第一个Element类型的子元素；
+- `lastElementChild`：指向最后一个Element类型的子元素；
+- `previousElementSibling `：指向前一个Element类型的同胞元素；
+- `nextElementSibling`：指向后一个Element类型的同胞元素。
+
+
+
+**专有扩展**
+
+部分浏览器都有为弥补功能缺失
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
