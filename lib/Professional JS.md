@@ -9,6 +9,7 @@
 7. promise方法各种使用场景和情况、异步函数的具体实现需要再理解。
 8. `window.open`特性字符串各种值未笔记。
 9. p380 历史状态管理未理解。
+10. p461-465 XML命名空间及XML使用频率较高方法未笔记。
 
 
 
@@ -83,7 +84,7 @@ IE4和 Netscape4采用不同的思路开发DHTML，做到了不刷新页面而�
 
 3. **DOM Level 3**进一步扩展，增加以统一方法加载和保存文档的方法(DOM Load and Save模块中)，验证文档的方法(DOM Validation)，DOM Core支持了所有 XML 1.0的特性。
 
-- 进一步扩展DOM，引入以统一方式加载和保存文档的方法——在 DOM 加载和保 存（DOM Load and Save）模块中定义；
+- 进一步扩展DOM，引入以统一方式加载和保存文档的方法——在DOM Load and Save中定义；
 
 4. 目前，W3C并不按照Level 来维护DOM，而是作为**DOM Living Standard**，也被称为DOM4。
 5. **其他BOM**，另外几种语言发布了自己的 DOM标准(下列为W3C推荐)： 
@@ -2642,7 +2643,7 @@ navigator也暴露出一些可以提供**浏览器和OS**状态信息的API。�
 
 DOM (Document Object Mode)是HTML和XML文档的编程接口，脱胎于早期的DHTML，现在是真正跨平台、语言无关的表示和操作网页的方式。
 
-章节头统一说明：文档中被移除的元素若有关联事件处理程序或其他JS对象，那么其绑定关系会滞留在内存中。一次性插入HTML时会使用HTML解析器来解析，该解析器在浏览器中是底层代码，故效率高于JS，但解析器的构建和解构也有代价，最好限制这些代码的使用次数。
+章节头统一说明：文档中被移除的元素若有关联事件处理程序或其他JS对象，那么其绑定关系会滞留在内存中，最好先解除关系。一次性插入HTML时会使用HTML解析器来解析，该解析器在浏览器中是底层代码，故效率高于JS，但解析器的构建和解构也有代价，最好限制这些代码的使用次数。
 
 *注意：IE8以下中的DOM通过COM实现，跟原生JS对象行为不一致。
 
@@ -2697,7 +2698,7 @@ DOM1描述了DOM节点类型都必须实现的Node接口，在JS中被实现为*
 
 document作为HTMLDocument的实例，拥有一些标准Document对象没有的属性。**`title`**包含`<title>`的内容，修改其会反应在标题栏上但`<title>`不变。**`URL`**包含当前页面完整URL，**`domain`**包含页面域名，可修改但必须是URL包含的值，且一旦设置为二级域名不能设回，当页面中包含来自不同子域的`<frame>`时设置domain可解决跨源通信的安全限制问题。**`referrer`**包含链接到当前页面的页面的URL。 
 
-获取元素的引用：**` getElementById() `**接收元素ID，返回第一个匹配元素或null；**` getElementByTagName() `**接收元素标签名，返回包含匹配元素的NodeList，在HTML中则返回 HTMLCollection对象，后者的` namedItem() `可通过name属性取得某一项；**` getElementByName() `**返回具有给定name的所有元素，也返回 HTMLCollection，通常用于radio类型的input。
+获取元素的引用：**` getElementById() `**接收元素ID，返回第一个匹配元素或null；**` getElementsByTagName() `**接收元素标签名，返回包含匹配元素的NodeList，在HTML中则返回 HTMLCollection对象，后者的` namedItem() `可通过name属性取得某一项；**` getElementsByName() `**返回具有给定name的所有元素，也返回 HTMLCollection，通常用于radio类型的input。
 
 ```JavaScript
 <img src="myimage.gif" name="myImage"  id="myImg"> 
@@ -2867,11 +2868,15 @@ H5标准化了向文档一次性插入大量HTML的能力。**`innerHTML`**在�
 
 **专有扩展**
 
-部分浏览器都有为弥补功能缺失
+部分浏览器有为弥补功能缺失而添加专有DOM扩展的历史，在未来同样可能被标准化。**`children`**(已标准化)的出现是由于IE9之前的版本在处理空白文本节点上存在差异，这个属性是一个HTMLCollection，只包含元素的Element类型子节点。**`contains()`**(DOM4标准化)可确定某元素是不是调用元素的后代；DOM3的**`compareDocumentPosition()`**也可以确定节点间关系，返回位置关系[掩码](https://developer.mozilla.org/zh-CN/docs/Web/API/Node/compareDocumentPosition)。**`inner/outerText`**(已标准化)读取时会按深度优先顺序拼接子树中所有文本节点值，写入时会替代元素所有后代/元素本身为一个文本节点。**`scrollIntoView()`**滚动父容器使调用元素对用户可见。
 
 
 
+## DOM2/3
 
+DOM2/3新增了一些与命名空间相关的特性，多用于XML，此处不做描述。
+
+DOM3的**`isSameNode()`**判断两节点是否引用同一对象；**`isSameNode()`**判断两节点是否等值。**`setUserData()`**接收键、值、处理函数为节点附加额外数据，处理函数将在对应操作发生时执行。DOM为HTMLIFrameElement类型增加了指向iframe的document的`contentDocument`，还有指向iframe的window的`contentWindow`，注意跨域时访问其document将抛出错误。
 
 
 
