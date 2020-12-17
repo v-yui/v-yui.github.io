@@ -1,3 +1,7 @@
+---
+typora-root-url: ..\img
+---
+
 **其他**
 
 1. p251使用new调用类构造函数的过程2是否有问题？
@@ -28,6 +32,7 @@
 12. p318——私有变量模块莫斯——未理解；
 12. p345——期约扩展——未看；
 13. p359——栈追踪与内存管理——未理解；
+14. p478-489——DOM Traversal and Range 遍历和范围——未看；
 
 
 
@@ -1402,7 +1407,7 @@ alert(firstHalfDataView.buffer === buf); // true
 
 DataView 对缓冲内容没有任何预设，不可迭代，其API强制在读、写时指定 ElementType来实现JS的 Number 类型到缓冲内二进制格式的转换。ES支持8种不同的 ElementType。内存中值的字节序，默认为大端字节序。 
 
-![ElementType](..\img\ElementType.png)
+![ElementType](..\img\1.ElementType.png)
 
 类型可互换使用，DataView 写入缓冲时会尽量把值转为适当类型，后备值为0，若无法转换则抛出错误。且每个类型都有使用 byteOffset 定位读写位置的 get和 set方法。如下：
 
@@ -2514,7 +2519,7 @@ JS在浏览器中单线程执行，但允许使用定时器执行代码，为调
 
 location提供了当前窗口中加载文档的信息及导航功能，同时作为window和document的属性。location会把URL解析为离散片段保存在属性中，加载URL`http://foouser:barpassword@www.wrox.com:80/WileyCDA/?q= javascript#contents`时location对象的内容如下：
 
-![ElementType](..\img\LocationURL.png)
+![ElementType](..\img\2.LocationURL.png)
 
 [URLSearchParams](https://developer.mozilla.org/zh-CN/docs/Web/API/URLSearchParams)提供了一组标准API用于检查修改search字符串，一般也支持将其实例用作可迭代对象。如下：
 
@@ -2643,7 +2648,7 @@ navigator也暴露出一些可以提供**浏览器和OS**状态信息的API。�
 
 DOM (Document Object Mode)是HTML和XML文档的编程接口，脱胎于早期的DHTML，现在是真正跨平台、语言无关的表示和操作网页的方式。
 
-章节头统一说明：文档中被移除的元素若有关联事件处理程序或其他JS对象，那么其绑定关系会滞留在内存中，最好先解除关系。一次性插入HTML时会使用HTML解析器来解析，该解析器在浏览器中是底层代码，故效率高于JS，但解析器的构建和解构也有代价，最好限制这些代码的使用次数。
+章节头统一说明：文档中被移除的元素若有关联事件处理程序或其他JS对象，那么其绑定关系会滞留在内存中，最好先解除关系。一次性插入HTML时会使用HTML解析器来解析，该解析器在浏览器中是底层代码，故效率高于JS，但解析器的构建和解构也有代价，最好限制这些代码的使用次数。另外，DOM集合都有`length`和`item()`来通过索引访问值(中括号语法也可)。
 
 *注意：IE8以下中的DOM通过COM实现，跟原生JS对象行为不一致。
 
@@ -2692,7 +2697,7 @@ DOM1描述了DOM节点类型都必须实现的Node接口，在JS中被实现为*
 
 
 
-### Document
+**—Document—**
 
 **Document**类型是表示文档节点的类型，可表示HTML页面或XML文档，一般通过 HTMLDocument (继承了Document) 的实例取得表示整个HTML页面的文档对象document。document 也作为window的属性，提供指向`<html>`的**`documentElement`**属性和指向`<body>`的**`body`**属性，后者使用最多。
 
@@ -2721,7 +2726,7 @@ document向网页输出流写入内容：**`write()`**简单的写入文本，`w
 
 
 
-### Element
+**—Element—**
 
 **Element**表示XML或HTML元素，是除Document外最常用类型。**`tagName`**和`nodeName`都可获取元素标签名，在HTML中tagName始终以全大写表示，而XML和XHTML中则与源代码中一致。所有HTML都通过HTMLElement (继承Element)类型表示，均拥有以下属性：`id`、`title`、`lang` (元素内容的语言代码)、`dir` (语言书写方向，ltr/rtl表从左/右到右/左)、`className`(即相当于class)。**`createElement()`**接收标签名创建新元素。
 
@@ -2736,7 +2741,7 @@ Element的**`attributes`**属性包含一个NamedNodeMap实例，拥有如下方
 
 
 
-### Text
+**—Text—**
 
 Text节点由Text类型表示，包含纯文本或转义后的HTML字符。`nodeValue`和**`data`**可访问其包含的值，二者互通且实时更新。操作文本方法如下：
 
@@ -2751,7 +2756,7 @@ Text节点由Text类型表示，包含纯文本或转义后的HTML字符。`node
 
 
 
-### 其他类型
+**—其他类型—**
 
 **Comment**类型与Text继承同一基类CharacterData，拥有除`splitText()`外Text节点所有字符串操作方法。可被访问，但`</html>`后的注释不被承认。
 
@@ -2765,7 +2770,7 @@ Text节点由Text类型表示，包含纯文本或转义后的HTML字符。`node
 
 
 
-**DOM编程**
+**—DOM编程—**
 
 外部文件加载CSS是==异步==的，安全起见，通过innerHTML创建的`<script>`元素==永不执行==。NodeList对象实时更新，每次访问时都会执行一次查询。
 
@@ -2879,6 +2884,81 @@ DOM2/3新增了一些与命名空间相关的特性，多用于XML，此处不�
 DOM3的**`isSameNode()`**判断两节点是否引用同一对象；**`isSameNode()`**判断两节点是否等值。**`setUserData()`**接收键、值、处理函数为节点附加额外数据，处理函数将在对应操作发生时执行。DOM为HTMLIFrameElement类型增加了指向iframe的document的`contentDocument`，还有指向iframe的window的`contentWindow`，注意跨域时访问其document将抛出错误。
 
 
+
+### 样式
+
+**操作样式**
+
+支持style属性的元素在JS中有对应的**`style`**属性，它是CSSStyleDeclaration类型的实例，包含通过style属性设置的样式信息，但不包含通过`<style>`和外部样式中继承的样式。CSS属性的连字符表示在JS中须转为小驼峰(float对应为cssFloat)。DOM2为style增加了如下属性和方法：
+
+- `cssText`：包含通过style属性设置的CSS，写入时将重写全部值；
+- `length`：CSS属性数量；
+- `parentRule`：包含当前声明块的CSSRule；
+- `getPropertyPriority(property)`：若property使用了!important则返回"important"，否则返回空串；
+- `getPropertyValue(property)`：返回property值的字符串值；
+- `item(index)`：返回索引为index的属性名；
+- `removeProperty(property)`：删除样式property(会恢复为默认值)；
+- `setProperty(property, value, priority)`：设置property的值为value，priority为"important"或空串。 
+
+DOM2 Style在`document.defaultView`上增加**`getComputedStyle()`**，接收元素和可选的伪元素，返回包含元素全部最终样式的CSSStyleDeclaration。
+
+ CSSStyleSheet对象可表示任何在HTML中定义的样式表，从可用作非CSS样式表的基类的StyleSheet继承了以下属性：
+
+- `disabled`：布尔值，表示样式表是否被禁用，可读写；
+- `href`：若是`<link>`样式表则返回URL，否则返回 null；
+- `media`：支持的媒体类型集合，若可用于所有媒体，则返回空列表；
+- `ownerNode`：指向拥有当前样式表的节点，HTML中为`<link>`或`<style>`，若通过@import导入其他样式表则为null；
+- `parentStyleSheet`：指向通过@important导入该样式表的样式表；
+- `title`：ownerNode的title；
+- `type`：表示样式类型，比如“text/css”；
+- `cssRules`：当前样式表包含的规则集合；
+- `ownerRule`：若是使用@import 导入则指向导入规则；否则为null；
+- `deleteRule(index)`：删除cssRules中指定位置的规则；
+- `insertRule(rule, index)`：在指定位置向cssRules中插入规则。 
+
+**`document.styleSheets`**包含文档中全部样式表，是由CSSStyleSheet对象组成的StyleSheetList，只读，其返回样式表可能因浏览器而异。通过`<link>`或`<style>`的**`sheet`**也可直接获取CSSStyleSheet对象。
+
+通用基类CSSRule表示样式表中的一条规则，很多类型继承自它。最常用的是表示样式信息的CSSStyleRule，其可用属性如下：
+
+- `cssText`：返回整条规则的文本(依浏览器处理方式而定)，只读，只包含样式声明，与`style.cssText`类似但不完全相同；
+- `parentRule`：指向包含此规则的规则，或null；
+- `parentStyleSheet`：包含当前规则的样式表；
+- `selectorText`：返回规则的选择符文本(依浏览器处理方式而定)；
+- `style`：返回CSSStyleDeclaration对象，可读写当前规则中的样式；
+- `type`：数值常量，表示规则类型，始终为1。 
+
+**元素尺寸**
+
+这些内容并不是由DOM2 Style定义，而是IE率先增加后被主流浏览器支持的。以下属性若非特殊说明均**只读**，每次访问都会重新计算，需注意使用次数。
+
+1.  **偏移尺寸(offset dimensions)**：包含元素在屏幕上占用的所有视觉空间。包括内边距、滚动条、边框，不包含外边距，如下4个属性：
+
+   ![3.offsetDimensions](..\img\3.offsetDimensions.png)
+   **`offsetParent`**指向包含该元素的元素，不一定是parentNode。对于表格和内嵌窗格的页面布局来说，以上值会因浏览器不同产生差异。
+   
+2. **客户端尺寸(client dimensions)**：元素内容及其内边距所占用的空间。
+
+   ![4.clientDimensions](..\img\4.clientDimensions.png)
+
+3. **滚动尺寸(scroll dimensions)**：提供元素内容滚动距离的信息；
+
+   ![5.scrollDimensions](/5.scrollDimensions.png)
+
+   scrollLeft和scrollTop**可写**，设为0可重置元素滚动位置。
+
+4. 浏览器在每个元素上暴露`getBoundingClientRect()`方法，返回一个DOMRect对象，包含元素在页面中相对于视口位置的6个属性：left、top、right、bottom、height 和width，如下图：
+
+   ![6.DOMRect](..\img\6.DOMRect.png)
+
+
+
+
+
+# 十四 事件
+
+​	JS和HTML的交互通过事件实现，监听器监听事件，仅在事件发生时执行，这个模型也叫“观察者模式”，它使得页面行为与展示分离。
+
+**事件流**描述了页面接收事件的顺序。IE和Netscape的事件流方案完全相反，前者支持事件冒泡流，事件将从最具体的元素(文档中最深的节点)向上传播；后者支持事件捕获流，从最不具体的元素(DOM Events规定起始为document，但所有浏览器都是从window开始)向下传播。二者都得到现代浏览器支持，但由于旧版本不支持因此实际中几乎不会使用事件捕获。
 
 
 
