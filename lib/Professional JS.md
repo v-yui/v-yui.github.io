@@ -1,7 +1,3 @@
----
-typora-root-url: ..\img
----
-
 **其他**
 
 1. p251使用new调用类构造函数的过程2是否有问题？
@@ -14,6 +10,8 @@ typora-root-url: ..\img
 8. `window.open`特性字符串各种值未笔记。
 9. p380 历史状态管理未理解。
 10. p461-465 XML命名空间及XML使用频率较高方法未笔记。
+11. p502-505 IE事件对象未看。
+12. `<img>`未添入文档，仅指定src就会开始下载图片？
 
 
 
@@ -2956,9 +2954,65 @@ DOM2 Style在`document.defaultView`上增加**`getComputedStyle()`**，接收元
 
 # 十四 事件
 
-​	JS和HTML的交互通过事件实现，监听器监听事件，仅在事件发生时执行，这个模型也叫“观察者模式”，它使得页面行为与展示分离。
+JS和HTML的交互通过事件实现，监听器监听事件，仅在事件发生时执行，这个模型也叫“观察者模式”，它使得页面行为与展示分离。
 
-**事件流**描述了页面接收事件的顺序。IE和Netscape的事件流方案完全相反，前者支持事件冒泡流，事件将从最具体的元素(文档中最深的节点)向上传播；后者支持事件捕获流，从最不具体的元素(DOM Events规定起始为document，但所有浏览器都是从window开始)向下传播。二者都得到现代浏览器支持，但由于旧版本不支持因此实际中几乎不会使用事件捕获。
+**事件流**描述页面接收事件的顺序。IE支持事件冒泡流，事件将从最具体的元素(文档中最深的节点)向上传播；Netscape支持事件捕获流，从最不具体的元素(DOM Events规定起始为document，但所有浏览器都是从window开始)向下传播。二者都得到现代浏览器支持，旧版本不支持事件捕获。
+
+DOM2 Events规定事件流分为3阶段：事件捕获、到达目标、事件冒泡。“到达目标”通常被认为是冒泡阶段的一部分，虽然规范明确捕获阶段不命中目标，但现代浏览器都会于捕获阶段触发事件，这样实际有两次机会来处理事件。
+
+ 事件指用户或浏览器的某种动作，为响应事件而调用的函数称作事件处理程序(或**事件监听器**)，以"on"开头。直接以监听器名为HTML属性名指定，这种方式会创建一个有特殊局部变量event的函数来封装属性值，此函数的this值相当于事件的目标元素，其作用域链通过with被扩展(见下)。
+
+```javascript
+// HTML属性指定方式
+<input type="button" value="Click Me" onclick="show()" />
+function(event) { // onclick属性中的内容
+    with (document) { // document和元素自身成员都可当成局部变量访问
+        with (this.form) { // 若为表单输入框还会包含表单元素
+            with (this) {
+            // on[event]属性值
+}   }  }  }
+
+// DOM0方式/直接赋值给节点属性
+let btn = document.getElementById("myBtn");
+btn.onclick = function() {
+ console.log("Clicked");
+};
+
+// DOM2方式
+btn.addEventListener("click", handler, false);
+btn.removeEventListener("click", handler, false);
+```
+
+在HTML中指定监听器，若事件已发生相关JS代码还未执行会发生错误，另外，不同JS引擎中标识符解析规则存在差异，作用域的扩展也因浏览器而异，且HTML和JS的强耦合不便于修改，导致此种方式不常被使用。
+
+第四代浏览器(DOM0)开始支持将函数直接赋值给节点的监听器属性，通过this可访问元素任何属性方法，会注册在冒泡阶段。DOM2 Events 为监听器的赋值和移除定义了**`addEventListener()`**和 **`removeEventListener()`**接收事件名、监听器、布尔值(默认为false表示注册在冒泡阶段)，前者添加的监听器只能用后者传入相同参数来移除。==把监听器注册到捕获阶段通常用于在事件到达前拦截。==IE实现了类似的方法`attachEvent()`和`detachEvent()`。
+
+DOM中发生事件时， 所有相关信息都会被收集在一个**event对象**中，并传参给监听器，不同事件生成的event会包含不同属性方法，但都包含以下内容：
+
+![7.event对象](../img/7.event对象.png)
+
+在监听器内部，this始终等于`currentTarget`，而`target`只包含事件的实际目标。一旦监听器执行完毕event将立即销毁。
+
+DOM3 Events 定义了如下**事件类型**(本节内容较杂故不在此过多说明)：
+
+- 用户界面事件(UIEvent)：涉及与 BOM 交互的通用浏览器事件；
+  - load：当文档(包括外部资源)加载完后触发；
+- unload：在文档卸载完成后触发；
+- abort：在`<object>`相应对象加载完成前被提前终止下载时触发；
+- error：当JS报错或某些元素必要内容无法加载时触发；
+- select：当用户在文本框上选择字符时触发；
+- resize：当窗口或窗格被缩放时触发；
+- scroll：当用户滚动包含滚动条的元素时在元素上触发。
+- 焦点事件(FocusEvent)：在元素获得和失去焦点时触发；
+  - blur：当元素失去焦点时触发，不冒泡，所有浏览器都支持；
+  - focus：当元素获得焦点时触发，不冒泡，所有浏览器都支持；
+  - focusin：当元素获得焦点时触发，是focus的冒泡版；
+  - focusout：当元素失去焦点时触发，是blur的冒泡版。 
+- 鼠标事件(MouseEvent)：使用鼠标在页面上执行某些操作时触发；
+  -  
+-  滚轮事件（WheelEvent）：使用鼠标滚轮（或类似设备）时触发。  输入事件（InputEvent）：向文档中输入文本时触发。  键盘事件（KeyboardEvent）：使用键盘在页面上执行某些操作时触发。  合成事件（CompositionEvent）：在使用某种 IME（Input Method Editor，输入法编辑器）输入 字符时触发。 
+
+
 
 
 
