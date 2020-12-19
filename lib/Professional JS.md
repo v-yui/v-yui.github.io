@@ -12,6 +12,7 @@
 10. p461-465 XML命名空间及XML使用频率较高方法未笔记。
 11. p502-505 IE事件对象未看。
 12. `<img>`未添入文档，仅指定src就会开始下载图片？
+13. p525-527 readystatechange和page/hide事件未看。
 
 
 
@@ -31,6 +32,7 @@
 12. p345——期约扩展——未看；
 13. p359——栈追踪与内存管理——未理解；
 14. p478-489——DOM Traversal and Range 遍历和范围——未看；
+15. p528-534——设备事件——未看；
 
 
 
@@ -2993,26 +2995,55 @@ DOM中发生事件时， 所有相关信息都会被收集在一个**event对象
 
 在监听器内部，this始终等于`currentTarget`，而`target`只包含事件的实际目标。一旦监听器执行完毕event将立即销毁。
 
-DOM3 Events 定义了如下**事件类型**(本节内容较杂故不在此过多说明)：
+## 事件类型
 
-- 用户界面事件(UIEvent)：涉及与 BOM 交互的通用浏览器事件；
-  - load：当文档(包括外部资源)加载完后触发；
-- unload：在文档卸载完成后触发；
-- abort：在`<object>`相应对象加载完成前被提前终止下载时触发；
-- error：当JS报错或某些元素必要内容无法加载时触发；
-- select：当用户在文本框上选择字符时触发；
-- resize：当窗口或窗格被缩放时触发；
-- scroll：当用户滚动包含滚动条的元素时在元素上触发。
-- 焦点事件(FocusEvent)：在元素获得和失去焦点时触发；
-  - blur：当元素失去焦点时触发，不冒泡，所有浏览器都支持；
-  - focus：当元素获得焦点时触发，不冒泡，所有浏览器都支持；
-  - focusin：当元素获得焦点时触发，是focus的冒泡版；
-  - focusout：当元素失去焦点时触发，是blur的冒泡版。 
-- 鼠标事件(MouseEvent)：使用鼠标在页面上执行某些操作时触发；
-  -  
--  滚轮事件（WheelEvent）：使用鼠标滚轮（或类似设备）时触发。  输入事件（InputEvent）：向文档中输入文本时触发。  键盘事件（KeyboardEvent）：使用键盘在页面上执行某些操作时触发。  合成事件（CompositionEvent）：在使用某种 IME（Input Method Editor，输入法编辑器）输入 字符时触发。 
+DOM3 Events 定义了如下**事件类型**(本节内容较杂故不详细解释说明)：
 
+- **用户界面事件(UIEvent)**：涉及与 BOM 交互的通用浏览器事件；
+  - load：文档(包括外部资源)加载完后触发；
+  - unload：文档卸载完成后触发；
+  - abort：`<object>`相应对象加载完成前被提前终止下载时触发；
+  - error：JS报错或某些元素必要内容无法加载时触发；
+  - select：用户在文本框上选择字符时触发；
+  - resize：窗口或窗格被缩放时触发；
+  - scroll：用户滚动包含滚动条的元素时在元素上触发。
+- **焦点事件(FocusEvent)**：在元素获得和失去焦点时触发；
+  - blur：元素失去焦点时触发，不冒泡，所有浏览器都支持；
+  - focus：元素获得焦点时触发，不冒泡，所有浏览器都支持；
+  - focusin：元素获得焦点时触发，是focus的冒泡版且先于其执行；
+  - focusout：元素失去焦点时触发，是blur的冒泡版且先于其执行。 
+- **鼠标事件(MouseEvent)**：使用鼠标在页面上执行某些操作时触发；
+  -  click：单击鼠标主键或键盘回车键时触发(mousedown+mouseup)；
+  -  dblclick：双击鼠标主键时触发，DOM3 Events标准化；
+  -  mousedown：按下任意鼠标键时触发；
+  -   mouseenter：把光标从元素外部移到内部时触发，不冒泡，不会在经过后代元素时触发，DOM3 Events新增；
+  -  mouseleave：把光标从元素内部移到外部时触发，不冒泡，不会在经过后代元素时触发，DOM3 Events新增；
+  -  mousemove：光标在元素上移动时反复触发；
+  -  mouseout：光标从一个元素移到另一个元素上时触发；
+  -  mouseover：光标从元素外部移到元素内部时触发；
+  -  mouseup：释放鼠标键时触发。
+- **滚轮事件(WheelEvent)**：使用鼠标滚轮(或类似设备)时触发；
+  -  mousewheel： 滚动鼠标滚轮或类似滚轮设备时触发。
+- **键盘事件(KeyboardEvent)**：使用键盘在页面上执行某些操作时触发；
+  -  keydown：按下某个键时触发，持续按住则重复触发；
+  -  keypress：按下某个键并产生字符时触发(Esc也会触发)，持续按住则重复触发，DOM3 Events已废弃，替代为textInput；
+  -  keyup：释放某个键时触发。
+- **输入事件(InputEvent)**：向文档中输入文本时触发；
+  -  textInput： 文本框有新字符插入时触发，用于在文本显示给用之前更方便地截获文本输入。
+- **合成事件(CompositionEvent)**：DOM3新增，在使用IME输入字符时触发。
+  -   compositionstart：使用IME开始输入时触发；
+  -  compositionupdate：新字符插入输入字段时触发；
+  -  compositionend：IME输入结束时触发。 
 
+[MouseEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent)有如下属性：`clientX/Y`表示光标视口坐标 ，`pageX/Y`表示页面坐标，`screenX/Y` 表示屏幕坐标。`shiftKey`、`ctrlKey`、`altKey`和`metaKey`在对应修饰键被按下时为true。`relatedTarget`表示事件相关目标，在mouseover和mouseout发生时包含失去/获得光标的元素，其他情况为null。`button`表示鼠标按键，0/1/2分别为主中/副键。`detail`表示连续单击(mousedown后紧跟mouseup)次数。**WheelEvent**包含MouseEvent所有标准信息，另有`wheelDelta`表示滚轮滚动距离。触摸屏设备事件触发会不同。
+
+[KeyboardEvent](https://developer.mozilla.org/zh-CN/docs/Web/API/KeyboardEvent)的`keycode`表示按键ASCLL码，DOM3已废弃并定义了`key`和`char`但并未广泛支持，建议替代为表示按键字符的`code`。`location`表示在哪里按键。`getModifierState()`在传入的修饰符被按下时返回true。
+
+**InputEvent**的`data`包含插入的字符；**CompositionEvent**的`data`视事件而定，分别包含正编辑的文本/要插入的新字符/输入的全部内容。
+
+**其他事件**
+
+`beforeunload`在文档即将卸载时触发，弹出对话框供用户确认是否离开；  `DOMContentLoaded`在DOM树构建完成后立即触发而不必等待资源加载；`hashchange`在URL散列值发生变化时通知触发 。
 
 
 
