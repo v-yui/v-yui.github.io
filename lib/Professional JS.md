@@ -12,7 +12,8 @@
 10. p461-465 XML命名空间及XML使用频率较高方法未笔记。
 11. p502-505 IE事件对象未看。
 12. `<img>`未添入文档，仅指定src就会开始下载图片？
-13. p525-527 readystatechange和page/hide事件未看。
+13. p525-527 readystatechange和pageshow/hide事件未看。
+14. p551 通过 requestAnimationFrame 节流 没看懂。
 
 
 
@@ -2962,6 +2963,10 @@ JS和HTML的交互通过事件实现，监听器监听事件，仅在事件发�
 
 DOM2 Events规定事件流分为3阶段：事件捕获、到达目标、事件冒泡。“到达目标”通常被认为是冒泡阶段的一部分，虽然规范明确捕获阶段不命中目标，但现代浏览器都会于捕获阶段触发事件，这样实际有两次机会来处理事件。
 
+
+
+## 事件监听
+
  事件指用户或浏览器的某种动作，为响应事件而调用的函数称作事件处理程序(或**事件监听器**)，以"on"开头。直接以监听器名为HTML属性名指定，这种方式会创建一个有特殊局部变量event的函数来封装属性值，此函数的this值相当于事件的目标元素，其作用域链通过with被扩展(见下)。
 
 ```javascript
@@ -2994,6 +2999,8 @@ DOM中发生事件时， 所有相关信息都会被收集在一个**event对象
 ![7.event对象](../img/7.event对象.png)
 
 在监听器内部，this始终等于`currentTarget`，而`target`只包含事件的实际目标。一旦监听器执行完毕event将立即销毁。
+
+
 
 ## 事件类型
 
@@ -3043,7 +3050,54 @@ DOM3 Events 定义了如下**事件类型**(本节内容较杂故不详细解释
 
 **其他事件**
 
-`beforeunload`在文档即将卸载时触发，弹出对话框供用户确认是否离开；  `DOMContentLoaded`在DOM树构建完成后立即触发而不必等待资源加载；`hashchange`在URL散列值发生变化时通知触发 。
+`beforeunload`在文档即将卸载时触发，弹出对话框供用户确认是否离开；  `DOMContentLoaded`在DOM树构建完成后立即触发而不必等待资源加载；`hashchange`在URL散列值发生变化时通知触发。
+
+
+
+**—内存与性能—**
+
+页面中事件处理程序的数量与页面整体性能直接相关。首先，每个函数都占用内存空间，指定监听器时需访问DOM，造成整个页面交互的延迟，且这样浏览器代码就与建立了联系，联系越多页面性能就越差。
+
+ 使用**事件委托**，即为祖先节点添加监听器来管理一种类型的事件，后代节点的事件会向上冒泡从而触发相应操作。另外，无用的监听器在相关元素删除后还会驻留在内存中，最好在删除元素前删除监听器或直接使用事件委托。甚至页面卸载前监听器没有被清理，也会残留在内存中不会被回收。若在页面unload前删除监听器，那么会影响某些浏览器的往返缓存功能。
+
+
+
+**—模拟事件—**
+
+使用JS可以模拟事件，这些事件会被当作浏览器创建的事件且同样会冒泡。DOM3指明了模拟特定类型事件的方式。
+
+**` document.createEvent() `**接收要创建类型的[字符串](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/createEvent)来创建event对象，再使用该类型事件对应的方法和相关数据来初始化。**`dispatchEvent()`**接收要触发事件的event来冒泡并触发监听器。如下：
+
+```JavaScript
+let btn = document.getElementById("myBtn");
+let event = document.createEvent("MouseEvents");// 创建event对象
+// 初始化event对象
+event.initMouseEvent("click", true, true, document.defaultView,
+ 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+btn.dispatchEvent(event); // 触发事件
+```
+
+
+
+
+
+# 十五 canvas
+
+`requestAnimationFrame()` 告诉浏览器要执行动画，并要求在下次重绘前调用指定的回调函数更新动画，`cancelAnimationFrame()`取消这个请求。
+
+`<canvas>`的`getContext()`取得绘图上下文，`toDataURL`接收MIME导出图像。`fillStyle`和`strokeStyle`控制填充和描边的颜色，`lineWidth`设置描边宽度。矩形是唯一可直接在2D context上绘制的形状，与此相关的方法有：`fillRect()`、`strokeRect()`和`clearRect()`。
+
+绘制路径方法如下：
+
+- `beginPath()`：必须首先调用，表示要开始绘制新路径；
+- `arc(x,y,radius,startAngle,endAngle,counterclockwise)`：以(x, y)为圆 心，以radius为半径绘制弧线，起始角度为startAngle，结束角度为 endAngle。counterclockwise表示是否顺时针(默认)计算角度；
+- `arcTo(x1, y1, x2, y2, radius)`：以给定半径radius，经由(x1, y1)绘制一条从上一点到(x2, y2)的弧线；
+- `bezierCurveTo(c1x, c1y, c2x, c2y, x, y)`：以(c1x, c1y)和(c2x, c2y)为控制点， 绘制一条从上一点到(x, y)的弧线(三次贝塞尔曲线)；
+- `lineTo(x, y)`：绘制一条从上一点到(x, y)的直线；
+- `moveTo(x, y)`：不绘制线条，只把绘制光标移动到(x, y)；
+- `quadraticCurveTo(cx, cy, x, y)`：以(cx, cy)为控制点，绘制一条从上一点到(x, y) 的弧线(二次贝塞尔曲线)
+- `rect(x, y, width, height)`：以给定宽度和高度在(x, y)绘制一个矩形，它创建的是路径，不是独立的图形；
+- `isPointInPath(x,y)`：(x,y)是否在路径上。
 
 
 
