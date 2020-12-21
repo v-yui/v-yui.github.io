@@ -3099,7 +3099,11 @@ btn.dispatchEvent(event); // 触发事件
 - `rect(x, y, width, height)`：以给定宽度和高度在(x, y)绘制一个矩形，它创建的是路径，不是独立的图形；
 - `isPointInPath(x,y)`：(x,y)是否在路径上。
 
+绘制文本使用`fillText()  `和`fillText()  `，接收字符串、坐标(x,y)和可选的最大像素宽度，绘制结果取决于以下属性：
 
+- `font`：以 CSS 语法指定的字体样式、大小、字体族等；
+- `textAlign`：指定文本的对齐方式，如"start"、"end"、"left"、"right"；
+- `textBaseLine `：指定文本的基线，可能的值包括"top" 、"hanging" 、 "middle" 、"alphabetic"、"ideographic"和"bottom"。
 
 
 
