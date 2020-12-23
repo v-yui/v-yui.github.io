@@ -36,6 +36,7 @@
 15. p528-534——设备事件——未看；
 16. p559-580——canvas——未看；
 17. p581-674——19章表单脚本&20章其他JS API——未看；
+18. p694-710——22章节处理XML——未看；
 
 
 
@@ -3114,6 +3115,121 @@ btn.dispatchEvent(event); // 触发事件
 
 
 # 十八 错误
+
+ES3引入了try/catch和throw，以及一些错误类型。若try 块中发生错误则立即退出执行，并跳到catch块中，catch块会接收到包含错误相关信息的`Error`对象。Error中暴露的实际信息因浏览器而异，但至少都包含保存错误消息的`message`和定义错误类型的`name`。try/catch中可选的`finally`只要存在就会运行，且会忽略try/catch中的return。任何未被处理的错误都会在window上触发error事件。 ECMA-262定义了8种**错误类型**：
+
+-  Error：基类型，被其他错误类型继承，主要用于抛出自定义错误；
+- InternalError：在底层JS引擎抛出异常时由浏览器抛出；
+- EvalError：使用`eval()`时没有把它当成函数使用时抛出；
+- RangeError：在数值越界时抛出；
+- ReferenceError：在找不到对象时抛出；
+- SyntaxError：出现语法错误时抛出；
+- TypeError：发生在变量不是预期类型或访问不存在时发生；
+- URIError：在使用`en/decodeURI()`传入了格式错误的URI时发生。
+
+`throw`可在任何时候抛出错误，也可继承Error创建自定义错误类型，如下：
+
+```JavaScript
+class CustomError extends Error {
+ constructor(message) { // 需要提供name和message
+ super(message);
+ this.name = "CustomError";
+ this.message = message;
+ }
+}
+throw new CustomError("My message"); // 抛出自定义错误
+```
+
+主流浏览器都有JS控制台，可通过`console`对象写入JS消息，含如下方法：
+
+- error(message)：在控制台中记录错误消息；
+- info(message)：在控制台中记录信息性内容；
+- log(message)：在控制台记录常规消息；
+- warn(message)：在控制台中记录警告消息。
+
+ES5.1定义了`debugger`用于调用可能存在的调试功能。
+
+
+
+
+
+<!--二十二章 处理XML未看-->
+
+
+
+
+
+# 二零 JSON
+
+ 第一代Web服务很大程度上 是以XML为基础的，以服务器间通信为主要特征。06年，Douglas Crockford制定了**JSON(JavaScript Object Notation)**标准，即RFC 4627。JSON是JS的严格子集但不属于JS，是一种**通用数据结构**而并非语言。作为替代XML提出的JSON，可以直接传给`eval()`而无需创建DOM。
+
+ JSON语法支持表示3种类型的值：简单值(可以是字符串、数值、布尔值和 null，不可以是undefined)、对象、数组。如下：
+
+```json
+5 // 一个数值也是有效的JSON
+{ // JSON中没有变量，没有分号
+ "name": "Nicholas", // 属性名必须被双引号包裹
+ "age": 29,
+ "school": {
+ 	"name": "Merrimack College",
+	"location": "North Andover, MA"
+ }
+}
+```
+
+早期JSON解析器相当于`eval()`，ES5增加JSON全局对象，正式引入解析JSON的能力。序列化时，所有函数和原型成员及值为undefined的属性都会被跳过。将JS序列化为JSON字符串的**`JSON.stringify()`**，其参数二接收数组或函数作为过滤器，参数三接收数值或字符串来设置结果的缩进，还可在原对象上添加`toJSON()`来控制要序列化的内容。**`JSON.parse()`**用于反序列化，它也接受一个额外的函数来过滤返回值。如下：
+
+```JavaScript
+let book = {
+    title: "Professional JavaScript",
+    authors: ["Nicholas C. Zakas", "Matt Frisbie"],
+    edition: 4,
+    year: 2017,
+    toJSON: function (){return this}
+};
+let jsonText = JSON.stringify(book, (key, value) => {
+    switch (key) {
+        case "authors":
+            return value.join(",")
+        default:
+            return value;
+    }
+}, "--");
+// "{
+//  --"title": "Professional JavaScript",
+//  --"authors": "Nicholas C. Zakas,Matt Frisbie",
+//  --"edition": 4,
+//  --"year": 2017
+// }"
+```
+
+
+
+
+
+# 二一 网络请求
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
