@@ -1181,7 +1181,7 @@ Math**方法**辅助执行数学计算：
 
 - `Math.floor()`：将数值向下舍入为接近的整数； 
 
-- `Math.round()`：将数值四舍五入为接近的整数；
+- `Math.round()`：将数值四舍五入为在+∞方向上接近的整数；
 
 - `Math.fround()`： 返回数值最接近的单精度 (32 位)浮点值表示 ；
 
@@ -2232,7 +2232,7 @@ console.log(target === proxy); // false 严格相等可区分
 
 
 
-# 九 函数表达式
+# 九 函数
 
 函数实际是对象，每个函数都是Function类型的实例，跟其他引用类型一样拥有自己的属性和方法。
 
@@ -2328,7 +2328,7 @@ object.getIdentity(); // 'My Object'
 
 **——IIFE——**
 
-**立即调用的函数表达式 ( IIFE，Immediately Invoked Function Expression )**将函数声明包含在圆括号中，被解释为函数表达式，其后的第二对圆括号会立即调用前面的函数表达式。let出现之前经常使用 IIFE模拟块级作用域，如下例使用 IIFE锁定参数值：
+**立即调用的函数表达式 ( IIFE，Immediately Invoked Function Expression )**将函数声明包含在圆括号中，被解释为函数表达式，其后的第二对圆括号会立即调用前面的函数表达式。匿名函数处于全局作用域。let出现之前经常使用 IIFE模拟块级作用域，如下例使用 IIFE锁定参数值：
 
 ```JavaScript
 let divs = document.querySelectorAll('div');
@@ -3209,11 +3209,9 @@ let jsonText = JSON.stringify(book, (key, value) => {
 
 # 二一 网络请求
 
+ **Ajax(Asynchronous JavaScript+XML)**可发送服务器请求而不刷新页面，而微软的**XMLHttpRequest(XHR)**对象为发送服务器请求和获取响应提供了可异步从服务器获取额外数据的接口，**Fetch API**诞生后迅速替代了XHR，它支持promise和service worker，已成为极强大的Web开发工具。
 
-
-
-
-
+IE5首先的XHR通过ActiveX对象实现并包含在MSXML库中。
 
 
 
