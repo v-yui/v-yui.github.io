@@ -1409,7 +1409,7 @@ alert(firstHalfDataView.buffer === buf); // true
 
 DataView 对缓冲内容没有任何预设，不可迭代，其API强制在读、写时指定 ElementType来实现JS的 Number 类型到缓冲内二进制格式的转换。ES支持8种不同的 ElementType。内存中值的字节序，默认为大端字节序。 
 
-![ElementType](..\img\1.ElementType.png)
+![ElementType](..\img\ProJS\1.ElementType.png)
 
 类型可互换使用，DataView 写入缓冲时会尽量把值转为适当类型，后备值为0，若无法转换则抛出错误。且每个类型都有使用 byteOffset 定位读写位置的 get和 set方法。如下：
 
@@ -2521,7 +2521,7 @@ JS在浏览器中单线程执行，但允许使用定时器执行代码，为调
 
 location提供了当前窗口中加载文档的信息及导航功能，同时作为window和document的属性。location会把URL解析为离散片段保存在属性中，加载URL`http://foouser:barpassword@www.wrox.com:80/WileyCDA/?q= javascript#contents`时location对象的内容如下：
 
-![ElementType](..\img\2.LocationURL.png)
+![ElementType](..\img\ProJS\2.LocationURL.png)
 
 [URLSearchParams](https://developer.mozilla.org/zh-CN/docs/Web/API/URLSearchParams)提供了一组标准API用于检查修改search字符串，一般也支持将其实例用作可迭代对象。如下：
 
@@ -2935,22 +2935,22 @@ DOM2 Style在`document.defaultView`上增加**`getComputedStyle()`**，接收元
 
 1.  **偏移尺寸(offset dimensions)**：包含元素在屏幕上占用的所有视觉空间。包括内边距、滚动条、边框，不包含外边距，如下4个属性：
 
-   ![3.offsetDimensions](..\img\3.offsetDimensions.png)
+   ![3.offsetDimensions](..\img\ProJS\3.offsetDimensions.png)
    **`offsetParent`**指向包含该元素的元素，不一定是parentNode。对于表格和内嵌窗格的页面布局来说，以上值会因浏览器不同产生差异。
    
 2. **客户端尺寸(client dimensions)**：元素内容及其内边距所占用的空间。
 
-   ![4.clientDimensions](..\img\4.clientDimensions.png)
+   ![4.clientDimensions](..\img\ProJS\4.clientDimensions.png)
 
 3. **滚动尺寸(scroll dimensions)**：提供元素内容滚动距离的信息；
 
-   ![5.scrollDimensions](/5.scrollDimensions.png)
+   ![5.scrollDimensions](..\img\ProJS\5.scrollDimensions.png)
 
    scrollLeft和scrollTop**可写**，设为0可重置元素滚动位置。
 
 4. 浏览器在每个元素上暴露`getBoundingClientRect()`方法，返回一个DOMRect对象，包含元素在页面中相对于视口位置的6个属性：left、top、right、bottom、height 和width，如下图：
 
-   ![6.DOMRect](..\img\6.DOMRect.png)
+   ![6.DOMRect](..\img\ProJS\6.DOMRect.png)
 
 
 
@@ -2997,7 +2997,7 @@ btn.removeEventListener("click", handler, false);
 
 DOM中发生事件时， 所有相关信息都会被收集在一个**event对象**中，并传参给监听器，不同事件生成的event会包含不同属性方法，但都包含以下内容：
 
-![7.event对象](../img/7.event对象.png)
+![7.event对象](..\img\ProJS\7.event对象.png)
 
 在监听器内部，this始终等于`currentTarget`，而`target`只包含事件的实际目标。一旦监听器执行完毕event将立即销毁。
 
