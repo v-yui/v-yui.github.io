@@ -3211,31 +3211,57 @@ let jsonText = JSON.stringify(book, (key, value) => {
 
  **Ajax(Asynchronous JavaScript+XML)**可发送服务器请求而不刷新页面，而微软的**XMLHttpRequest(XHR)**对象为发送服务器请求和获取响应提供了可异步从服务器获取额外数据的接口，**Fetch API**诞生后迅速替代了XHR，它支持promise和service worker，已成为极强大的Web开发工具。
 
-IE5首先的XHR通过ActiveX对象实现并包含在MSXML库中。
+##  XMLHttpRequest
 
+IE5的XHR对象通过ActiveX对象实现并包含在MSXML库中，为此，XHR对象的三个版本在浏览器中分别被暴露为MSXML2.XMLHttp、MSXML2.XMLHttp.3.0、MXSML2.XMLHttp.6.0。 浏览器都通过XHR构造函数原生支持XHR。
 
+首先调用**`open()`**来准备发送请求，3个参数为请求类型、 请求 URL，是否异步请求，只能访问同源URL(域名&端口&协议相同)。**`send()`**接收作为请求体发送的数据(或null，因为此参数在某些浏览器中必需)发送请求到服务器。收到响应后，XHR对象的以下属性会被填充上数据：
 
+-  responseText：作为响应体返回的文本；
+- responseXML：如果响应的内容类型是"text/xml"或"application/xml"，那就是包含响应 数据的 XML DOM 文档；
+- status：响应的 HTTP 状态；
+- statusText：响应的 HTTP 状态描述。
 
+XHR对象有一个**`readyState`**属性表示当前处于哪个阶段，可能值如下：
 
+- 0：未初始化(Uninitialized)，尚未调用 open()方法；
+- 1：已打开(Open)，已调用 open()方法，尚未调用 send()方法；
+- 2：已发送(Sent)，已调用 send()方法，尚未收到响应；
+- 3：接收中(Receiving)，已经收到部分响应；
+- 4：完成(Complete)，已经收到所有响应，可以使用了。 
 
+每次readyState的值改变都会触发**`readystatechange`**事件，不同的是这个事件并不会收到event对象。**`abort()`**可在收到响应前取消异步请求。
 
+默认情况下，所有浏览器的XHR请求都会发送以下HTTP头部字段：
 
+- Accept：浏览器可以处理的内容类型；
+- Accept-Charset：浏览器可以显示的字符集；
+- Accept-Encoding：浏览器可以处理的压缩编码类型；
+- Accept-Language：浏览器使用的语言；
+- Connection：浏览器与服务器的连接类型；
+- Cookie：页面中设置的 Cookie；
+- Host：发送请求的页面所在的域；
+- Referer(在HTTP规范中即拼写错误)：发送请求的页面的 URI；
+- User-Agent：浏览器的用户代理字符串。 
 
+若要发送额外请求头部可使用`setRequestHeader()`，必须在open后、send前调用。自定义头部最好区别于规定头部。`getResponseHeader()`可从XHR对象获取响应头部，`getAllResponseHeaders()`返回包含所有响应头部的字符串。使用如下：
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+```javascript
+let xhr = new XMLHttpRequest();
+xhr.onreadystatechange = function () {
+    if (xhr.readyState == 4) {
+        if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) { // 304表示从缓存中拿取资源
+            alert(xhr.responseText);
+        } else {
+            alert("Request was unsuccessful: " + xhr.status);
+        }
+    }
+};
+xhr.open("get", "example.txt", true);
+xhr.setRequestHeader("MyHeader", "MyValue");
+let myHeader = xhr.getResponseHeader("MyHeader");
+xhr.send(null); 
+```
 
 
 
