@@ -37,6 +37,7 @@
 16. p559-580——canvas——未看；
 17. p581-674——19章表单脚本&20章其他JS API——未看；
 18. p694-710——22章节处理XML——未看；
+19. p723-750——Fetch API——未看；
 
 
 
@@ -3211,6 +3212,8 @@ let jsonText = JSON.stringify(book, (key, value) => {
 
  **Ajax(Asynchronous JavaScript+XML)**可发送服务器请求而不刷新页面，而微软的**XMLHttpRequest(XHR)**对象为发送服务器请求和获取响应提供了可异步从服务器获取额外数据的接口，**Fetch API**诞生后迅速替代了XHR，它支持promise和service worker，已成为极强大的Web开发工具。
 
+
+
 ##  XMLHttpRequest
 
 IE5的XHR对象通过ActiveX对象实现并包含在MSXML库中，为此，XHR对象的三个版本在浏览器中分别被暴露为MSXML2.XMLHttp、MSXML2.XMLHttp.3.0、MXSML2.XMLHttp.6.0。 浏览器都通过XHR构造函数原生支持XHR。
@@ -3244,7 +3247,7 @@ XHR对象有一个**`readyState`**属性表示当前处于哪个阶段，可能�
 - Referer(在HTTP规范中即拼写错误)：发送请求的页面的 URI；
 - User-Agent：浏览器的用户代理字符串。 
 
-若要发送额外请求头部可使用`setRequestHeader()`，必须在open后、send前调用。自定义头部最好区别于规定头部。`getResponseHeader()`可从XHR对象获取响应头部，`getAllResponseHeaders()`返回包含所有响应头部的字符串。使用如下：
+若要发送额外请求头部可使用**`setRequestHeader()`**，必须在open后、send前调用。自定义头部最好区别于规定头部。**`getResponseHeader()`**可从XHR对象获取响应头部，**`getAllResponseHeaders()`**返回包含所有响应头部的字符串。使用如下：
 
 ```javascript
 let xhr = new XMLHttpRequest();
@@ -3262,6 +3265,77 @@ xhr.setRequestHeader("MyHeader", "MyValue");
 let myHeader = xhr.getResponseHeader("MyHeader");
 xhr.send(null); 
 ```
+
+XHR 1 明确了已实现的细节，XHR 2 又进一步发展，但只被实现了部分功能。新增便于表单序列化的**`FormData`**类型，可通过`append()`为其添加键值对，或直接传入表单元素/数据，XHR对象能够识别作为FormData实例传入的数据类型并自动配置相应的头部。规范了IE8的**`timeout`**属性，在该属性设置时间内未收到响应就触发timeout事件。规范了可正确覆盖响应的MIME类型的**`overrideMimeType()`**，必须在send前调用。
+
+
+
+**—Progress Events—**
+
+Progress Events是W3C的工作草案，定义了客户端-服务器端通信，现在也推广到了其他类似XHR的 API。有以下 6 个进度相关的事件：
+
+- loadstart：在接收到响应的第一个字节时触发；
+- progress：在接收响应期间反复触发；
+- error：在请求出错时触发；
+- abort：在调用`abort()`终止连接时触发；
+- load：在成功接收完响应时触发；
+- loadend：在通信完成时，且在 error、abort 或 load 之后触发。
+
+load事件是Firefox为简化交互模式而增，用于替代readystatechange事件。不同的是，onload监听器都会接收到event对象(并未被所有浏览器实现)，其target属性为XHR实例。onprogress也会收到event对象，包含3个额外属性：表示进度信息是否可用的布尔值`lengthComputable` ，表示接收到的字节数的`position`，表示响应的ContentLength头部定义总字节数的`totalSize`。 
+
+
+
+**—CORS—**
+
+默认情况下，XHR 只能访问同域资源以防止某些恶意行为。 **跨源资源共享**(CORS，Cross-Origin Resource Sharing)定义了浏览器与服务器如何实现跨源通信，其基本思路是使用自定义的 HTTP 头部允许浏览器和服务器相互了解，以确实请求或响应应该成功还是失败。
+
+现代浏览器通过XHR对象原生支持CORS。跨域XHR有一些额外限制：1. 不能使用`setRequestHeader()`设置自定义头部；2. 不能发送和接收cookie；3. `getAllResponseHeaders()`方法始终返回空字符串。 
+
+CORS通过**[预检请求(preflighted request)](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/OPTIONS)**的服务器验证机制，在发送实际请求前，会先向服务器发送一个OPTIONS请求，让服务器来确定是否允许某种类型的请求，服务器会发送响应与浏览器沟通相应信息。另外，默认情况下跨源请求不发送凭据(cookie、HTTP 认证和客户端 SSL 证书)。
+
+
+
+**—替代性跨源技术—**
+
+**图片探测**是利用`<img>`标签实现跨域通信的最早的一种技术 ，与服务器进行简单、跨域、 单向的通信 。数据通过查询字符串发送，响应可以随意设置，不过一般是位图图片或值为 204 的状态码。 浏览器通过图片探测拿不到任何数据，但可以通过监听 onload 和 onerror 事件知道什么时候能接收到响应。 
+
+**JSONP(JSON with padding)**是在Web服务上流行的一种JSON变体，看起来跟 JSON一样，只是会被包在一个函数调用里。使用JSONP可以直接访问响应， 实现浏览器与服务器的双向通信。
+
+
+
+##  Fetch API
+
+Fetch API能执行XHR的所有任务，但更易使用，更现代化，能在Web工作线程等现代Web工具中使用，必须是异步。也能应用在服务线程(service worker)中提供拦截、重定向和修改`fetch()`生成的请求接口。
+
+<!--内容之后再补充-->
+
+
+
+
+
+# 二二 客户端存储
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
