@@ -37,7 +37,7 @@
 16. p559-580——canvas——未看；
 17. p581-674——19章表单脚本&20章其他JS API——未看；
 18. p694-710——22章节处理XML——未看；
-19. p723-750——Fetch API——未看；
+19. p723-746——Fetch API——未看；
 
 
 
@@ -3266,7 +3266,7 @@ let myHeader = xhr.getResponseHeader("MyHeader");
 xhr.send(null); 
 ```
 
-XHR 1 明确了已实现的细节，XHR 2 又进一步发展，但只被实现了部分功能。新增便于表单序列化的**`FormData`**类型，可通过`append()`为其添加键值对，或直接传入表单元素/数据，XHR对象能够识别作为FormData实例传入的数据类型并自动配置相应的头部。规范了IE8的**`timeout`**属性，在该属性设置时间内未收到响应就触发timeout事件。规范了可正确覆盖响应的MIME类型的**`overrideMimeType()`**，必须在send前调用。
+XHR 1 明确了已实现的细节，XHR 2 又进一步发展，但只被实现了部分功能。新增便于表单序列化的**`FormData`**类型，可通过**`append()`**为其添加键值对，或直接传入表单元素/数据，XHR对象能够识别作为FormData实例传入的数据类型并自动配置相应的头部。规范了IE8的**`timeout`**属性，在该属性设置时间内未收到响应就触发timeout事件。规范了可正确覆盖响应的MIME类型的**`overrideMimeType()`**，必须在send前调用。
 
 
 
@@ -3307,7 +3307,34 @@ CORS通过**[预检请求(preflighted request)](https://developer.mozilla.org/zh
 
 Fetch API能执行XHR的所有任务，但更易使用，更现代化，能在Web工作线程等现代Web工具中使用，必须是异步。也能应用在服务线程(service worker)中提供拦截、重定向和修改`fetch()`生成的请求接口。
 
-<!--内容之后再补充-->
+<!--Fetch API具体内容之后再补充-->
+
+
+
+**—Beacon API—**
+
+为把尽量多的页面信息传到服务器，很多分析工具需要在页面生命周期中尽量晚的时候向服务器发送遥测或分析数据。理论上应该通过unload事件发送这个请求，但在unload中创建的任何异步请求都会被浏览器取消。
+
+W3C引入补充性的Beacon API，它给navigator增加一个接收URL和数据有效荷载(可为ArrayBufferView、Blob、DOMString、FormData)的**`sendBeacon()`**来发送POST请求，若成功进入请求队列则返回true。`sendBeacon()`任何时候都可使用，请求会携带调用时的所有cookie，调用后浏览器会把该请求添加到内部请求队列并主动发送，即使原页面已关闭。状态码、超时和其他网络原因造成的失败不透明，不能通过编程方式处理。
+
+
+
+**—Web Socket—**
+
+Web Socket能通过一个长时连接实现与服务器全双工通信。使用JS创建Web Socket时，会发送一个HTTP请求到服务器以初始化连接，服务器响应后连接使用HTTP的Upgrade头部切换到Web Socket协议。
+
+创建新WebSocket时必须提供绝对URL，同源策略不适用于 Web Socket，因此可以请求任意站点的连接。浏览器会在WebSocket对象初始化后立即创建连接。WebSocket 也有一个readyState属性表示当前状态，但值与XHR不同：
+
+- WebSocket.OPENING（0）：连接正在建立；
+- WebSocket.OPEN（1）：连接已经建立；
+- WebSocket.CLOSING（2）：连接正在关闭；
+- WebSocket.CLOSE（3）：连接已经关闭。
+
+WebSocket没有readystatechange事件，而是有分别在连接建立/错误/关闭时触发的open/error/close (不支持DOM2监听器)。只有close事件的event有额外属性：表示连接是否干净关闭的wasClean、来自服务器的数值状态码code、包含服务器发来消息的reason。
+
+通过`send()`发送数据，可为字符串、ArrayBuffer或Blob，任何时候都可以调用`close()`关闭连接。客户端收到数据时会触发message事件，其event的data中包含有效载荷，这个数据类型由WebSocket的 binaryType决定，可能是blob或arraybuffer。
+
+未授权系统会按照处理请求的服务器的要求伪装自己，在未授权系统可以访问某个资源时，可以将其视为跨站点请求伪造(CSRF，cross-site request forgery)攻击。Ajax应用程序无论大小都会受到 CSRF攻击的影响，包括无害的漏洞验证攻击和恶意的数据盗窃或数据破坏攻击，因此需要验证请求发送者对资源的访问权限，可要求请求通过SSL访问或要求每个请求都发送按约定算法计算好的token来安全防护。
 
 
 
@@ -3315,21 +3342,26 @@ Fetch API能执行XHR的所有任务，但更易使用，更现代化，能在We
 
 # 二二 客户端存储
 
+与特定用户相关的信息应该保存在客户端设备上，对此的第一个解决方案就是由网景公司发明的cookie，如今，它只是在客户端存储数据的一个选项。
 
 
 
+## cookie
 
+HTTP cookie 通常也叫作cookie，最初用于在客户端存储会话信息。规范要求服务器在响应HTTP 请求时在HTTP头部Set-Cookie内包含会话信息，浏览器接收到后就会存储，并在之后的每次请求中包含在HTTP头部cookie中发送回服务器。这些信息可用于唯一标识发送请求的客户端。
 
+设置cookie后，它会与请求一起发送到创建它的域，以保证cookie中存储的信息不被其他域访问。cookie存储在客户端机器上，不会占用太多空间，浏览器会对其施加限制保证不会被恶意利用。限制因浏览器而异，最好大致如下的限制：1. 不超过300个cookie；2. 一个域的所有cookie不超过 4096 字节；3. 每个域不超过20个cookie；4. 每个域不超过 81 920 字节。
 
+若cookie总数超过单个域上限，浏览器就会删除之前设置的cookie，删除的规则也因浏览器而异(因此最好不要超出限制)。若创建的cookie超过最大限制则会被静默删除。
 
+cookie在浏览器中由以下参数构成：
 
-
-
-
-
-
-
-
+- 名称：唯一标识cookie的名称，不区分大小写，不过实践中最好当成区分大小写来对待，必须经过URL编码。
+- 值：存储在 cookie 里的字符串值，必须经过URL编码。
+- 域：cookie 有效的域，发送到这个域(对子域也有效)的所有请求都会包含对应的 cookie，默认为设置cookie的域。
+- 路径：请求URL中包含这个路径才会把cookie发送到服务器。
+- 过期时间：表示何时删除cookie的时间戳。默认情况下， 浏览器会话结束后会删除所有 cookie，设置删除cookie的时间是GMT格式，把过期时间设置为过去的时间会立即删除 cookie。
+- 安全标志：设置后，只在使用SSL安全连接时才把cookie发送到服务器。
 
 
 
