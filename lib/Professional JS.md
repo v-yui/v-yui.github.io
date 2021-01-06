@@ -3350,18 +3350,42 @@ WebSocket没有readystatechange事件，而是有分别在连接建立/错误/�
 
 HTTP cookie 通常也叫作cookie，最初用于在客户端存储会话信息。规范要求服务器在响应HTTP 请求时在HTTP头部Set-Cookie内包含会话信息，浏览器接收到后就会存储，并在之后的每次请求中包含在HTTP头部cookie中发送回服务器。这些信息可用于唯一标识发送请求的客户端。
 
-设置cookie后，它会与请求一起发送到创建它的域，以保证cookie中存储的信息不被其他域访问。cookie存储在客户端机器上，不会占用太多空间，浏览器会对其施加限制保证不会被恶意利用。限制因浏览器而异，最好大致如下的限制：1. 不超过300个cookie；2. 一个域的所有cookie不超过 4096 字节；3. 每个域不超过20个cookie；4. 每个域不超过 81 920 字节。
+设置cookie后，它会与请求一起发送到创建它的域，以保证cookie中存储的信息不被其他域访问。cookie存储在客户端机器上，不会占用太多空间，浏览器会对其施加限制保证不会被恶意利用。限制因浏览器而异，最好大致如下的**限制**：1. 不超过300个cookie；2. 一个域的所有cookie不超过 4096 字节；3. 每个域不超过20个cookie；4. 每个域不超过 81 920 字节。
 
 若cookie总数超过单个域上限，浏览器就会删除之前设置的cookie，删除的规则也因浏览器而异(因此最好不要超出限制)。若创建的cookie超过最大限制则会被静默删除。
 
 cookie在浏览器中由以下参数构成：
 
-- 名称：唯一标识cookie的名称，不区分大小写，不过实践中最好当成区分大小写来对待，必须经过URL编码。
-- 值：存储在 cookie 里的字符串值，必须经过URL编码。
-- 域：cookie 有效的域，发送到这个域(对子域也有效)的所有请求都会包含对应的 cookie，默认为设置cookie的域。
-- 路径：请求URL中包含这个路径才会把cookie发送到服务器。
-- 过期时间：表示何时删除cookie的时间戳。默认情况下， 浏览器会话结束后会删除所有 cookie，设置删除cookie的时间是GMT格式，把过期时间设置为过去的时间会立即删除 cookie。
-- 安全标志：设置后，只在使用SSL安全连接时才把cookie发送到服务器。
+- **name**：唯一标识cookie的名称，不区分大小写，不过实践中最好当成区分大小写来对待，必须经过URL编码。
+- **value**：存储在 cookie 里的字符串值，必须经过URL编码。
+- **domain**：cookie 有效的域，发送到这个域(对子域也有效)的所有请求都会包含对应的 cookie，默认为设置cookie的域。
+- **path**：请求URL中包含这个路径才会把cookie发送到服务器。
+- **expires**：表示何时删除cookie的时间戳。默认情况下， 浏览器会话结束后会删除所有 cookie，设置删除cookie的时间是GMT格式，把过期时间设置为过去的时间会立即删除 cookie。
+- **secure**：表示只在使用SSL安全连接时才发送cookie到服务器。
+
+在JS中处理cookie只有使用BOM的**`document.cookie`**访问，它返回包含页面中所有有效cookie的字符串，以分号间隔。cookie的名/值均被编码，需使用`decodeURIComponent()`解码。设置该属性时会添加新cookie到原有cookie，其中name/value为必须值，设置cookie与Set-Cookie头部格式一样，如：` name=value; expires=expiration_time; path=domain_path; domain=domain_name; secure `。另外，为绕过对cookie数的限制，有些开发者提出子cookie概念，即在父cookie的value中存储多个名/值对，最常用的模式如：` name=name1=value1&name2=value2 `。
+
+
+
+##  Web Storage
+
+cookie的限制及其特性决定了cookie并不是存储大量数据的理想方式，因此，其他客户端存储技术出现了。Web Storage最早是WHATWG在 Web Applications 1.0 规范中提出，后来成为了H5的一部分，又独立出来成立了自己的规范。
+
+Web Storage第2版的目标是：提供在cookie之外的存储session数据的途径；提供跨会话持久化存储大量数据的机制。为此定义了两个对象：能够永久存储的**`localStorage`**和跨session存储的**`sessionStorage`**。
+
+**Storage类型**保存名/值对直至限制的空间上限，只能存储字符串，length属性可确定其保存的名/值对数量。其实例与其他对象一样，但增加以下方法：
+
+- **`clear()`**：删除所有值(未在 Firefox 中实现)；
+- **`getItem(name)`**：取得给定 name 的值；
+- **`key(index)`**：取得给定数值位置的名称；
+- **`removeItem(name)`**：删除给定 name 的名/值对 ；
+- **`setItem(name, value)`**：设置给定 name 的值。
+
+
+
+
+
+
 
 
 
