@@ -4,41 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script>
-        function showMarkdown() {
-            let f = form;
-            let xmlhttp = new XMLHttpRequest();
-            xmlhttp.onreadystatechange = function () {
-                console.log(xmlhttp.status);
-                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                    // 调用marked框架的marked函数实现Markdown2HTML的解析
-                    document.getElementById("content").innerHTML = marked(xmlhttp.responseText);
-                }
-            }
-            xmlhttp.open("GET", f.q.value, true);
-            xmlhttp.send();
-        }
-    </script>
+    <title>YUI's Blog🐟</title>
+    <style>
+        
+    </style>
 </head>
 
 <body>
-    <div class="container" style="margin-top:30px">
-        <div value="./lib/ProfessionalJS.md"></div>
-        <form name="form" action="" method="post">
-            <select name="q">
-                <option class="active" value="">选择一个笔记:</option>
-                <option value="./lib/ProfessionalJS.md">第一个Markdown文档</option>
-                <option value="B.md">第二个Markdown文档</option>
-                <option value="C.md">第三个Markdown文档</option>
-                <option value="Evalue-TranscriptomeData.md">第四个Markdown文档</option>
-            </select>
-            <input type="button" value="显示" onclick="showMarkdown()">
-        </form>
-    </div>
-    <div id="content">ME</div>
-
+   <div id="container">
+       <h1>HELLO WORLD</h1>
+   </div>
 </body>
 
 </html>

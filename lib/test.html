@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            background-color: rgb(208, 207, 219);
+        }
+
+        #container {
+            color: white;
+            border: 1px solid whitesmoke;
+            margin: 0;
+        }
+
+        #float {
+            color: black;
+            background-color: rgb(136, 135, 201);
+            width: 200px;
+            height: 200px;
+            float: left;
+        }
+
+        #surround {
+            background-color: cornflowerblue;
+            clear: left;
+            width: 600px;
+            height: 500px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <div id="float">MEMEMEMEME</div>
+        <div id="surround">
+            <p>
+                The element lays out its contents using flow layout (block-and-inline layout).
+If its outer display type is inline or run-in, and it is participating in a block or inline formatting context, then it generates an inline box. Otherwise it generates a block container box.
+Depending on the value of other properties (such as position, float, or overflow) and whether it is itself participating in a block or inline formatting context, it either establishes a new block formatting context (BFC) for its contents or integrates its contents into its parent formatting context.
+            </p>
+        </div>
+    </div>
+</body>
+
+</html>
