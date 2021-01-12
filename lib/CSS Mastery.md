@@ -18,6 +18,10 @@ HTML5结构化元素：section、header、footer、nav、article、aside、main�
 
 [Can I use](https://www.caniuse.com/)网站可搜索属性查看支持浏览器百分比。使用Modernizr库可向前兼容老旧浏览器。
 
+
+
+
+
 # 二 添加样式
 
 ## CSS选择符
@@ -116,6 +120,8 @@ HTML5结构化元素：section、header、footer、nav、article、aside、main�
 
 
 
+
+
 # 三 可见格式化模型
 
 盒模型是CSS核心概念，所有元素都被看成一个矩形。padding用于分隔内容，使其不会散布到背景边界；margin在页面中控制元素间的距离。如下：
@@ -136,9 +142,44 @@ CSS有几种不同的定位模型：浮动、绝对定位、相对定位。默�
 
 浮动元素会脱离文档流，若浮动元素后跟着常规元素，该元素盒子会当浮动元素不存在一样布局，元素内容却会避开浮动元素的空间，形成文本环绕效果。要阻止环绕，在对应行盒子上设置clear属性指明某侧不应紧贴浮动盒子。清除元素实际上是浏览器会在该元素上方添加足够大的外边距，将元素推到浮动元素下方，给“已清除”的元素添加外边距若未超过浏览器添加的值将没有效果。包裹浮动元素的元素无法生成高度，在其末尾添加一个空元素或使用`:after`伪类并为其指定clear可解决这个问题。
 
+CSS为确定元素排布时互相的影响，有几套不同规则，其中一套叫做**格式化上下文(formatting context)**，分为[行内格式化上下文](https://developer.mozilla.org/zh-CN/docs/Web/CSS/Inline_formatting_context)和[块级格式化上下文](https://developer.mozilla.org/zh-CN/docs/Web/Guide/CSS/Block_formatting_context)。BFC规定必须自动包含突出的浮动元素，且所有块盒子的左边界默认与包含块的左边界对齐。有些规则允许元素建立自己内部的块级格式化上下文：
+
+- display属性为inline-block或table-cell之类的元素；
+- float属性不为none的元素；
+- 绝对定位的元素；
+- overflow属性值不是visible的元素。
 
 
 
+
+
+# 四 网页排版
+
+`font-family`的值是备选字体列表，包含空格的字体族最好加上引号。字型(typeface)也叫字体族，是一组代表字母、数字及其他统一样式的字形(glyph)的集合，字体(font)通常指存有某种字形表示的文件。
+
+默认`font-size`为16px，通常不修改默认值，而是通过其他缩放因子来调整特定元素。em基于元素自身计算到的font-size，而rem始终基于根元素缩放。
+
+`line-height`指定行盒子总高度，即行高；`font-weight`设置文本粗细；`font-style`指定字体样式如斜体。`text-transform`控制英文字母大小写；`font-variant`将字母设置为小型大写字母。`word-spacing`增减词间距；`letter-spacing`控制字符间距；`text-indent`设置首行缩进；`text-align`控制文本方向；`text-justify`在text-align为justify时修改两端对齐方式。`hyphens`设置自动在换行处插入连字符。`columns`是`column-count`和`column-width`的简写，前者指定栏数，后者指定栏宽；`column-gap`设置栏间距，`column-span`设置元素跨栏。
+
+[@font-face](https://developer.mozilla.org/zh-cn/docs/web/css/@font-face)规则指定浏览器下载Web字体的服务器地址及如何引用，其中包含的声明并不会改变字体，而是指定在何种情况下触发使用这个字体文件。
+
+OpenType字体格式支持在字体文件中包含字体的额外设定和特性，如连字、饰线等，CSS也有一些与其对应的属性，此处不赘述。
+
+`text-shadow`给文本绘制阴影，需指定相对于文本的x/y轴偏移量，模糊距离及颜色值，可用逗号分隔指定多组阴影。阴影绘制开销较大不可滥用。
+
+
+
+
+
+# 五 装饰盒子
+
+描述颜色可使用十六进制法，由3组共6位数字组成，分别表示RGB3个通道值，若每组的2个数字相同则可简写，如“#663399”简写为“#639”。还可以使用`rgb()`和`hsl()`函数，前者使用十进制RGB值，后者使用HSL模型描述，`rgba()`和`hsla()`在颜色的基础上增加对透明度的控制。`opacity`单独控制元素透明度。
+
+`background-image`加载背景图片，`url()`可解析路径。`background-repeat`控制图片是否重复，默认为repeat。
+
+位图意味着文件会包含每个像素的数据，JPEG、PNG、GIF是位图格式。JPE是有损压缩，压缩率越高细节损失越多，不支持透明度。PNG是无损压缩，作为照片会很大，支持透明度设置；GIF是早期位图格式，除动图外已PNG取代，支持透明度但不支持阿尔法分级，因此会有边缘锯齿SVG是矢量图形格式，本身也是一种标记语言，可直接嵌入网页。WebP是Google开发的新格式，结合了JPEG的高压缩率和PNG的透明特性，目前的支持参差不齐。
+
+`background-position`设置背景图的位置，用法多且复杂具体见[MDN](https://developer.mozilla.org/zh-cn/docs/web/css/background-position)。其中，当值为百分比时表示图片的x%处应与容器的x%处重合，使用`calc()`可以计算任何数值(操作符两侧要加空格)。
 
 
 
