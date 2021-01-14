@@ -9,18 +9,31 @@
         html body {
             margin: 0;
             padding: 0;
+            width: 100%;
+            height: 100%;
         }
         #container {
-            color: white;
-            border: 1px solid whitesmoke;
-            margin: 0;
+            height: 500px;
+            margin: 20;
             padding: 10px;
-            background-image: url(../img/src/background1.jpg);
+            color: white;
+            background-image: linear-gradient(
+                transparent,
+                transparent 50%,
+                rgba(55,110,176,0.3) 50%
+            ),
+            linear-gradient(
+                to right,
+                transparent,
+                transparent 50%,
+                rgba(55,110,176,0.3) 50%
+            );
+            /* background-image: url(../img/src/background1.jpg); */
             background-position: 50% 50%;
+            border: 5px solid rgba(88, 95, 128, 0.5);
         }
         h1 {
             text-align: center;
-            text-shadow: 0 -1px 1px;
         }
 
         #article {
@@ -33,7 +46,7 @@
 <body>
     <div id="container">
         <h1>罗生门</h1>
-        <div id="article">
+        <!-- <div id="article">
             <p>
                 薄暮时分。罗生门下。一个仆人正在等待雨的过去。</p>
 
@@ -82,14 +95,11 @@
                 一看，里面果如传闻所言，几具死尸横躺竖卧地扔着。但火光照到的范围却意外狭小，看不清尸体的数量，仅可模模糊糊地辨出有的赤裸，有的着衣，当然男女混杂。而且全部泥塑木雕似的张着嘴巴伸着胳膊，狼藉地倒在楼板上，甚至很难相信他们曾是活人。肩、胸等隆起部位承受着昏黄的灯光，低凹部位则愈发阴影沉沉，无不哑巴一般永久地沉默了。
 
             </p>
-            <p>
-                死尸腐烂的臭气使得仆人不由得捂起鼻子。但下一瞬间却令他忘了捂鼻：一股汹涌的情感几乎将他的嗅觉劫掠一空。
-
-            </p>
             TBC
             </p>
-        </div>
+        </div> -->
     </div>
+    <script src="./test.js"></script>
 </body>
 
 </html>
