@@ -46,6 +46,8 @@ HTML5结构化元素：section、header、footer、nav、article、aside、main�
 - 伪元素：想选择的区域不是通过元素表示时可以通过伪元素来选择：
   - `::first-letter`：选择第一段文本的第一个字符；
   - `::first-line`：选择一段文本的第一个行；
+  - `::before`：在元素前创建一个伪元素；
+  - `::after`：在元素后创建一个伪元素；
 - 伪类：想基于文档结构以外的情形来添加样式：
   - 超链接伪类
     - `:link`：未访问时；
@@ -191,13 +193,15 @@ OpenType字体格式支持在字体文件中包含字体的额外设定和特性
 
 
 
+# 六 水平布局
 
 
 
+`z-index`设置堆叠元素的次序。position为absolute、z-index值不为auto、opacity小于1等元素，会创建自己后代元素的堆叠上下文，仅在这个上下文中堆叠，无论子元素z-index值如何变化都不会越界到其他元素上/下层。
 
+` vertical-align`设置元素垂直对齐方式。margin为负值是有效的，会出现一些不同的行为。行盒子内的任何空白符(包括源码内的换行)都会渲染为一个空格，把元素容器的font-size设置为0即可消除。
 
-
-
+**Flexbox**，即Flexible Box Layout模块，包含针对弹性容器和针对其直接子元素(弹性项，flex item)的两类属性。Flexbox可以控制弹性项的大小、流动方向、两条轴上的对齐与分布、排列顺序。若不指定大小，弹性项将自动收缩到最小宽度。`flex-direction`指明元素如何在flex容器中布局，定义了**主轴(main axis)**方向，辅轴(cross axis)与主轴垂直。`justify-content`指定排布方式。`align-items`指定辅轴对齐的方式，默认stretch填满所有空间。`baseline`将子项文本基线与容器基线对齐。`align-self`对齐当前子项，覆盖已有align-items的值。
 
 
 
