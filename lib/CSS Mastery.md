@@ -201,11 +201,15 @@ OpenType字体格式支持在字体文件中包含字体的额外设定和特性
 
 ` vertical-align`设置元素垂直对齐方式。margin为负值是有效的，会出现一些不同的行为。行盒子内的任何空白符(包括源码内的换行)都会渲染为一个空格，把元素容器的font-size设置为0即可消除。
 
-**Flexbox**，即Flexible Box Layout模块，包含针对弹性容器和针对其直接子元素(弹性项，flex item)的两类属性。Flexbox可以控制弹性项的大小、流动方向、两条轴上的对齐与分布、排列顺序。若不指定大小，弹性项将自动收缩到最小宽度。`flex-direction`指明元素如何在flex容器中布局，定义了**主轴(main axis)**方向，辅轴(cross axis)与主轴垂直。`justify-content`指定排布方式。`align-items`指定辅轴对齐的方式，默认stretch填满所有空间。`baseline`将子项文本基线与容器基线对齐。`align-self`对齐当前子项，覆盖已有align-items的值。
+**Flexbox**，即Flexible Box Layout模块，包含针对弹性容器和针对其直接子元素(弹性项，flex item)的两类属性。Flexbox可以控制弹性项的大小、流动方向、两条轴上的对齐与分布、排列顺序。若不指定大小，弹性项将自动收缩到最小宽度。`flex-direction`指明元素如何在flex容器中布局，定义了**主轴(main axis)**方向，辅轴(cross axis)与主轴垂直。`justify-content`指定排布方式。`align-items`指定辅轴对齐的方式，默认stretch填满所有空间。`baseline`将子项文本基线与容器基线对齐。`align-self`对齐当前子项，覆盖已有align-items的值。`flex-wrap`控制行的堆叠方向。`flex-basis`控制项目首选大小；`fex-grow`设置多余空间的分配系数；`flex-shrink`设置超出空间的收缩系数。`align-content`设置多余空间如何在弹性项周围分布。`order`可以无视源码设置元素的出现顺序，默认均为0。
 
 
 
 
 
+# 七 页面布局&表格
 
+网格系统是设计师在切分布局的时的参照，行&列间的空白叫空距(gutter)，行&列相交形成的单元格，成为单元(unit)或模块(module)，单元构成的区块称作区域(field)或范围(region)。
+
+**固定布局**指页面具有特定的宽度；**弹性布局**指布局元素的尺寸使用em单位，即使用户缩放文本大小，布局的比例也不变；**流式布局**指页面元素会按比例缩放，但元素与元素间的比例甚至距离都保持不变。让页面能响应环境适应不同设备的设计方法叫**响应式Web设计(responsive Web design)**。
 

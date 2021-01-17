@@ -12,18 +12,21 @@
             width: 100%;
             height: 100%;
         }
+
         #container {
             margin: 20;
             padding: 20px;
             /* color: white; */
             /* background-image: url(../img/src/background1.jpg); */
-            background-color: rgb(151, 168, 201);
+            background-color: rgb(139, 168, 228);
             background-position: 50% 50%;
             border: 5px solid rgba(88, 95, 128, 0.5);
         }
+
         h1 {
             text-align: center;
         }
+
         #tittle {
             /* float: left; */
             border: 1px dotted white;
@@ -36,6 +39,7 @@
             text-indent: 2em;
             /* columns: 2; */
         }
+
         #aside {
             padding: 10px;
             color: rgb(75, 64, 64);
@@ -46,6 +50,7 @@
             margin-top: -2.5em;
             margin-left: -9.5em;
         }
+
         #aside::after {
             position: absolute;
             content: '';
@@ -58,18 +63,69 @@
             right: -1em;
             top: .5em;
         }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            border: 1px solid #c6caf0;
+            margin: 0;
+            padding: 1em;
+            list-style: none;
+        }
+
+        .tags li {
+            flex: 1 0 auto;
+            max-width: 14em;
+            display: inline-block;
+            margin: .5em;
+        }
+
+        .tags a {
+            position: relative;
+            display: block;
+            padding: .25em;
+            background-color: rgb(253, 218, 58);
+            color: white;
+            border-radius: 0 .25em .25em 0;
+            line-height: 1.5;
+            text-decoration: none;
+            text-align: right;
+        }
+        .tags a::before {
+            position: absolute;
+            content: '';
+            width: 0;
+            height: 0;
+            border: 1em solid transparent;
+            border-right-width: .5em;
+            border-right-color: rgb(253, 218, 58);
+            left: -1.5em;
+            top: 0;
+        }
     </style>
 </head>
 
 <body>
     <div id="container">
-        <div id="tittle">
-            <p>罗生门</p>
-            <p>罗生门</p>
-            <p>罗生门</p>
-            <p>罗生门</p>
-            <p>罗生门</p>
-            </div>
+        <ul class="tags">
+            <li><a href="/Binary_planet">Binary planet</a></li>
+            <li><a href="/Carbon_planet">Carbon planet</a></li>
+            <li><a href="/Coreless_planet">Coreless planet</a></li>
+            <li><a href="/Desert_planet">Desert planet</a></li>
+            <li><a href="/Dwarf_planet">Dwarf planet</a></li>
+            <li><a href="/Earth_analog">Earth analog</a></li>
+            <li><a href="/Exoplanet">Exoplanet</a></li>
+            <li><a href="/Gas_giant">Gas giant</a></li>
+            <li><a href="/Helium_planet">Helium planet</a></li>
+            <li><a href="/Ice_giant">Ice giant</a></li>
+            <li><a href="/Lava_planet">Lava planet</a></li>
+            <li><a href="/Mesoplanet">Mesoplanet</a></li>
+            <li><a href="/Ocean_planet">Ocean planet</a></li>
+            <li><a href="/Pulsar_planet">Pulsar planet</a></li>
+            <li><a href="/Rogue_planet">Rogue planet</a></li>
+            <li><a href="/Terrestrial_planet">Terrestrial planet</a></li>
+            <li><a href="/Sub-brown_dwarf">Sub-brown dwarf</a></li>
+        </ul>
         <!-- <div id="author">芥川龙之介</div> -->
         <!-- <div id="article">
             <p>
