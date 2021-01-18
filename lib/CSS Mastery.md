@@ -213,3 +213,20 @@ OpenType字体格式支持在字体文件中包含字体的额外设定和特性
 
 **固定布局**指页面具有特定的宽度；**弹性布局**指布局元素的尺寸使用em单位，即使用户缩放文本大小，布局的比例也不变；**流式布局**指页面元素会按比例缩放，但元素与元素间的比例甚至距离都保持不变。让页面能响应环境适应不同设备的设计方法叫**响应式Web设计(responsive Web design)**。
 
+## grid
+
+
+
+采用网格布局的区域称为**容器(container)**，容器中的水平区域称作行(row)，垂直区域称作列(column)，行&列交叉区域为单元格(cell)。Grid布局的属性分为容器属性和项目属性。具体例见[阮一峰博客](http://www.ruanyifeng.com/blog/2019/03/grid-layout-tutorial.html)。
+
+**容器属性**
+
+display属性为`grid`或 ` inline-grid `会将该元素设置为网格布局，后者为行内网格。`grid-template-rows`和`grid-template-columns`划分设置行/列，可使用方括号指定每一根网格线的名字。
+
+单位**fr**是可用空间的部分(fraction)。`repeat()`简写重复值，参数一为要重复的次数。`auto-fill`自动以参数二指定的宽度填充元素。`minmax()`指定长度范围。 `grid-row-gap`和`grid-column-gap`分别设置行/列间距；`grid-gap`是二者的简写。 `grid-template-areas`命名区域，合并的格子定义为重名，不需要的区域使用"."忽略；区域命名后网格线自动命名为"区域名-start/end"。网格划分后子元素会按照顺序放置在网格内，`grid-auto-flow`定义这个顺序，默认"先行后列"即"row"。
+
+注意：网格容器子元素(项目)的`float`、`display: inline-block`、`display: table-cell`、`vertical-align`和`column-*`等都将失效。
+
+**项目属性**
+
+ `justify-items`属性设置单元格内容的水平位置，`align-items`属性设置单元格内容的垂直位置；`place-items`简写前二者。

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,36 +9,199 @@
         body {
             margin: 0;
         }
+
         .wrapper {
             width: 95%;
             max-width: 76em;
             margin: 0 auto;
-            background-color: cornflowerblue;
+            display: grid;
+            grid-template-rows: 300px 300px;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+        }
+
+        .masthead {
+            background-color: #8E3339;
+        }
+
+        .masthead h1 {
+            margin: 0;
+            padding: 0.5em 0;
+            color: #fff;
+            text-shadow: -.1em .1em 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .navbar {
+            background-color: #5E2126;
+            margin-bottom: 1.375em;
+        }
+
+        nav {
+            display: block;
+        }
+
+        .navbar ul {
+            font-family: 'Avenir Next', Avenir, Corbel, 'Franklin Gothic', 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            background-color: #752A2F;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .navbar li {
+            float: left;
+            text-transform: uppercase;
+            text-align: center;
+            box-sizing: border-box;
+            flex: 1 1 auto;
+            border-left: 1px solid #8E3339;
+        }
+
+        .navbar li:first-child {
+            border-left: 0;
+        }
+
+        .navbar li a {
+            display: block;
+            text-decoration: none;
+            line-height: 1.75em;
+            padding: 1em 2em;
+            color: #fff;
+        }
+
+        .grid-a {
+            display: grid;
+            grid-template-rows: auto auto auto auto;
+            grid-template-columns: repeat(5, 1fr);
+            margin: 0 -.6875em;
         }
     </style>
 </head>
+
 <body>
-
-    <header class="masthead">
+    <!-- <header class="masthead">
         <div class="wrapper">
-            <h1>Favorite Writer</h1>
+            <h1>Important News</h1>
         </div>
-    </header>
+    </header> -->
 
-    <nav>
+    <!-- <nav role="navigation" class="navbar">
         <div class="wrapper">
             <ul class="navlist">
-                <li><a>主页</a></li>
-                <li><a>中国</a></li>
-                <li><a>日本</a></li>
-                <li><a>欧洲</a></li>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">World</a></li>
+                <li><a href="#">Local</a></li>
+                <li><a href="#">Sports</a></li>
             </ul>
         </div>
-    </nav>
-
+    </nav> -->
     <main class="wrapper">
 
+        <section class="subcategory">
+            <div class="grid-a">
+                <header class="col subcategory-header">
+                    <h2>Lorem ipsum</h2>
+                </header>
+                <div class="col subcategory-content">
+                    <div class="row row-quartet">
+                        <div class="col subcategory-featured">
+                            <article class="story">
+                                <img src="../img/demo/600X300.jpg" alt="Dummy image">
+                                <h3><a href="#">Cras suscipit nec leo id.</a></h3>
+                                <p>Autem repudiandae aliquid tempora quos reprehenderit architecto, sequi repellat.</p>
+                            </article>
+                        </div>
+                        <div class="col">
+                            <article class="story">
+                                <img src="../img/demo/600X300.jpg" alt="Dummy image">
+                                <h3><a href="#">Perferendis, ipsam!</a></h3>
+                                <p>Neque magnam vero obcaecati facere nobis sint dolore accusamus vitae consequuntur ad
+                                    necessitatibus, laborum molestiae.</p>
+                            </article>
+                        </div>
+                        <div class="col">
+                            <article class="story">
+                                <img src="../img/demo/600X300.jpg" alt="Dummy image">
+                                <h3><a href="#">Curabitur mattis purus nec velit.</a></h3>
+                                <p>Neque magnam vero obcaecati facere nobis sint dolore accusamus vitae consequuntur ad
+                                    necessitatibus, laborum molestiae.</p>
+                            </article>
+                        </div>
+                    </div>
+                    <div class="row row-quartet">
+                        <div class="col">
+                            <article class="story">
+                                <h3><a href="#">Perferendis, ipsam!</a></h3>
+                                <p>Neque magnam vero obcaecati facere nobis sint dolore accusamus vitae consequuntur ad
+                                    necessitatibus, laborum molestiae.</p>
+                            </article>
+                        </div>
+                        <div class="col">
+                            <article class="story">
+                                <h3><a href="#">Aliquam mattis eros id posuere.</a></h3>
+                                <p>Neque magnam vero obcaecati facere nobis sint dolore accusamus vitae consequuntur ad
+                                    necessitatibus, laborum molestiae.</p>
+                            </article>
+                        </div>
+                        <div class="col">
+                            <article class="story">
+                                <h3><a href="#">Proin leo felis, semper nec</a></h3>
+                                <p>Neque magnam vero obcaecati facere nobis sint dolore accusamus vitae consequuntur ad
+                                    necessitatibus, laborum molestiae.</p>
+                            </article>
+                        </div>
+                        <div class="col">
+                            <article class="story">
+                                <h3><a href="#">Aliquam vitae risus tortor. Sed!</a></h3>
+                                <p>Neque magnam vero obcaecati facere nobis sint dolore accusamus vitae consequuntur ad
+                                    necessitatibus, laborum molestiae.</p>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- <section class="subcategory">
+            <div class="row">
+                <header class="col subcategory-header">
+                    <h2>Dolor sit amet</h2>
+                </header>
+                <div class="col subcategory-content">
+                    <div class="row row-trio">
+                        <div class="col">
+                            <article class="story">
+                                <img src="http://placehold.it/600x300" alt="Dummy image">
+                                <h3><a href="#">Ut sit amet mi massa</a></h3>
+                                <p>Neque magnam vero obcaecati facere nobis sint dolore accusamus vitae consequuntur ad
+                                    necessitatibus, laborum molestiae.</p>
+                            </article>
+                        </div>
+                        <div class="col">
+                            <article class="story">
+                                <h3><a href="#">Nunc mollis sit amet nunc</a></h3>
+                                <p>Neque magnam vero obcaecati facere nobis sint dolore accusamus vitae consequuntur ad
+                                    necessitatibus, laborum molestiae.</p>
+                            </article>
+                            <article class="story">
+                                <h3><a href="#">Duis sed ante enim. Cras</a></h3>
+                                <p>Neque magnam vero obcaecati facere nobis sint dolore accusamus vitae consequuntur ad
+                                    necessitatibus, laborum molestiae.</p>
+                            </article>
+                        </div>
+                        <div class="col">
+                            <article class="story">
+                                <img src="http://placehold.it/600x300" alt="Dummy image">
+                                <h3><a href="#">Animi, explicabo, ipsum</a></h3>
+                                <p>Neque magnam vero obcaecati facere nobis sint dolore accusamus vitae consequuntur ad
+                                    necessitatibus, laborum molestiae.</p>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section> -->
     </main>
 
-</body>
 </html>
