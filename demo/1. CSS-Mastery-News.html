@@ -6,96 +6,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>1. CSS-Mastery-News</title>
     <style>
-        body {
+        html,
+        body,
+        h1,
+        ul {
             margin: 0;
+            padding: 0;
         }
 
-        .wrapper {
-            width: 95%;
-            max-width: 76em;
-            margin: 0 auto;
-            display: grid;
-            grid-template-rows: 300px 300px;
-            grid-template-columns: 1fr 1fr 1fr 1fr;
+        .head {
+            background-color: rgb(238, 141, 50);
+            color: white;
+            box-sizing: content-box;
+            padding-bottom: .7em;
         }
 
-        .masthead {
-            background-color: #8E3339;
-        }
-
-        .masthead h1 {
-            margin: 0;
-            padding: 0.5em 0;
-            color: #fff;
-            text-shadow: -.1em .1em 0 rgba(0, 0, 0, 0.3);
+        h1 {
+            text-shadow: 1px 1.5px black;
+            padding: .5em .3em;
         }
 
         .navbar {
-            background-color: #5E2126;
-            margin-bottom: 1.375em;
-        }
-
-        nav {
-            display: block;
-        }
-
-        .navbar ul {
-            font-family: 'Avenir Next', Avenir, Corbel, 'Franklin Gothic', 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
-            list-style: none;
-            padding: 0;
             margin: 0;
-            background-color: #752A2F;
-            display: flex;
-            overflow: hidden;
+            width: 100%;
+            margin: auto;
         }
 
-        .navbar li {
-            float: left;
-            text-transform: uppercase;
-            text-align: center;
-            box-sizing: border-box;
-            flex: 1 1 auto;
-            border-left: 1px solid #8E3339;
-        }
-
-        .navbar li:first-child {
-            border-left: 0;
-        }
-
-        .navbar li a {
-            display: block;
-            text-decoration: none;
-            line-height: 1.75em;
-            padding: 1em 2em;
-            color: #fff;
-        }
-
-        .grid-a {
+        ul {
+            list-style: none;
             display: grid;
-            grid-template-rows: auto auto auto auto;
-            grid-template-columns: repeat(5, 1fr);
-            margin: 0 -.6875em;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            justify-items: stretch;
         }
+
+        ul li {
+            padding: .4em;
+            display: inline;
+            font-size: 1.4em;
+            text-align: center;
+            border-top: 3px solid rgb(255, 180, 126);
+           border-bottom: 3px solid rgb(153, 72, 13);
+            background-color: rgb(218, 123, 45);
+        }
+        ul li:hover {
+            background-color: rgb(255, 180, 126);
+            
+        }
+
+        a {
+            text-decoration: none;
+            color: white;
+        }
+
+        .main {}
     </style>
 </head>
 
 <body>
-    <!-- <header class="masthead">
-        <div class="wrapper">
+    <div class="head">
+        <header>
             <h1>Important News</h1>
-        </div>
-    </header> -->
+        </header>
 
-    <!-- <nav role="navigation" class="navbar">
-        <div class="wrapper">
-            <ul class="navlist">
+        <nav role="navigation" class="navbar">
+            <ul>
                 <li><a href="#">Home</a></li>
                 <li><a href="#">World</a></li>
                 <li><a href="#">Local</a></li>
                 <li><a href="#">Sports</a></li>
             </ul>
-        </div>
-    </nav> -->
+        </nav>
+    </div>
     <main class="wrapper">
 
         <section class="subcategory">

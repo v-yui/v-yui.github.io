@@ -223,10 +223,37 @@ OpenType字体格式支持在字体文件中包含字体的额外设定和特性
 
 display属性为`grid`或 ` inline-grid `会将该元素设置为网格布局，后者为行内网格。`grid-template-rows`和`grid-template-columns`划分设置行/列，可使用方括号指定每一根网格线的名字。
 
-单位**fr**是可用空间的部分(fraction)。`repeat()`简写重复值，参数一为要重复的次数。`auto-fill`自动以参数二指定的宽度填充元素。`minmax()`指定长度范围。 `grid-row-gap`和`grid-column-gap`分别设置行/列间距；`grid-gap`是二者的简写。 `grid-template-areas`命名区域，合并的格子定义为重名，不需要的区域使用"."忽略；区域命名后网格线自动命名为"区域名-start/end"。网格划分后子元素会按照顺序放置在网格内，`grid-auto-flow`定义这个顺序，默认"先行后列"即"row"。
+`grid-row-gap`和`grid-column-gap`分别设置行/列间距；`grid-gap`是二者的简写。 `grid-template-areas`命名区域，合并的格子定义为重名，不需要的区域使用"."忽略；区域命名后网格线自动命名为"区域名-start/end"。网格划分后子元素会按照顺序放置在网格内，`grid-auto-flow`定义这个顺序，默认"先行后列"即"row"。
 
-注意：网格容器子元素(项目)的`float`、`display: inline-block`、`display: table-cell`、`vertical-align`和`column-*`等都将失效。
+ `justify-items`和`align-items`设置内容在单元格中的水平/垂直位置；`place-items`简写前二者。`justify-content`和 `align-content`控制整个内容在容器中的水平/垂直位置。不在划分单元格内的多余项，浏览器将自动新增多余网格；`grid-auto-columns`和`grid-auto-rows`就是用来设置浏览器创建网格的列宽和行高。 
+
+注意：网格容器子元素(项目)的`float`、`display: inline-block`、`display: table-cell`、`vertical-align`和`column-*`等都将失效。单位**fr**指可用空间部分(fraction)。`repeat()`简写重复值，para1为重复次数。`auto-fill`自动以para2指定的宽度填充元素。`minmax()`指定长度范围。
 
 **项目属性**
 
- `justify-items`属性设置单元格内容的水平位置，`align-items`属性设置单元格内容的垂直位置；`place-items`简写前二者。
+指定项目的边框定位在哪个网格线即可设置项目位置。`grid-column-start/gend`设置左右边框线。`grid-row-start/end` 设置上下边框线。`grid-column`和`grid-row`分别是前二者的简写。关键字`span`表示跨越网格，后跟格子数。`grid-area`指定项目放在哪个区域。
+
+`justify-self`和`align-self`设置单元格内容的水平/垂直位置，仅作用于单个项目；` place-self `简写前二者。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
