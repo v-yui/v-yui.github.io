@@ -201,7 +201,17 @@ OpenType字体格式支持在字体文件中包含字体的额外设定和特性
 
 ` vertical-align`设置元素垂直对齐方式。margin为负值是有效的，会出现一些不同的行为。行盒子内的任何空白符(包括源码内的换行)都会渲染为一个空格，把元素容器的font-size设置为0即可消除。
 
-**Flexbox**，即Flexible Box Layout模块，包含针对弹性容器和针对其直接子元素(弹性项，flex item)的两类属性。Flexbox可以控制弹性项的大小、流动方向、两条轴上的对齐与分布、排列顺序。若不指定大小，弹性项将自动收缩到最小宽度。`flex-direction`指明元素如何在flex容器中布局，定义了**主轴(main axis)**方向，辅轴(cross axis)与主轴垂直。`justify-content`指定排布方式。`align-items`指定辅轴对齐的方式，默认stretch填满所有空间。`baseline`将子项文本基线与容器基线对齐。`align-self`对齐当前子项，覆盖已有align-items的值。`flex-wrap`控制行的堆叠方向。`flex-basis`控制项目首选大小；`fex-grow`设置多余空间的分配系数；`flex-shrink`设置超出空间的收缩系数。`align-content`设置多余空间如何在弹性项周围分布。`order`可以无视源码设置元素的出现顺序，默认均为0。
+## Flexbox
+
+Flexbox，即Flexible Box Layout模块，包含针对弹性容器和针对其直接子元素(弹性项，flex item)的两类属性。Flexbox可以控制弹性项的大小、流动方向、两条轴上的对齐与分布、排列顺序。
+
+**容器属性**
+
+`flex-direction`定义了**主轴(main axis)**方向(**辅轴(cross axis)**与其垂直)，指明元素如何在容器中布局。项目默认排列在一条线上，`flex-wrap`定义一条轴线排不下时如何换行。 `flex-flow`简写前二者。`justify-content`指定项目在主轴上的对齐方式。`align-items`指定项目在辅轴上的对齐方式，默认stretch填满所有空间。`align-content`定义多辅轴的对齐方式。
+
+**项目属性**
+
+`order`定义项目排列顺序(无视源码)。`fex-grow`和`flex-shrink`设置多余空间的分配系数从而放大/缩小项目；`flex-basis`定义分配多余空间前项目的本身大小；`flex`是前三者的简写。`align-self`设置单个项目的对齐方式，可覆盖已有align-items的值。
 
 
 
