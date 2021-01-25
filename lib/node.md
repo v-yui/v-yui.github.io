@@ -72,13 +72,39 @@ package-lock.json旨在跟踪被安装的每个软件包的确切版本，以便
 
 
 
+## npx
+
+npx 可以运行使用 Node.js 构建并通过 npm 仓库发布的代码。  运行 `npx commandname` 会自动地在项目的 `node_modules` 文件夹中找到命令的正确引用，而无需知道确切的路径，也不需要在全局和用户路径中安装软件包。可以在本地运行全局安装的npm命令。可以使用@指定版本号来运行，还可以直接从URL运行任意代码片段。 
 
 
 
 
 
+## 事件循环
+
+关于JS的事件循环机制可查看其他笔记，此处不赘述。
+
+事件循环进行一次完整行程称为一个滴答。Node的事件循环机制最重要的部分就是`process.nextTick()`，传给它的函数将会在下一次滴答前执行，即尽快执行而不是排入队列。
 
 
 
+ 传入Node提供的`setImmediate()`的任何函数都是在事件循环的下一个迭代中执行的回调，与延时为0的`setTimeout( `相似。
 
 
+
+## 事件触发器
+
+Node的`events`模块提供`EventEmitter`类，用于处理事件，使用`on()`添加在事件出发时执行的回调函数，`emit()`用触发事件。如下：
+
+```JavaScript
+eventEmitter.on('start', () => {
+  console.log('开始')
+})
+eventEmitter.emit('start') // 额外参数会传给事件监听器
+```
+
+另外还有其他与事件交互方法：
+
+- `once()`: 添加单次监听器。
+- `removeListener()` / `off()`: 从事件中移除事件监听器。
+- `removeAllListeners()`: 移除事件的所有监听器。
