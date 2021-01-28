@@ -106,3 +106,45 @@ plugins: [
   ]
 ```
 
+
+
+### 清理dist
+
+ webpack 将生成文件并放置在 `/dist` 文件夹中，但是它不会追踪哪些文件是实际在项目中用到的，通常推荐在每次构建前都清理`/dist`文件夹。
+
+安装清理插件：`npm install --save-dev clean-webpack-plugin`
+
+
+
+## 开发
+
+### 错误追踪
+
+使用webpack打包源代码，很难追踪到error和warning的原始位置。为此，JS提供`source maps`功能，将编译后的代码映射回原始代码。
+
+webpack.config.js中添加`devtool: 'inline-source-map'`
+
+
+
+### 自动编译
+
+ webpack 提供几种能在代码发生变化后自动编译代码的方式：
+
+#### watch mode
+
+ 你可以指示 webpack "watch" 依赖图中所有文件的更改。如果其中一个文件被更新，代码将被重新编译，所以你不必再去手动运行整个构建。 
+
+在package.json中添加`"watch": "webpack --watch"`，若不想触发后删除index.html，可以在CleanWebpackPlugin中配置cleanStaleWebpackAssets选项来实现。
+
+#### webpack-dev-server
+
+ `webpack-dev-server` 为你提供了一个简单的 web server，并且具有 live reloading(实时重新加载) 功能。 
+
+安装`npm install --save-dev webpack-dev-server`
+
+
+
+
+
+
+
