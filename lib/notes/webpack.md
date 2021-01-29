@@ -130,11 +130,15 @@ webpack.config.js中添加`devtool: 'inline-source-map'`
 
  webpack 提供几种能在代码发生变化后自动编译代码的方式：
 
+
+
 #### watch mode
 
- 你可以指示 webpack "watch" 依赖图中所有文件的更改。如果其中一个文件被更新，代码将被重新编译，所以你不必再去手动运行整个构建。 
+ 你可以指示 webpack "watch" 依赖图中所有文件的更改。如果其中一个文件被更新，代码将被重新编译，不必再去手动运行整个构建。 要看到修改后的效果仍需要手动刷新浏览器。
 
 在package.json中添加`"watch": "webpack --watch"`，若不想触发后删除index.html，可以在CleanWebpackPlugin中配置cleanStaleWebpackAssets选项来实现。
+
+
 
 #### webpack-dev-server
 
@@ -142,9 +146,40 @@ webpack.config.js中添加`devtool: 'inline-source-map'`
 
 安装`npm install --save-dev webpack-dev-server`
 
+修改 配置文件，告知 dev server，从什么位置查找文件： 
+
+```javascript
+devServer: {
+    contentBase: './dist',
+  },
+```
+
+  以上配置告知 `webpack-dev-server`，将 `dist` 目录下的文件 serve 到 `localhost:8080` 下。（译注：serve，将资源作为 server 的可访问文件） 
+
+webpack-dev-server 在编译之后不会写入到任何输出文件。而是将 bundle 文件保留在内存中，然后将它们 serve 到 server 中，就好像它们是挂载在 server 根路径上的真实文件一样。如果你的页面希望在其他不同路径中找到 bundle 文件，则可以通过 dev server 配置中的 [`publicPath`](https://webpack.docschina.org/configuration/dev-server/#devserverpublicpath-) 选项进行修改。 
+
+
+
+#### webpack-dev-middleware
+
+ `webpack-dev-middleware` 是一个封装器(wrapper)，它可以把 webpack 处理过的文件发送到一个 server。 `webpack-dev-server` 在内部使用了它，然而它也可以作为单独的 package 来使用，以便根据需求进行自定义设置。 
+
+安装：`npm install --save-dev express webpack-dev-middleware`
+
+配置暂不做叙述。
 
 
 
 
 
 
+
+
+
+## [性能](https://webpack.docschina.org/guides/build-performance/)
+
+更新webpack和node到最新版本， 较新的版本能够建立更高效的模块树以及提高解析速度。 
+
+ 将 loader 应用于最少数量的必要模块；通过使用 `include` 字段，仅将 loader 应用在实际需要将其转换的模块。
+
+ 每个额外的 loader/plugin 都有其启动时间。尽量少地使用工具。 
