@@ -42,6 +42,18 @@
         返回一个新初始化的Path2D对象（可能将某一个路径作为变量——创建一个它的副本，或者将一个包含SVG path数据的字符串作为变量）。
     Path2D.addPath(path [, transform])​
         添加了一条路径到当前路径（可能添加了一个变换矩阵）。
+
+    fillStyle = color 设置图形的填充颜色。
+    strokeStyle = color 设置图形轮廓的颜色。 
+    globalAlpha = transparencyValue 设置所有图形的透明度。
+
+    lineWidth = value 设置线条宽度。
+    lineCap = type 设置线条末端样式。
+    lineJoin = type 设定线条与线条间接合处的样式。
+    miterLimit = value 限制当两条线相交时交接处最大长度；所谓交接处长度（斜接长度）是指线条交接处内角顶点到外角顶点的长度。
+    getLineDash() 返回一个包含当前虚线样式，长度为非负偶数的数组。
+    setLineDash(segments) 设置当前虚线样式。
+    lineDashOffset = value 设置虚线样式的起始偏移量。
     */
 
     function draw() {
@@ -53,11 +65,12 @@
 
         let circle = new Path2D();
         circle.moveTo(125, 35);
-        circle.arc(100, 35, 25, 0, 2*Math.PI);
+        circle.arc(100, 35, 25, 0, 2 * Math.PI);
 
         ctx.stroke(rectangle);
         ctx.stroke(circle);
     }
+
 </script>
 
 </html>
