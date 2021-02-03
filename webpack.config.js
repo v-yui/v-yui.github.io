@@ -4,7 +4,9 @@ const path = require('path');
 
 module.exports = {
   mode: 'development',
-  entry: './src/index.js',
+  entry: {
+    getFile: './src/getFile.js'
+  },
   devtool: 'inline-source-map',
   devServer: {
     contentBase: './dist',
@@ -12,18 +14,34 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
-      title: "🐟",
+      template: path.join(__dirname, './src/index.html'),
+      filename: 'index.html',
+      showErrors: true,
+      inject: 'head',
+      chunks: ['getFile']
     })
   ],
   output: {
+    filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist'),
-    filename: 'bundle.js'
   },
   module: {
     rules: [
+      { test: /\.css$/i, use: ['style-loader', 'css-loader'] },
+      { test: /\.html$/i, loader: 'html-loader' },
+      { test: /\.md$/, use: ['html-loader', 'markdown-loader'] },
+      { test: /\.(png|svg|jpg|jpeg|gif)$/i, type: 'asset/resource'},
       {
-        test: /\.css$/i,
-        use: ['style-loader', 'css-loader']
+        test: /\.m?js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              ['@babel/preset-env', { targets: "defaults" }]
+            ]
+          }
+        }
       }
     ],
   },
