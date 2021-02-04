@@ -14,7 +14,7 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
-      template: path.join(__dirname, './src/index.html'),
+      template: path.join(__dirname, './src/home.html'),
       filename: 'index.html',
       showErrors: true,
       inject: 'head',
@@ -31,6 +31,7 @@ module.exports = {
       { test: /\.html$/i, loader: 'html-loader' },
       { test: /\.md$/, use: ['html-loader', 'markdown-loader'] },
       { test: /\.(png|svg|jpg|jpeg|gif)$/i, type: 'asset/resource'},
+      { test: /\.less$/, use: ['style-loader', 'css-loader', 'less-loader']},
       {
         test: /\.m?js$/,
         exclude: /node_modules/,
