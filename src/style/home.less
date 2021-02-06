@@ -1,36 +1,11 @@
-@navColor: cornflowerblue;
-
-#header {
+#container {
     position: fixed;
-    width: 400px;
-    height: 70px;
-    background-color: @navColor;
-    // border-radius: 0 0 50% 30%;
-
-    ul {
-        list-style: none;
-        display: grid;
-        grid-template-columns: 100px 100px 100px;
-        grid-template-rows: 70px;
-
-        li {
-            font-size: 1.5rem;
-        }
-    }
-}
-
-// #header::after {
-//     content: '';
-//     position: fixed;
-//     top: 0;
-//     left: 400px;
-//     width: 250px;
-//     height: 100px;
-//     background-color: @navColor;
-//     border-radius: 0 0 80% 0;
-// }
-
-#main {
-    position: fixed;
-    top: 100px;
+    background-color: rgba(230, 229, 229, .3);
+    top: 3rem;
+    right: 5rem;
+    bottom: 3rem;
+    left: 5rem;
+    min-width: 700;
+    border-radius: 20px;
+    box-shadow: 3px 3px 5px gray;
 }
