@@ -5,7 +5,7 @@ const path = require('path');
 module.exports = {
   mode: 'development',
   entry: {
-    getFile: './src/getFile.js'
+    main: './src/main.js'
   },
   devtool: 'inline-source-map',
   devServer: {
@@ -14,11 +14,11 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
-      template: path.join(__dirname, './src/home.html'),
+      template: path.join(__dirname, './src/main.html'),
       filename: 'index.html',
       showErrors: true,
       inject: 'head',
-      chunks: ['getFile']
+      chunks: ['main']
     })
   ],
   output: {

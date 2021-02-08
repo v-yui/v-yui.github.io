@@ -1,0 +1,30 @@
+<body>
+    <nav id="noteNav">
+        <ol>
+            <li>
+                阅读笔记
+                <ol>
+                    <li>JS高级程序设计</li>
+                    <li>图解HTTP</li>
+                    <li>CSS Mastery</li>
+                </ol>
+            </li>
+            <li>个人笔记
+                <ol>
+                    <li>node学习</li>
+                    <li>webpack学习</li>
+                    <li>eventLoop</li>
+                    <li>牛客刷题知识点</li>
+                    <li>正则表达式</li>
+                </ol>
+            </li>
+
+        </ol>
+    </nav>
+    <article id="note"></article>
+
+</body>
+<script>
+    let noteNode = document.getElementById('note');
+    noteNode.innerHTML = window.notes.proJS;
+</script>
