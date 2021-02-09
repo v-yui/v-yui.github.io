@@ -27,8 +27,8 @@
 <script>
     // 入口的script，主要负责配合nav栏展示各界面
     // 子页面的script会直接以script节点形式载入，注意命名冲突
-    let mainContainer = document.getElementById('container'); // 获取容器节点
-    let mainNav = document.getElementById('mainNav').children[0].children;
+    const mainContainer = document.getElementById('container'); // 获取容器节点
+    const mainNav = document.getElementById('mainNav').children[0].children;
 
     // 为简化对子页面模块中需要执行的JS的处理,直接将其写在一个html中
     // 但innerHTML中的script不会执行，写一个函数来分离html和script
@@ -57,7 +57,7 @@
                 eval(strObj.scriptStr);
             })
         }
-        mainNav[1].click(); // 默认展示home页内容
+        mainNav[3].click(); // 默认展示home页内容
     }
 </script>
 

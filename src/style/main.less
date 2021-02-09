@@ -1,4 +1,10 @@
-@navBack: rgb(115, 154, 228);
+@navBack: #7ba2eb; // 所有文件共用的主题色
+
+@import "./home.less";
+@import "./note.less";
+@import "./demo.less";
+@import "./tool.less";
+@import "./photo.less";
 
 html,
 body {
@@ -41,6 +47,7 @@ body {
             box-shadow: 3px 3px 3px rgba(0, 0, 0, .3);
             letter-spacing: .11rem;
             color: @navBack;
+            cursor: pointer;
         }
 
         li::after {

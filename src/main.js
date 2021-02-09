@@ -8,22 +8,23 @@ import demo from './template/demo.html';
 import tool from './template/tool.html';
 import photo from './template/photo.html';
 
-import yuiSelf from './lib/notes/1.个人用.md';
-import proJS from './lib/notes/2. ProfessionalJS.md';
-import grpHTTP from './lib/notes/3. HTTP.md';
-import CSSMast from './lib/notes/4. CSS Mastery.md';
+import proJS from './lib/notes/1.1. ProfessionalJS.md';
+import grpHTTP from './lib/notes/1.2. 图解HTTP.md';
+import CSSMast from './lib/notes/1.3. CSS Mastery.md';
+import nodeLearn from './lib/notes/2.1 node学习.md'
+import webpackLearn from './lib/notes/2.2 webpack学习.md'
+import eventLoop from './lib/notes/2.3 eventLoop.md'
+import newCode from './lib/notes/2.4 牛客刷题知识点.md'
+import regLearn from './lib/notes/2.5 正则表达式.md'
 
-// 使用less来简化嵌套写法,同子页面的JS一样不易处理,故均在此导入
+// 使用less来简化嵌套写法,子页面样式均导入main.less
 import './style/main.less';
-import './style/note.less';
 
 // 5个子页面,为便于使用for循环添加点击事件,故使用数组保存
 window.temp = [home, note, demo, tool, photo];
 
 // note页需展示的markdown笔记
 window.notes = {
-  yuiSelf,
-  proJS,
-  grpHTTP,
-  CSSMast
-}
+  readNote: [proJS, grpHTTP, CSSMast],
+  selfNote: [nodeLearn, webpackLearn, eventLoop, newCode, regLearn]
+};
