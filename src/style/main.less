@@ -1,4 +1,6 @@
 @navBack: #7ba2eb; // 所有文件共用的主题色
+@fontColor: rgb(104, 90, 73); // 文字颜色
+@shadow: 3px 3px 3px rgba(0, 0, 0, .3); // 阴影颜色
 
 @import "./home.less";
 @import "./note.less";
@@ -38,13 +40,14 @@ body {
             transition: all .5s;
             border-radius: 8px;
             font-family: Georgia, serif;
+            font-size: 1.1rem;
 
         }
 
         li:hover {
             transform: translateY(-2px);
             background-color: rgba(255, 255, 255, 1);
-            box-shadow: 3px 3px 3px rgba(0, 0, 0, .3);
+            box-shadow: @shadow;
             letter-spacing: .11rem;
             color: @navBack;
             cursor: pointer;

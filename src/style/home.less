@@ -1,0 +1,73 @@
+#homeWrap {
+    #sky {
+        width: 500px;
+        height: 500px;
+        position: absolute;
+        right: 0px;
+        top: 0px;
+        border-radius: 50%;
+        background-image: linear-gradient(to top, rgb(111, 147, 245), white);
+
+        #sun {
+            margin-left: auto;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-image: linear-gradient(to bottom, rgb(243, 59, 59), rgb(252, 229, 126));
+        }
+        .tree {
+            // width: 200px;
+            // height: 200px;
+            // background-image: linear-gradient(to bottom left, rgb(103, 173, 56), rgb(252, 229, 126));
+
+        }
+        #tree1 {
+            width: 150px;
+            height: 180px;
+            border-radius: 50% 50% 50% 0;
+            background-image: linear-gradient(to bottom, rgb(103, 173, 56), rgb(252, 229, 126));
+            
+        }
+        #tree2 {
+            width: 200px;
+            height: 200px;
+            border-radius: 50% 50% 50% 0;
+            transform: translateY(-120px);
+            background-image: linear-gradient(to bottom left, rgb(103, 173, 56), rgb(252, 229, 126));
+
+            
+        }
+        #tree3 {
+            width: 220px;
+            height: 230px;
+            border-radius: 0 50% 0 0;
+            transform: translateY(-220px);
+            background-image: linear-gradient(to bottom left, rgb(103, 173, 56), rgb(252, 229, 126));
+
+        }
+        #desk {
+            width: 400px;
+            height: 200px;
+            margin-top: auto;
+            background-color: rgb(252, 225, 194);
+            border-bottom: 5px solid rgb(129, 81, 46);
+            border-radius: 10px;
+            transform: perspective(300px) rotateX(60deg)
+        }
+    }
+
+
+
+    dl {
+        position: absolute;
+        top: 20px;
+        left: 30px;
+        width: 400px;
+        height: 300px;
+        padding: 10px;
+        box-sizing: border-box;
+        border-radius: 10px;
+        border-top: 5px solid @navBack;
+        background-color: white;
+    }
+}
