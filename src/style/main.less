@@ -1,10 +1,11 @@
 @navBack: #7ba2eb; // 所有文件共用的主题色
 @fontColor: rgb(104, 90, 73); // 文字颜色
 @shadow: 3px 3px 3px rgba(0, 0, 0, .3); // 阴影颜色
+@backColor: linear-gradient(to bottom, @navBack, white);
 
 @import "./home.less";
 @import "./note.less";
-@import "./demo.less";
+@import "./read.less";
 @import "./tool.less";
 @import "./photo.less";
 
@@ -41,6 +42,8 @@ body {
             border-radius: 8px;
             font-family: Georgia, serif;
             font-size: 1.1rem;
+            font-family: 'youyuan';
+
 
         }
 
@@ -57,7 +60,6 @@ body {
             content: ' ';
             width: 10px;
             height: 10px;
-            // margin: 3px;
             display: inline-block;
             box-sizing: border-box;
             border-top: 3px double white;
@@ -74,6 +76,27 @@ body {
         li:active::after {
             transform: rotate(135deg);
         }
+    }
+
+    #gitLogo {
+        width: 30px;
+        height: 30px;
+        position: fixed;
+        top: 8px;
+        right: 8px;
+        background-image: url(./img/gitHub_logo.jpg);
+        filter: brightness(120%);
+        background-size: contain;
+        border-radius: 50%;
+        border: 1px solid white;
+        box-shadow: inset 0px 0px 5px white;
+        cursor: pointer;
+        transition: all .4s;
+    }
+
+    #gitLogo:hover {
+        box-shadow: none;
+
     }
 }
 

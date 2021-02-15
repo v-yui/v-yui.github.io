@@ -13,12 +13,13 @@
         <!-- 固定的nav导航栏 -->
         <nav id="mainNav">
             <ol>
-                <li>Home </li>
-                <li>Note </li>
-                <li>Demo </li>
-                <li>Tool </li>
-                <li>Photo </li>
+                <li>主页 </li>
+                <li>笔记 </li>
+                <li>阅读 </li>
+                <li>书签 </li>
+                <li>相册 </li>
             </ol>
+            <div id="gitLogo"></div>
         </nav>
         <!-- 容器节点，盛装各个展示页 -->
         <div id="container"></div>
@@ -29,9 +30,10 @@
     // 子页面的script会直接以script节点形式载入，注意命名冲突
     const mainContainer = document.getElementById('container'); // 获取容器节点
     const mainNav = document.getElementById('mainNav').children[0].children;
+    const toGit = document.getElementById('gitLogo');
 
     // 为简化对子页面模块中需要执行的JS的处理,直接将其写在一个html中
-    // 但innerHTML中的script不会执行，写一个函数来分离html和script
+    // 但innerHTML中的script不会执行，写一个函数来分离script标签中的内容
     function sliceStr(tempStr) {
         if (typeof tempStr === 'string') {
             let htmlStr = tempStr;
@@ -47,9 +49,10 @@
             }
         }
     }
-
-    window.onload = () => {
+    
+    window.addEventListener('load', () => {
         // 为nav每个子条目添加点击事件以显示对应子页面
+
         for (let i = 0; i < 5; i++) {
             mainNav[i].addEventListener('click', () => {
                 let strObj = sliceStr(window.temp[i]);
@@ -57,8 +60,12 @@
                 eval(strObj.scriptStr);
             })
         }
-        mainNav[0].click(); // 默认展示home页内容
-    }
+        mainNav[3].click(); // 默认展示home页内容
+        // 为gitHub的logo添加点击跳转
+        toGit.addEventListener('click', () => {
+            window.open("https://github.com/v-yui");
+        })
+    })
 </script>
 
 </html>

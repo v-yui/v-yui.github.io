@@ -1,3 +1,34 @@
 <body>
-    <h1>tool</h1>
+    <div id="toolWarp">
+        <ol id="urlNode">
+            <li><a>gitHub</a></li>
+        </ol>
+    </div>
 </body>
+<script>
+    const urlNode = document.getElementById('urlNode');
+    // 存储 网页名-网页链接 键值对的对象
+    const urlList = {
+        // 个人常用网站集合
+        selfPage: {
+            gitHub: 'https://github.com/v-yui',
+            bili: 'https://space.bilibili.com/13406270',
+        },
+        // 前端常用网站集合
+        frontPage: {
+            webpack: 'https://webpack.docschina.org/guides/getting-started/'
+        }
+    };
+    // 接收url和父节点，创建新的li条目并加入
+    function putLi(url, parent) {
+        let liNode = document.createElement('li');
+        let aNode = document.createElement('a');
+        aNode.innerHTML = 'git';
+        aNode.href = url;
+        aNode.target = '_blank';
+        liNode.appendChild(aNode);
+        parent.appendChild(liNode);
+        console.log(liNode)
+    }
+    putLi(urlList.selfPage.gitHub, urlNode);
+</script>

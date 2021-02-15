@@ -6,8 +6,8 @@
     flex-wrap: nowrap;
     justify-content: center;
     align-items: center;
-    background-size:100% 100%;
-    background-image: linear-gradient(to bottom, @navBack, white);
+    background-size: 100% 100%;
+    background-image: @backColor;
     overflow: hidden;
 
     h1 {
@@ -17,7 +17,9 @@
         flex-shrink: 0;
         margin: 20px;
         letter-spacing: 2rem;
+        font-family: 'Georgia';
     }
+
     #sky {
         width: 400px;
         height: 400px;
@@ -26,17 +28,19 @@
         display: inline-block;
         background-image: linear-gradient(to bottom, @navBack, white);
         border: 1px solid white;
-        box-shadow: 3px 3px 3px gray;
-        transition: all .3s;
+        box-shadow: inset -3px 3px 3px gray;
+        transition: all .7s;
         overflow: hidden;
+        // filter: brightness(109%);
 
         #sun {
             margin-left: auto;
             width: 100px;
             height: 100px;
             border-radius: 50%;
-            transform: translate(-70px, 50px);
+            transform: translate(-45px, 280px);
             background-image: linear-gradient(to bottom, rgb(243, 59, 59), rgb(252, 229, 126));
+            transition: all .7s ease-in-out
         }
 
         .tree {
@@ -47,12 +51,12 @@
         }
 
         #tree1 {
-            transform: rotate(-20deg) translateX(-50px);
+            transform: rotate(-20deg) translateX(-120px);
 
         }
 
         #tree2 {
-            transform: rotate(30deg) translateX(90px) translateY(-130px);
+            transform: rotate(30deg) translateX(90px) translateY(-138px);
             width: 280px;
         }
 
@@ -61,4 +65,23 @@
         }
     }
 
+    #sky:hover {
+        box-shadow: none;
+    }
+    #moon {
+        width: 100px;
+        height: 100px;
+        border-right: 17px solid white;
+        border-radius: 50%;
+        position: relative;
+        left: 240px;
+        top: -300px;
+        flex-shrink: 0;
+        transform: rotate(30deg);
+        opacity: 0;
+        filter: blur(.05rem);
+        transition: all .5s;
+
+
+    }
 }

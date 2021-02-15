@@ -4,7 +4,7 @@
 
 import home from './template/home.html';
 import note from './template/note.html';
-import demo from './template/demo.html';
+import read from './template/read.html';
 import tool from './template/tool.html';
 import photo from './template/photo.html';
 
@@ -21,7 +21,7 @@ import regLearn from './lib/notes/2.5 正则表达式.md'
 import './style/main.less';
 
 // 5个子页面,为便于使用for循环添加点击事件,故使用数组保存
-window.temp = [home, note, demo, tool, photo];
+window.temp = [home, note, read, tool, photo];
 
 // note页需展示的markdown笔记
 window.notes = {
