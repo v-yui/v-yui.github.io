@@ -23,8 +23,9 @@
         // 依据当前时间控制部分样式
         if (7 < hour && hour < 19) {
             hour = Math.abs(13 - hour);
-            sun.style.transform = `translate(-${45 + hour}px, ${280 - hour * 10}px)`;
-            sky.style.filter = `brightness(${85 + hour}%)`;
+            console.log(hour);
+            sun.style.transform = `translate(-${45 + hour}px, ${50 + hour * 10}px)`;
+            sky.style.filter = `brightness(${109 - hour}%)`;
         } else {
             sky.style.filter = `brightness(15%)`;
             moon.style.opacity = 1;
@@ -32,7 +33,7 @@
 
     })
     sky.addEventListener('mouseleave', () => {
-        sun.style.transform = 'translate(-45px, 280px)';
+        sun.style.transform = 'translate(-45px, 290px)';
         sky.style.filter = '';
         moon.style.opacity = 0;
     })
