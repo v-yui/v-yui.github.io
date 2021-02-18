@@ -1,24 +1,37 @@
 #readWarp {
-    padding: 10px;
-    background-image: @backColor;
+    height: 100%;
+    background-image: linear-gradient(to bottom, @navBack 30%, white);
+    background-attachment: fixed;
+    overflow: auto;
+    padding: 0 30px;
+    // position: fixed;
+
+
+
 
     ol {
+        height: 100%;
         padding: 0;
         margin: 0;
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
 
         li {
-            list-style: none;
-            width: 450px;
-            min-height: 290px;
+            width: 300px;
+            min-height: 350px;
             padding: 15px;
-            margin: 20px 30px 30px 0;
-            border-radius: 10px;
+            margin: 20px 30px 0 0;
+            display: inline-block;
+            list-style: none;
+            flex-shrink: 0;
+            border-radius: 2px;
             box-sizing: border-box;
             font-family: 'STXihei';
-            border: 1px solid rgba(255, 255, 255, .3);
-            background-color: rgba(255, 255, 255, 0.3);
+            text-align: justify;
+            box-shadow: @shadow;
+            background-color: white;
             transition: all .5s;
-
 
             img {
                 width: 172px;
@@ -32,37 +45,39 @@
             }
 
             h2 {
-                margin: 10px 0;
-                letter-spacing: .6em;
+                margin: 0;
                 font-weight: bolder;
                 color: @navBack - #555;
             }
 
-            h4 {
-                margin: 5px 0 10px 0;
-                letter-spacing: .2em;
-                text-align: justify;
-                color: @navBack - #333;
-            }
+            div {
+                margin-top: 15px;
 
-            h6 {
-                margin: 0;
-                font-family: 'STXihei';
-                color: @navBack - #333;
+                h4 {
+                    float: left;
+                    margin: 0 10px 0 0;
+                    writing-mode: vertical-lr;
+                    color: @navBack - #333;
+                }
+
+                h6 {
+                    margin: 0;
+                    padding: .5em 0px;
+                    writing-mode: vertical-lr;
+                    color: @navBack - #333;
+                }
             }
 
             p {
-                margin: 5px 0;
-                // text-indent: 2em;
-                // font-family: 'STXihei';
+                margin: 0;
+                text-indent: 0;
                 color: @navBack - #333;
-
             }
         }
 
         li:hover {
-            border: 1px solid transparent;
-            box-shadow: @shadow;
+            transform: translateY(-30px);
+            box-shadow: 5px 5px 3px rgba(0, 0, 0, .3);
 
             img {
                 box-shadow: none;

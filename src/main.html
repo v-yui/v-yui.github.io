@@ -16,7 +16,7 @@
                 <li>主页 </li>
                 <li>笔记 </li>
                 <li>阅读 </li>
-                <li>书签 </li>
+                <!-- <li>书签 </li> -->
                 <li>相册 </li>
             </ol>
             <div id="gitLogo"></div>
@@ -53,14 +53,14 @@
     window.addEventListener('load', () => {
         // 为nav每个子条目添加点击事件以显示对应子页面
 
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 4; i++) {
             mainNav[i].addEventListener('click', () => {
                 let strObj = sliceStr(window.temp[i]);
                 container.innerHTML = strObj.htmlStr;
                 eval(strObj.scriptStr);
             })
         }
-        mainNav[2].click(); // 默认展示home页内容
+        mainNav[3].click(); // 默认展示home页内容
         // 为gitHub的logo添加点击跳转
         toGit.addEventListener('click', () => {
             window.open("https://github.com/v-yui");

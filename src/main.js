@@ -21,7 +21,7 @@ import regLearn from './lib/notes/2.5 正则表达式.md'
 import './style/main.less';
 
 // 5个子页面,为便于使用for循环添加点击事件,故使用数组保存
-window.temp = [home, note, read, tool, photo];
+window.temp = [home, note, read, photo];
 
 // note页需展示的markdown笔记
 window.notes = {
